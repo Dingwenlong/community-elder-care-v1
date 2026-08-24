@@ -1,1 +1,16 @@
 .worktrees/
+.run/
+.tools/
+artifacts/
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/.dart_tool/
+**/build/
+**/.pio/
+*.db
+*.db-shm
+*.db-wal
+.env*
+firmware/esp32-sos/include/demo_config.h

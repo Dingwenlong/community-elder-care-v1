@@ -1,0 +1,11 @@
+@CommunityElderCare.Api_HostAddress = http://localhost:5155
+
+GET {{CommunityElderCare.Api_HostAddress}}/health/live
+Accept: application/json
+
+###
+
+GET {{CommunityElderCare.Api_HostAddress}}/health/ready
+Accept: application/json
+
+###
