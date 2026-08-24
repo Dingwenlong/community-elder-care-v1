@@ -26,6 +26,7 @@ const canOperateCare = computed(() =>
   auth.role === 'CommunityStaff' || auth.role === 'Administrator',
 )
 const isServiceWorker = computed(() => auth.role === 'ServiceWorker')
+const isAdministrator = computed(() => auth.role === 'Administrator')
 const workspaceLabel = computed(() =>
   isServiceWorker.value ? '服务任务工作区' : '社区照料工作区',
 )
@@ -49,6 +50,7 @@ async function signOut() {
         <RouterLink v-if="canOperateCare" to="/care-events">照料事件</RouterLink>
         <RouterLink v-if="canOperateCare" to="/visits">探访任务</RouterLink>
         <RouterLink v-if="canOperateCare" to="/service-orders">服务工单</RouterLink>
+        <RouterLink v-if="isAdministrator" to="/device-signals">设备信号</RouterLink>
         <RouterLink v-if="isServiceWorker" to="/my-tasks">我的任务</RouterLink>
       </nav>
       <p class="sidebar-note">参赛演示环境<br />不接入真实设备或电话</p>

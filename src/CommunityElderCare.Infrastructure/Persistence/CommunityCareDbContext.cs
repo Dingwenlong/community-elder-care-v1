@@ -4,6 +4,7 @@ using CommunityElderCare.Core.CheckIns;
 using CommunityElderCare.Core.CareEvents;
 using CommunityElderCare.Core.CareWork;
 using CommunityElderCare.Core.Ai;
+using CommunityElderCare.Core.Devices;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommunityElderCare.Infrastructure.Persistence;
@@ -52,6 +53,10 @@ public sealed class CommunityCareDbContext(DbContextOptions<CommunityCareDbConte
     public DbSet<AiDraft> AiDrafts => Set<AiDraft>();
 
     public DbSet<MemoryCandidate> MemoryCandidates => Set<MemoryCandidate>();
+
+    public DbSet<Device> Devices => Set<Device>();
+
+    public DbSet<DeviceSignal> DeviceSignals => Set<DeviceSignal>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

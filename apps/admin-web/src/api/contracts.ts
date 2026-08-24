@@ -169,3 +169,13 @@ export interface FollowUpItem {
   status: WorkStatus
   isDemoData: true
 }
+
+export type DeviceSignalType = 'SosButton' | 'NoWaterActivity' | 'DeviceOffline'
+
+export interface DeviceSignalResponse {
+  signalId: string
+  careEventId: string
+  receivedAt: string
+  isDuplicate: boolean
+  isSimulation: boolean
+}

@@ -16,6 +16,8 @@ using CommunityElderCare.Core.CareWork;
 using CommunityElderCare.Infrastructure.CareWork;
 using CommunityElderCare.Core.Ai;
 using CommunityElderCare.Infrastructure.Ai;
+using CommunityElderCare.Core.Devices;
+using CommunityElderCare.Infrastructure.Devices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -53,6 +55,8 @@ builder.Services.AddHttpClient<OpenAiCompatibleLlmClient>(client =>
 builder.Services.AddScoped<ICloudLlmClient>(services =>
     services.GetRequiredService<OpenAiCompatibleLlmClient>());
 builder.Services.AddScoped<IAiCareService, AiCareService>();
+builder.Services.AddScoped<DeviceTokenValidator>();
+builder.Services.AddScoped<IDeviceSignalService, DeviceSignalService>();
 builder.Services.AddScoped<IElderProfileQuery, ElderProfileQuery>();
 if (!builder.Environment.IsEnvironment("Testing"))
 {
@@ -173,6 +177,29 @@ await using (var scope = app.Services.CreateAsyncScope())
                 dayStart.AddHours(16)));
         await dbContext.SaveChangesAsync();
     }
+
+    var deviceSeedTime = timeProvider.GetUtcNow();
+    var deviceToken = builder.Configuration["COMMUNITYCARE_DEVICE_TOKEN"];
+    var deviceTokenHash = string.IsNullOrWhiteSpace(deviceToken)
+        ? null
+        : DeviceTokenValidator.HashToken(deviceToken);
+    var demoDevice = await dbContext.Devices.SingleOrDefaultAsync(
+        device => device.Id == DemoDeviceIds.MainSosDevice);
+    if (demoDevice is null)
+    {
+        var mainElderId = DemoSeedBuilder.Build(20, 20260824, deviceSeedTime).MainElderId;
+        dbContext.Devices.Add(Device.Register(
+            DemoDeviceIds.MainSosDevice,
+            mainElderId,
+            "客厅 SOS 演示设备",
+            deviceTokenHash,
+            deviceSeedTime));
+    }
+    else
+    {
+        demoDevice.BindProcessTokenHash(deviceTokenHash);
+    }
+    await dbContext.SaveChangesAsync();
 }
 
 app.UseAuthentication();
@@ -193,6 +220,7 @@ app.MapVisitEndpoints();
 app.MapServiceOrderEndpoints();
 app.MapFamilyEndpoints();
 app.MapAiEndpoints();
+app.MapDeviceEndpoints();
 
 app.Run();
 

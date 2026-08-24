@@ -13,6 +13,7 @@ namespace CommunityElderCare.IntegrationTests;
 
 public class CommunityCareWebFactory : WebApplicationFactory<Program>
 {
+    public const string TestDeviceToken = "integration-test-device-token";
     private const string TestPassword = "DemoPassword!2026";
     private const string TestSigningKey = "test-only-signing-key-2026-08-24-community-care";
     private readonly string _databasePath = Path.Combine(
@@ -37,6 +38,7 @@ public class CommunityCareWebFactory : WebApplicationFactory<Program>
                 ["ConnectionStrings:CommunityCare"] = $"Data Source={_databasePath};Pooling=False",
                 ["COMMUNITYCARE_DEMO_PASSWORD"] = TestPassword,
                 ["COMMUNITYCARE_JWT_SIGNING_KEY"] = TestSigningKey,
+                ["COMMUNITYCARE_DEVICE_TOKEN"] = TestDeviceToken,
             }));
     }
 
