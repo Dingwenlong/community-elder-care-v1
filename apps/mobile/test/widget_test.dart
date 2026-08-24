@@ -1,11 +1,37 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/auth/session_controller.dart';
+import 'package:mobile/core/api/contracts.dart';
+import 'package:mobile/core/storage/secure_session_store.dart';
 import 'package:mobile/main.dart';
 
 void main() {
-  testWidgets('shows the elder-care demo identity', (tester) async {
-    await tester.pumpWidget(const CommunityCareApp());
+  testWidgets('shows the elder and family demo login entry', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          sessionStoreProvider.overrideWithValue(const EmptySessionStore()),
+        ],
+        child: const CommunityCareApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
 
     expect(find.text('社区独居老人照料系统'), findsOneWidget);
-    expect(find.text('演示数据'), findsOneWidget);
+    expect(find.text('演示账号'), findsOneWidget);
+    expect(find.text('登录演示 App'), findsOneWidget);
   });
+}
+
+class EmptySessionStore implements SessionStore {
+  const EmptySessionStore();
+
+  @override
+  Future<void> clear() async {}
+
+  @override
+  Future<SessionState?> read() async => null;
+
+  @override
+  Future<void> write(SessionState session) async {}
 }
