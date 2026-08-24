@@ -179,3 +179,39 @@ export interface DeviceSignalResponse {
   isDuplicate: boolean
   isSimulation: boolean
 }
+
+export interface AuditEntry {
+  id: string
+  actorUserId: string | null
+  actorKind: string
+  action: string
+  entityType: string
+  entityId: string
+  occurredAt: string
+  reason: string
+  beforeStatus: string | null
+  afterStatus: string | null
+  isDemoData: true
+}
+
+export interface DemoSummary {
+  label: '基于演示数据'
+  elderCount: number
+  openEventCount: number
+  completedVisitCount: number
+  activeServiceOrderCount: number
+  simulationAttemptCount: number
+  deviceSignalCount: number
+  confirmedMemoryCount: number
+}
+
+export interface ReadinessComponent {
+  name: 'database' | 'backgroundJobs' | 'ai' | 'deviceGateway' | 'localNetwork'
+  status: 'ready' | 'degraded' | 'unavailable'
+  detail: string
+}
+
+export interface ReadinessResponse {
+  status: string
+  components: ReadinessComponent[]
+}

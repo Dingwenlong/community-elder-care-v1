@@ -27,6 +27,10 @@ public sealed class ContactEscalationWorker(
     public async Task RunOnceAsync(CancellationToken cancellationToken)
     {
         await using var scope = scopeFactory.CreateAsyncScope();
+        var recorder = scope.ServiceProvider.GetRequiredService<BackgroundJobRecorder>();
+        var run = await recorder.StartAsync(nameof(ContactEscalationWorker), 0, cancellationToken);
+        try
+        {
         var dbContext = scope.ServiceProvider.GetRequiredService<CommunityCareDbContext>();
         var service = scope.ServiceProvider.GetRequiredService<ICareEventService>();
         var now = timeProvider.GetUtcNow();
@@ -64,6 +68,13 @@ public sealed class ContactEscalationWorker(
                         result.ErrorCode);
                 }
             }
+        }
+            await recorder.CompleteAsync(run, succeeded: true, exception: null, cancellationToken);
+        }
+        catch (Exception exception)
+        {
+            await recorder.CompleteAsync(run, succeeded: false, exception, CancellationToken.None);
+            throw;
         }
     }
 }

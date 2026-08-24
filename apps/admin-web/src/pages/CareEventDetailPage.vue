@@ -231,7 +231,11 @@ onMounted(load)
           <p v-else class="empty-copy">当前事件尚无探访、服务工单或随访任务。</p>
         </section>
 
-        <SimulationActionPanel :attempts="careEvent.contactAttempts" />
+        <SimulationActionPanel
+          :attempts="careEvent.contactAttempts"
+          :event-id="careEvent.id"
+          :can-record="auth.role === 'CommunityStaff'"
+        />
       </div>
 
       <BreakGlassDialog

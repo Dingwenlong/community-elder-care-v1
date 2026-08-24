@@ -18,6 +18,8 @@ using CommunityElderCare.Core.Ai;
 using CommunityElderCare.Infrastructure.Ai;
 using CommunityElderCare.Core.Devices;
 using CommunityElderCare.Infrastructure.Devices;
+using CommunityElderCare.Infrastructure.Notifications;
+using CommunityElderCare.Infrastructure.Demo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -31,6 +33,9 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<AuditSaveChangesInterceptor>();
+builder.Services.AddSingleton<DemoMutationGate>();
 builder.Services.AddSingleton(_ => new EscalationPolicy(
     TimeSpan.FromMinutes(builder.Configuration.GetValue("CareEvents:DemoEscalation:PhoneAttemptMinutes", 2)),
     TimeSpan.FromMinutes(builder.Configuration.GetValue("CareEvents:DemoEscalation:EmergencyContactMinutes", 5)),
@@ -57,16 +62,20 @@ builder.Services.AddScoped<ICloudLlmClient>(services =>
 builder.Services.AddScoped<IAiCareService, AiCareService>();
 builder.Services.AddScoped<DeviceTokenValidator>();
 builder.Services.AddScoped<IDeviceSignalService, DeviceSignalService>();
+builder.Services.AddScoped<SimulationNotificationService>();
+builder.Services.AddScoped<BackgroundJobRecorder>();
+builder.Services.AddScoped<DemoResetService>();
 builder.Services.AddScoped<IElderProfileQuery, ElderProfileQuery>();
 if (!builder.Environment.IsEnvironment("Testing"))
 {
     builder.Services.AddHostedService<MissedCheckInWorker>();
     builder.Services.AddHostedService<ContactEscalationWorker>();
 }
-builder.Services.AddDbContext<CommunityCareDbContext>(options =>
+builder.Services.AddDbContext<CommunityCareDbContext>((services, options) =>
     options.UseSqlite(
         builder.Configuration.GetConnectionString("CommunityCare")
-        ?? "Data Source=community-care.db"));
+        ?? "Data Source=community-care.db")
+    .AddInterceptors(services.GetRequiredService<AuditSaveChangesInterceptor>()));
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -204,12 +213,75 @@ await using (var scope = app.Services.CreateAsyncScope())
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.Use(async (context, next) =>
+{
+    var isMutation = !HttpMethods.IsGet(context.Request.Method) &&
+        !HttpMethods.IsHead(context.Request.Method) &&
+        !HttpMethods.IsOptions(context.Request.Method);
+    if (!isMutation || context.Request.Path == "/api/v1/demo/reset")
+    {
+        await next(context);
+        return;
+    }
+
+    var gate = context.RequestServices.GetRequiredService<DemoMutationGate>();
+    using var lease = await gate.EnterAsync(context.RequestAborted);
+    await next(context);
+});
 
 app.MapGet("/health/live", () => Results.Ok(new { status = "live" }));
-app.MapGet("/health/ready", async (CommunityCareDbContext db, CancellationToken cancellationToken) =>
-    await db.Database.CanConnectAsync(cancellationToken)
-        ? Results.Ok(new { status = "ready" })
-        : Results.Problem(statusCode: StatusCodes.Status503ServiceUnavailable, title: "Database unavailable"));
+app.MapGet("/health/ready", async (
+    CommunityCareDbContext db,
+    CloudLlmOptions aiOptions,
+    IWebHostEnvironment environment,
+    IConfiguration configuration,
+    CancellationToken cancellationToken) =>
+{
+    if (!await db.Database.CanConnectAsync(cancellationToken))
+    {
+        return Results.Problem(
+            statusCode: StatusCodes.Status503ServiceUnavailable,
+            title: "Database unavailable");
+    }
+    var device = await db.Devices.AsNoTracking().SingleOrDefaultAsync(
+        candidate => candidate.Id == DemoDeviceIds.MainSosDevice && candidate.IsEnabled,
+        cancellationToken);
+    var urls = configuration["ASPNETCORE_URLS"] ?? string.Empty;
+    return Results.Ok(new
+    {
+        status = "ready",
+        components = new object[]
+        {
+            new { name = "database", status = "ready", detail = "SQLite connected" },
+            new
+            {
+                name = "backgroundJobs",
+                status = environment.IsEnvironment("Testing") ? "degraded" : "ready",
+                detail = environment.IsEnvironment("Testing") ? "disabled in tests" : "workers registered",
+            },
+            new
+            {
+                name = "ai",
+                status = aiOptions.IsConfigured ? "ready" : "degraded",
+                detail = aiOptions.IsConfigured ? "cloud adapter configured" : "fixed fallback active",
+            },
+            new
+            {
+                name = "deviceGateway",
+                status = device is null ? "unavailable" : "ready",
+                detail = device?.TokenHash is null ? "simulator only" : "hardware token bound",
+            },
+            new
+            {
+                name = "localNetwork",
+                status = urls.Contains("0.0.0.0", StringComparison.Ordinal) ? "ready" : "degraded",
+                detail = urls.Contains("0.0.0.0", StringComparison.Ordinal)
+                    ? "LAN binding enabled"
+                    : "loopback or test binding",
+            },
+        },
+    });
+});
 app.MapElderEndpoints();
 app.MapAuthEndpoints();
 app.MapConsentEndpoints();
@@ -221,6 +293,10 @@ app.MapServiceOrderEndpoints();
 app.MapFamilyEndpoints();
 app.MapAiEndpoints();
 app.MapDeviceEndpoints();
+app.MapNotificationSimulationEndpoints();
+app.MapAuditEndpoints();
+app.MapReportEndpoints();
+app.MapDemoEndpoints();
 
 app.Run();
 

@@ -10,6 +10,7 @@ const problemMessages: Record<string, string> = {
   RESULT_REQUIRED: '请完整填写处理结果。',
   INVALID_BREAK_GLASS_DURATION: '临时授权时长不符合规则。',
   CLOSE_GUARD_FAILED: '仍有必做任务或随访未完成，暂时不能结案。',
+  RESET_CONFIRMATION_REQUIRED: '请输入完整的 RESET-20 后再确认重置。',
   REQUEST_FAILED: '请求未完成，请稍后重试。',
 }
 

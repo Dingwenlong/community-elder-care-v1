@@ -5,6 +5,7 @@ using CommunityElderCare.Core.CareEvents;
 using CommunityElderCare.Core.CareWork;
 using CommunityElderCare.Core.Ai;
 using CommunityElderCare.Core.Devices;
+using CommunityElderCare.Core.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommunityElderCare.Infrastructure.Persistence;
@@ -57,6 +58,12 @@ public sealed class CommunityCareDbContext(DbContextOptions<CommunityCareDbConte
     public DbSet<Device> Devices => Set<Device>();
 
     public DbSet<DeviceSignal> DeviceSignals => Set<DeviceSignal>();
+
+    public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
+
+    public DbSet<BackgroundJobRun> BackgroundJobRuns => Set<BackgroundJobRun>();
+
+    public DbSet<NotificationAttempt> NotificationAttempts => Set<NotificationAttempt>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

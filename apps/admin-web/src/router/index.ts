@@ -5,6 +5,9 @@ import CareEventDetailPage from '@/pages/CareEventDetailPage.vue'
 import CareEventListPage from '@/pages/CareEventListPage.vue'
 import DashboardPage from '@/pages/DashboardPage.vue'
 import DeviceSignalPage from '@/pages/DeviceSignalPage.vue'
+import AuditPage from '@/pages/AuditPage.vue'
+import ReportPage from '@/pages/ReportPage.vue'
+import SettingsPage from '@/pages/SettingsPage.vue'
 import ElderDetailPage from '@/pages/ElderDetailPage.vue'
 import ElderEditPage from '@/pages/ElderEditPage.vue'
 import ElderListPage from '@/pages/ElderListPage.vue'
@@ -68,6 +71,21 @@ const router = createRouter({
         {
           path: 'device-signals',
           component: DeviceSignalPage,
+          meta: { roles: ['Administrator'] },
+        },
+        {
+          path: 'reports',
+          component: ReportPage,
+          meta: { roles: ['CommunityStaff', 'Administrator'] },
+        },
+        {
+          path: 'audit',
+          component: AuditPage,
+          meta: { roles: ['Administrator'] },
+        },
+        {
+          path: 'settings',
+          component: SettingsPage,
           meta: { roles: ['Administrator'] },
         },
         {

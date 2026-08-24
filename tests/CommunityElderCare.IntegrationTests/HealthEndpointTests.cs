@@ -1,4 +1,6 @@
 using System.Net;
+using System.Net.Http.Json;
+using System.Text.Json;
 using Microsoft.Data.Sqlite;
 
 namespace CommunityElderCare.IntegrationTests;
@@ -26,7 +28,19 @@ public sealed class HealthEndpointTests
         var response = await client.GetAsync("/health/ready");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("{\"status\":\"ready\"}", await response.Content.ReadAsStringAsync());
+        var payload = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal("ready", payload.GetProperty("status").GetString());
+        Assert.Equal(
+            ["database", "backgroundJobs", "ai", "deviceGateway", "localNetwork"],
+            payload.GetProperty("components")
+                .EnumerateArray()
+                .Select(component => component.GetProperty("name").GetString()!)
+                .ToArray());
+        Assert.All(
+            payload.GetProperty("components").EnumerateArray(),
+            component => Assert.Contains(
+                component.GetProperty("status").GetString(),
+                new[] { "ready", "degraded", "unavailable" }));
     }
 
     [Fact]

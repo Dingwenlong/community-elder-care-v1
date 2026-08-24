@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/vue'
+import { cleanup, render, screen, within } from '@testing-library/vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { afterEach, describe, expect, it } from 'vitest'
 import { defineComponent } from 'vue'
@@ -66,5 +66,27 @@ describe('CommunityLayout', () => {
 
     expect(screen.getByText('演示数据')).toBeTruthy()
     expect(screen.getByRole('heading', { name: '老人档案' })).toBeTruthy()
+  })
+
+  it('shows the complete eight-destination navigation only to administrators', async () => {
+    await renderWithRouter('/dashboard', 'Administrator')
+
+    const sidebar = screen.getByRole('complementary', { name: '社区工作区导航' })
+    expect(within(sidebar).getAllByRole('link').map((link) => link.textContent)).toEqual([
+      '工作台',
+      '老人档案',
+      '照料事件',
+      '探访任务',
+      '服务工单',
+      '设备信号',
+      '报告与审计',
+      '系统设置',
+    ])
+
+    cleanup()
+    await renderWithRouter('/dashboard', 'CommunityStaff')
+    expect(screen.queryByRole('link', { name: '设备信号' })).toBeNull()
+    expect(screen.queryByRole('link', { name: '系统设置' })).toBeNull()
+    expect(screen.getByRole('link', { name: '报告与审计' })).toBeTruthy()
   })
 })

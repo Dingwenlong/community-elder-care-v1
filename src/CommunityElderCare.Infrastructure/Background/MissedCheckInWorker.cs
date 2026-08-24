@@ -25,6 +25,10 @@ public sealed class MissedCheckInWorker(
     public async Task RunOnceAsync(CancellationToken cancellationToken)
     {
         await using var scope = scopeFactory.CreateAsyncScope();
+        var recorder = scope.ServiceProvider.GetRequiredService<BackgroundJobRecorder>();
+        var run = await recorder.StartAsync(nameof(MissedCheckInWorker), 0, cancellationToken);
+        try
+        {
         var checkInService = scope.ServiceProvider.GetRequiredService<ICheckInService>();
         var careEventService = scope.ServiceProvider.GetRequiredService<ICareEventService>();
         var overdueItems = await checkInService.GetOverdueCheckInsAsync(
@@ -52,6 +56,13 @@ public sealed class MissedCheckInWorker(
                     sourceEventId,
                     result.ErrorCode);
             }
+        }
+            await recorder.CompleteAsync(run, succeeded: true, exception: null, cancellationToken);
+        }
+        catch (Exception exception)
+        {
+            await recorder.CompleteAsync(run, succeeded: false, exception, CancellationToken.None);
+            throw;
         }
     }
 }
