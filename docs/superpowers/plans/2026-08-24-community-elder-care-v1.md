@@ -25,7 +25,7 @@
 - 使用 SQLite 和 ASP.NET Core 托管后台任务；真实试点前再评估 PostgreSQL、TLS、数据库加密、密钥管理和高可用。
 - 页面、提示、报告和 AI 回复使用直接、具体、自然的中文。
 - 项目锁定稳定 `.NET SDK 10.0.302`，不得落到本机 `10.0.400-preview`；`global.json` 设置 `allowPrerelease: false`。
-- Node 使用本机 `24.16.0`、npm `11.13.0`；Flutter 使用 `D:\Toolchains\flutter-3.47.1`，Dart `3.13.1`，Android SDK 36，JBR 25。
+- Node 使用 `24.16.0`、npm `11.13.0`；Flutter 使用 `3.47.1`，Dart `3.13.1`，Android SDK 36。工具路径由当前 PowerShell 进程或忽略的本机配置提供。
 - `scripts/dev-env.ps1` 只修改当前进程环境，不写用户级或系统级 Path、JAVA_HOME、ANDROID_HOME。
 - 本机 Windows `flutter_tester` 曾有间歇性原生崩溃；移动端验收必须在 Android 模拟器运行 `integration_test`，出现宿主崩溃时先用官方空项目复核，不改业务代码掩盖工具故障。
 - 每个任务先得到失败测试或失败检查，再写最小实现；任务结束运行定向测试和相关全量测试并提交。
@@ -272,7 +272,7 @@ Run `npm test -- --run` and expect FAIL, replace the generated app with the two 
 Run with the exact Flutter executable before the environment script exists:
 
 ```powershell
-& 'D:\Toolchains\flutter-3.47.1\bin\flutter.bat' create --platforms=android --org com.dingwenlong.communitycare apps/mobile
+flutter create --platforms=android --org com.dingwenlong.communitycare apps/mobile
 ```
 
 Write `integration_test/app_shell_test.dart`:
@@ -293,9 +293,9 @@ Run it on the single supported Android emulator and expect FAIL, replace the cou
 `scripts/dev-env.ps1` must set only process variables:
 
 ```powershell
-$taskFlutterRoot = 'D:\Toolchains\flutter-3.47.1'
-$taskAndroidSdk = Join-Path $env:LOCALAPPDATA 'Android\Sdk'
-$taskJavaHome = 'D:\Toolchains\android-studio-2026.1.3.8\jbr'
+$taskFlutterRoot = $env:COMMUNITYCARE_FLUTTER_ROOT
+$taskAndroidSdk = $env:COMMUNITYCARE_ANDROID_SDK_ROOT
+$taskJavaHome = $env:COMMUNITYCARE_JAVA_HOME
 $env:FLUTTER_ROOT = $taskFlutterRoot
 $env:ANDROID_HOME = $taskAndroidSdk
 $env:ANDROID_SDK_ROOT = $taskAndroidSdk

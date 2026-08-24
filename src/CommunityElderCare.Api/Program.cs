@@ -118,29 +118,41 @@ await using (var scope = app.Services.CreateAsyncScope())
         await dbContext.SaveChangesAsync();
     }
 
-    if (!await dbContext.UserAccounts.AnyAsync())
+    var demoPassword = builder.Configuration["COMMUNITYCARE_DEMO_PASSWORD"];
+    if (string.IsNullOrEmpty(demoPassword))
     {
-        var demoPassword = builder.Configuration["COMMUNITYCARE_DEMO_PASSWORD"];
-        if (string.IsNullOrEmpty(demoPassword))
-        {
-            throw new InvalidOperationException("COMMUNITYCARE_DEMO_PASSWORD is required for demo account seeding.");
-        }
+        throw new InvalidOperationException("COMMUNITYCARE_DEMO_PASSWORD is required for demo account seeding.");
+    }
 
-        var now = timeProvider.GetUtcNow();
-        var mainElderId = DemoSeedBuilder
-            .Build(20, 20260824, now)
-            .MainElderId;
-        var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<UserAccount>>();
-        var accounts = DemoIdentitySeed.BuildAccounts(mainElderId);
-        foreach (var account in accounts)
+    var accountSeedTime = timeProvider.GetUtcNow();
+    var accountMainElderId = DemoSeedBuilder
+        .Build(20, 20260824, accountSeedTime)
+        .MainElderId;
+    var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<UserAccount>>();
+    var accountTemplates = DemoIdentitySeed.BuildAccounts(accountMainElderId);
+    var accountIds = accountTemplates.Select(account => account.Id).ToList();
+    var existingAccounts = await dbContext.UserAccounts
+        .Where(account => accountIds.Contains(account.Id))
+        .ToDictionaryAsync(account => account.Id);
+    foreach (var template in accountTemplates)
+    {
+        if (existingAccounts.TryGetValue(template.Id, out var existing))
         {
-            account.SetPasswordHash(passwordHasher.HashPassword(account, demoPassword));
+            existing.SetPasswordHash(passwordHasher.HashPassword(existing, demoPassword));
         }
+        else
+        {
+            template.SetPasswordHash(passwordHasher.HashPassword(template, demoPassword));
+            dbContext.UserAccounts.Add(template);
+        }
+    }
 
-        dbContext.UserAccounts.AddRange(accounts);
+    var demoConsentId = Guid.Parse("33333333-3333-3333-3333-333333333301");
+    if (!await dbContext.ConsentGrants.AnyAsync(grant => grant.Id == demoConsentId))
+    {
         dbContext.ConsentGrants.Add(ConsentGrant.Create(
-            Guid.Parse("33333333-3333-3333-3333-333333333301"),
-            mainElderId,
+            demoConsentId,
+            accountMainElderId,
             DemoIdentitySeed.FamilyUserId,
             [
                 ConsentField.RecentStatus,
@@ -148,11 +160,11 @@ await using (var scope = app.Services.CreateAsyncScope())
                 ConsentField.VisitSummary,
                 ConsentField.ReminderCompletion,
             ],
-            now,
-            now.AddYears(1),
+            accountSeedTime,
+            accountSeedTime.AddYears(1),
             DemoIdentitySeed.ElderUserId));
-        await dbContext.SaveChangesAsync();
     }
+    await dbContext.SaveChangesAsync();
 
     if (!await dbContext.Reminders.AnyAsync())
     {

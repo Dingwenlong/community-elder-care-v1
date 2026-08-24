@@ -2,6 +2,7 @@ using CommunityElderCare.Core.CareEvents;
 using CommunityElderCare.Core.CareWork;
 using CommunityElderCare.Core.Common;
 using CommunityElderCare.Core.Identity;
+using CommunityElderCare.Infrastructure.Identity;
 using CommunityElderCare.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,8 +42,13 @@ public sealed class ServiceOrderService(
         }
 
         var now = timeProvider.GetUtcNow();
+        var orderId = await dbContext.ServiceOrders.AnyAsync(
+            order => order.Id == DemoIdentitySeed.MainCareTaskId,
+            cancellationToken)
+            ? Guid.NewGuid()
+            : DemoIdentitySeed.MainCareTaskId;
         var create = ServiceOrder.Create(
-            Guid.NewGuid(),
+            orderId,
             careEvent.Id,
             careEvent.ElderId,
             command.ServiceType,

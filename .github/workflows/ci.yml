@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.302
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            apps/admin-web/package-lock.json
+            tests/e2e/package-lock.json
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.1
+          channel: stable
+          cache: true
+
+      - name: Prepare report directory
+        run: mkdir -p artifacts/ci/dotnet artifacts/ci/logs
+
+      - name: Test .NET solution
+        run: |
+          dotnet restore CommunityElderCare.sln
+          dotnet test CommunityElderCare.sln --no-restore --logger "trx;LogFileName=tests.trx" --results-directory artifacts/ci/dotnet
+
+      - name: Test and build Web
+        working-directory: apps/admin-web
+        run: |
+          npm ci
+          npm test -- --run
+          npx --no-install oxlint .
+          npx --no-install eslint .
+          npm run build
+
+      - name: Analyze and build Flutter Android
+        working-directory: apps/mobile
+        run: |
+          set -o pipefail
+          flutter pub get
+          flutter analyze 2>&1 | tee ../../artifacts/ci/logs/flutter-analyze.log
+          flutter build apk --debug --dart-define=API_BASE_URL=http://10.0.2.2:5180 2>&1 | tee ../../artifacts/ci/logs/flutter-build.log
+
+      - name: Compile ESP32 firmware
+        run: |
+          set -o pipefail
+          python -m pip install --disable-pip-version-check platformio==6.1.19
+          cp firmware/esp32-sos/include/demo_config.example.h firmware/esp32-sos/include/demo_config.h
+          platformio run --project-dir firmware/esp32-sos 2>&1 | tee artifacts/ci/logs/platformio.log
+
+      - name: Upload non-sensitive verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-evidence
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            artifacts/ci/dotnet/*.trx
+            artifacts/ci/logs/*.log

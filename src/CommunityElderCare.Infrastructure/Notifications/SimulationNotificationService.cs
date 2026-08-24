@@ -1,3 +1,4 @@
+using CommunityElderCare.Core.CareEvents;
 using CommunityElderCare.Core.Common;
 using CommunityElderCare.Core.Identity;
 using CommunityElderCare.Infrastructure.Persistence;
@@ -30,20 +31,20 @@ public sealed class SimulationNotificationService(
             return Failure("INVALID_SIMULATION_ATTEMPT", "Request ID and recipient role are required.");
         }
 
-        var scope = await (
-            from careEvent in dbContext.CareEvents.AsNoTracking()
-            join elder in dbContext.ElderProfiles.AsNoTracking()
-                on careEvent.ElderId equals elder.Id
-            where careEvent.Id == command.CareEventId
-            select new { careEvent.CurrentOwnerUserId, elder.AreaCode })
-            .SingleOrDefaultAsync(cancellationToken);
-        if (scope is null)
+        var careEvent = await dbContext.CareEvents
+            .Include(candidate => candidate.ContactAttempts)
+            .SingleOrDefaultAsync(candidate => candidate.Id == command.CareEventId, cancellationToken);
+        if (careEvent is null)
         {
             return Failure("NOT_FOUND", "Care event was not found.");
         }
+        var elderArea = await dbContext.ElderProfiles.AsNoTracking()
+            .Where(elder => elder.Id == careEvent.ElderId)
+            .Select(elder => elder.AreaCode)
+            .SingleAsync(cancellationToken);
         if (actor.Role != DemoRole.CommunityStaff ||
-            actor.AreaCode != scope.AreaCode ||
-            scope.CurrentOwnerUserId != actor.UserId)
+            actor.AreaCode != elderArea ||
+            careEvent.CurrentOwnerUserId != actor.UserId)
         {
             return Failure("FORBIDDEN_SCOPE", "Only the current in-area handler can record a simulation.");
         }
@@ -64,6 +65,18 @@ public sealed class SimulationNotificationService(
             command.SimulateFailure,
             actor.UserId);
         dbContext.NotificationAttempts.Add(attempt);
+        var contactMapping = MapContact(command.Channel, command.RecipientRole);
+        if (careEvent.AddContactAttempt(
+                attempt.Id,
+                $"notification:{command.RequestId:N}",
+                contactMapping.Kind,
+                contactMapping.TargetLabel,
+                attempt.AttemptedAt,
+                attempt.Outcome))
+        {
+            dbContext.ContactAttempts.Add(
+                careEvent.ContactAttempts.Single(contact => contact.Id == attempt.Id));
+        }
         try
         {
             await dbContext.SaveChangesAsync(cancellationToken);
@@ -101,4 +114,22 @@ public sealed class SimulationNotificationService(
 
     private static OperationResult<SimulationAttemptReceipt> Failure(string code, string message) =>
         new(false, null, code, message);
+
+    private static ContactMapping MapContact(SimulationChannel channel, string recipientRole) =>
+        channel switch
+        {
+            SimulationChannel.InAppNotification =>
+                new(ContactAttemptKind.ElderReminder, "老人端站内通知"),
+            SimulationChannel.Sms =>
+                new(ContactAttemptKind.EmergencyContact, $"{recipientRole} 模拟短信"),
+            SimulationChannel.Phone =>
+                new(ContactAttemptKind.PhoneConfirmation, $"{recipientRole} 模拟电话"),
+            SimulationChannel.HomeVisit =>
+                new(ContactAttemptKind.CommunityNotification, "社区模拟上门"),
+            SimulationChannel.EmergencyTransport =>
+                new(ContactAttemptKind.CommunityNotification, "120 模拟急救转运"),
+            _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null),
+        };
+
+    private sealed record ContactMapping(ContactAttemptKind Kind, string TargetLabel);
 }
