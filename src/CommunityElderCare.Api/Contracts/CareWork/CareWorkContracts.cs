@@ -27,6 +27,21 @@ public sealed record VisitResponse(
     bool IsMandatory,
     bool IsDemoData);
 
+public sealed record CommunityVisitResponse(
+    Guid VisitId,
+    Guid CareEventId,
+    string ElderDisplayName,
+    Guid AssignedStaffUserId,
+    DateTimeOffset ScheduledStartAt,
+    DateTimeOffset ScheduledEndAt,
+    DateTimeOffset? StartedAt,
+    DateTimeOffset? CompletedAt,
+    string? ConfirmedSummary,
+    string? Result,
+    WorkStatus Status,
+    bool IsMandatory,
+    bool IsDemoData);
+
 public sealed record CreateServiceOrderRequest(
     string ServiceType,
     string ScheduledWindow,
@@ -44,6 +59,18 @@ public sealed record ServiceWorkerOrderResponse(
     string ContactInstruction,
     WorkStatus Status);
 
+public sealed record CommunityServiceOrderResponse(
+    Guid OrderId,
+    Guid CareEventId,
+    string ElderDisplayName,
+    string ServiceType,
+    string ScheduledWindow,
+    string ContactInstruction,
+    WorkStatus Status,
+    string? Result,
+    bool IsMandatory,
+    bool IsDemoData);
+
 public sealed record CreateFollowUpRequest(
     Guid AssignedStaffUserId,
     DateTimeOffset DueAt);
@@ -53,6 +80,17 @@ public sealed record CompleteFollowUpRequest(string Result);
 public sealed record FollowUpResponse(
     Guid FollowUpId,
     Guid CareEventId,
+    Guid AssignedStaffUserId,
+    DateTimeOffset DueAt,
+    DateTimeOffset? CompletedAt,
+    string? Result,
+    WorkStatus Status,
+    bool IsDemoData);
+
+public sealed record CommunityFollowUpResponse(
+    Guid FollowUpId,
+    Guid CareEventId,
+    string ElderDisplayName,
     Guid AssignedStaffUserId,
     DateTimeOffset DueAt,
     DateTimeOffset? CompletedAt,

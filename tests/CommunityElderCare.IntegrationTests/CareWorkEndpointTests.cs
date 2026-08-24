@@ -54,6 +54,20 @@ public sealed class CareWorkEndpointTests
         var completedVisit = await completeVisitResponse.Content.ReadFromJsonAsync<JsonElement>();
         Assert.Equal("Completed", completedVisit.GetProperty("status").GetString());
 
+        var visitList = await staffClient.GetFromJsonAsync<JsonElement>(
+            $"/api/v1/visits?careEventId={eventId}");
+        var listedVisit = Assert.Single(visitList.EnumerateArray());
+        Assert.Equal(visitId, listedVisit.GetProperty("visitId").GetGuid());
+        Assert.Equal("演示·李安康", listedVisit.GetProperty("elderDisplayName").GetString());
+        Assert.Equal("已当面确认老人状态", listedVisit.GetProperty("confirmedSummary").GetString());
+        Assert.False(listedVisit.TryGetProperty("rawStaffNote", out _));
+        using var otherAreaClient = factory.CreateAuthenticatedClient(
+            DemoRole.CommunityStaff,
+            areaCode: "A02");
+        var otherAreaVisits = await otherAreaClient.GetFromJsonAsync<JsonElement>(
+            $"/api/v1/visits?careEventId={eventId}");
+        Assert.Empty(otherAreaVisits.EnumerateArray());
+
         var afterVisit = await staffClient.GetFromJsonAsync<JsonElement>(
             $"/api/v1/care-events/{eventId}");
         Assert.Equal("InProgress", afterVisit.GetProperty("status").GetString());
@@ -100,6 +114,12 @@ public sealed class CareWorkEndpointTests
         Assert.Equal(HttpStatusCode.OK, completeFollowUpResponse.StatusCode);
         var completedFollowUp = await completeFollowUpResponse.Content.ReadFromJsonAsync<JsonElement>();
         Assert.Equal("Completed", completedFollowUp.GetProperty("status").GetString());
+        var followUpList = await staffClient.GetFromJsonAsync<JsonElement>(
+            $"/api/v1/follow-ups?careEventId={eventId}");
+        var listedFollowUp = Assert.Single(followUpList.EnumerateArray());
+        Assert.Equal(followUpId, listedFollowUp.GetProperty("followUpId").GetGuid());
+        Assert.Equal("演示·李安康", listedFollowUp.GetProperty("elderDisplayName").GetString());
+        Assert.Equal("随访已完成，状态稳定", listedFollowUp.GetProperty("result").GetString());
         var readyToClose = await staffClient.GetFromJsonAsync<JsonElement>(
             $"/api/v1/care-events/{eventId}");
         Assert.Equal("FollowUpPending", readyToClose.GetProperty("status").GetString());
@@ -141,6 +161,13 @@ public sealed class CareWorkEndpointTests
         var orderId = order.GetProperty("orderId").GetGuid();
         AssertMinimalWorkerResponse(order);
 
+        var communityOrders = await staffClient.GetFromJsonAsync<JsonElement>(
+            $"/api/v1/service-orders?careEventId={eventId}");
+        var communityOrder = Assert.Single(communityOrders.EnumerateArray());
+        Assert.Equal(orderId, communityOrder.GetProperty("orderId").GetGuid());
+        Assert.Equal(eventId, communityOrder.GetProperty("careEventId").GetGuid());
+        Assert.Equal("演示·李安康", communityOrder.GetProperty("elderDisplayName").GetString());
+
         using var wrongTaskClient = factory.CreateAuthenticatedClient(
             DemoRole.ServiceWorker,
             elderId: factory.MainElderId,
@@ -154,6 +181,14 @@ public sealed class CareWorkEndpointTests
             DemoRole.ServiceWorker,
             elderId: factory.MainElderId,
             assignedTaskId: orderId);
+        var workerTasks = await workerClient.GetFromJsonAsync<JsonElement>(
+            "/api/v1/service-orders/my-tasks");
+        var workerTask = Assert.Single(workerTasks.EnumerateArray());
+        Assert.Equal(orderId, workerTask.GetProperty("orderId").GetGuid());
+        AssertMinimalWorkerResponse(workerTask);
+        var communityListDenied = await workerClient.GetAsync("/api/v1/service-orders");
+        Assert.Equal(HttpStatusCode.Forbidden, communityListDenied.StatusCode);
+
         var acceptedResponse = await workerClient.PostAsync(
             $"/api/v1/service-orders/{orderId}/accept",
             content: null);

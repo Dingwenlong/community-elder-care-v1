@@ -22,6 +22,13 @@ const roleLabel = computed(() => {
 const canViewElders = computed(() =>
   auth.role === 'CommunityStaff' || auth.role === 'Administrator',
 )
+const canOperateCare = computed(() =>
+  auth.role === 'CommunityStaff' || auth.role === 'Administrator',
+)
+const isServiceWorker = computed(() => auth.role === 'ServiceWorker')
+const workspaceLabel = computed(() =>
+  isServiceWorker.value ? '服务任务工作区' : '社区照料工作区',
+)
 
 async function signOut() {
   auth.clearSession()
@@ -37,8 +44,12 @@ async function signOut() {
         <span>独居老人照料</span>
       </div>
       <nav class="primary-nav">
-        <RouterLink to="/dashboard">工作台</RouterLink>
+        <RouterLink v-if="!isServiceWorker" to="/dashboard">工作台</RouterLink>
         <RouterLink v-if="canViewElders" to="/elders">老人档案</RouterLink>
+        <RouterLink v-if="canOperateCare" to="/care-events">照料事件</RouterLink>
+        <RouterLink v-if="canOperateCare" to="/visits">探访任务</RouterLink>
+        <RouterLink v-if="canOperateCare" to="/service-orders">服务工单</RouterLink>
+        <RouterLink v-if="isServiceWorker" to="/my-tasks">我的任务</RouterLink>
       </nav>
       <p class="sidebar-note">参赛演示环境<br />不接入真实设备或电话</p>
     </aside>
@@ -47,7 +58,7 @@ async function signOut() {
       <header class="workspace-header">
         <div>
           <p class="system-name">社区独居老人照料系统</p>
-          <p class="workspace-name">社区照料工作区</p>
+          <p class="workspace-name">{{ workspaceLabel }}</p>
         </div>
         <div class="account-area">
           <span>{{ roleLabel }}</span>

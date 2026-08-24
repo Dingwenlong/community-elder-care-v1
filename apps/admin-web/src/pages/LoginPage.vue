@@ -18,7 +18,9 @@ async function submit() {
   submitting.value = true
   try {
     const session = await auth.login(username.value, password.value)
-    if (session.shell === 'community' || session.shell === 'service' || session.shell === 'admin') {
+    if (session.shell === 'service') {
+      await router.replace('/my-tasks')
+    } else if (session.shell === 'community' || session.shell === 'admin') {
       await router.replace('/dashboard')
     } else {
       await router.replace('/not-authorized')

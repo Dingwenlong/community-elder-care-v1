@@ -5,6 +5,10 @@ const problemMessages: Record<string, string> = {
   NOT_FOUND: '没有找到对应资料。',
   REASON_REQUIRED: '请填写本次修改原因。',
   INVALID_TRANSITION: '当前状态不能执行这项操作。',
+  INVALID_WORK_STATUS: '当前任务状态不能执行这项操作。',
+  INVALID_EVENT_STATUS: '当前事件状态不能执行这项任务。',
+  RESULT_REQUIRED: '请完整填写处理结果。',
+  INVALID_BREAK_GLASS_DURATION: '临时授权时长不符合规则。',
   CLOSE_GUARD_FAILED: '仍有必做任务或随访未完成，暂时不能结案。',
   REQUEST_FAILED: '请求未完成，请稍后重试。',
 }

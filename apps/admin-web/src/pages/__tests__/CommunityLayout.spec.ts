@@ -54,6 +54,11 @@ describe('CommunityLayout', () => {
     await renderWithRouter('/dashboard', 'ServiceWorker')
 
     expect(screen.queryByRole('link', { name: '老人档案' })).toBeNull()
+    expect(screen.queryByRole('link', { name: '工作台' })).toBeNull()
+    expect(screen.queryByRole('link', { name: '照料事件' })).toBeNull()
+    expect(screen.queryByRole('link', { name: '探访任务' })).toBeNull()
+    expect(screen.queryByRole('link', { name: '服务工单' })).toBeNull()
+    expect(screen.getByRole('link', { name: '我的任务' })).toBeTruthy()
   })
 
   it('shows the demo-data marker on every authenticated route', async () => {
