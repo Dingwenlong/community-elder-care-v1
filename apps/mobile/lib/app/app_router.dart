@@ -5,7 +5,11 @@ import 'package:go_router/go_router.dart';
 import '../auth/login_page.dart';
 import '../auth/session_controller.dart';
 import '../core/api/contracts.dart';
-import '../elder/elder_shell.dart';
+import '../elder/home/elder_home_page.dart';
+import '../elder/help/help_category_page.dart';
+import '../elder/chat/elder_chat_page.dart';
+import '../elder/reminders/reminder_page.dart';
+import '../elder/settings/elder_settings_page.dart';
 import '../family/family_shell.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -29,7 +33,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(
         path: '/elder/home',
-        builder: (context, state) => const ElderShell(),
+        builder: (context, state) => const ElderHomePage(),
+      ),
+      GoRoute(
+        path: '/elder/reminders',
+        builder: (context, state) => const ReminderPage(),
+      ),
+      GoRoute(
+        path: '/elder/help',
+        builder: (context, state) => const HelpCategoryPage(),
+      ),
+      GoRoute(
+        path: '/elder/chat',
+        builder: (context, state) => const ElderChatPage(),
       ),
       GoRoute(
         path: '/family/home',
@@ -37,7 +53,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/elder/settings',
-        builder: (context, state) => const DemoSettingsPage(),
+        builder: (context, state) => const ElderSettingsPage(),
       ),
       GoRoute(
         path: '/family/settings',

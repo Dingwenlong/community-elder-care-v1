@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app_router.dart';
+import '../elder/settings/elder_settings_page.dart';
 
 class CommunityCareApp extends ConsumerWidget {
   const CommunityCareApp({super.key});
@@ -9,10 +10,18 @@ class CommunityCareApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
+    final fontScale = ref.watch(elderFontScaleProvider);
     return MaterialApp.router(
       title: '社区独居老人照料系统',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+        return MediaQuery(
+          data: mediaQuery.copyWith(textScaler: TextScaler.linear(fontScale)),
+          child: child!,
+        );
+      },
       theme: ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFFF5F7FA),

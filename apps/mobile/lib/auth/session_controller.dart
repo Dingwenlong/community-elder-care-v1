@@ -63,6 +63,7 @@ class SessionController extends StateNotifier<SessionState?> {
       token: response.accessToken,
       role: response.role,
       isDemoMode: response.isDemoMode,
+      elderId: response.elderId,
     );
     apiClient.setAccessToken(session.token);
     await store.write(session);

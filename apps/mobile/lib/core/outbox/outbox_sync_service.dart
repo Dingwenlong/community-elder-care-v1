@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../auth/session_controller.dart';
+import '../api/api_client.dart';
 import 'outbox_entry.dart';
 import 'outbox_repository.dart';
 
@@ -9,7 +11,7 @@ abstract interface class OutboxSender {
 }
 
 final outboxSenderProvider = Provider<OutboxSender>(
-  (ref) => const UnavailableOutboxSender(),
+  (ref) => ApiOutboxSender(ref.watch(apiClientProvider)),
 );
 
 final outboxSyncServiceProvider = Provider<OutboxSyncService>((ref) {
@@ -35,6 +37,41 @@ class UnavailableOutboxSender implements OutboxSender {
   @override
   Future<void> send(OutboxEntry entry) {
     throw StateError('network_unavailable');
+  }
+}
+
+class ApiOutboxSender implements OutboxSender {
+  const ApiOutboxSender(this.apiClient);
+
+  final ApiClient apiClient;
+
+  @override
+  Future<void> send(OutboxEntry entry) async {
+    switch (entry.kind) {
+      case OutboxKind.checkIn:
+        await apiClient.post<Object?>(
+          '/api/v1/elders/${entry.payload['elderId']}/check-ins',
+          (json) => json,
+          body: {
+            'requestId': entry.requestId,
+            'clientTime': entry.payload['clientTime'],
+          },
+        );
+        return;
+      case OutboxKind.careEvent:
+        await apiClient.post<Object?>(
+          '/api/v1/care-events/',
+          (json) => json,
+          body: {
+            'clientRequestId': entry.requestId,
+            'elderId': entry.payload['elderId'],
+            'trigger': entry.payload['trigger'],
+            'summary': entry.payload['summary'],
+            'occurredAt': entry.payload['occurredAt'],
+          },
+        );
+        return;
+    }
   }
 }
 
@@ -87,8 +124,12 @@ class EmergencyOutboxController extends StateNotifier<EmergencyDeliveryState> {
     await repository.enqueue(
       OutboxEntry(
         requestId: _requestId!,
-        kind: 'EmergencyHelp',
-        payload: const {'trigger': 'ExplicitSos', 'summary': '老人主动发起演示求助'},
+        kind: OutboxKind.careEvent,
+        payload: {
+          'trigger': 'ExplicitSos',
+          'summary': '老人主动发起演示求助',
+          'occurredAt': DateTime.now().toUtc().toIso8601String(),
+        },
         priority: OutboxPriority.high,
         createdAt: DateTime.now().toUtc(),
       ),

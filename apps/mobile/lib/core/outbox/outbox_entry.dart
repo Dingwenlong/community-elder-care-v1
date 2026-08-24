@@ -12,6 +12,21 @@ enum OutboxPriority {
       value == high.storageValue ? high : normal;
 }
 
+enum OutboxKind {
+  checkIn('CheckIn'),
+  careEvent('CareEvent');
+
+  const OutboxKind(this.storageName);
+
+  final String storageName;
+
+  static OutboxKind fromStorageName(String value) => switch (value) {
+    'CheckIn' => checkIn,
+    'CareEvent' || 'EmergencyHelp' => careEvent,
+    _ => throw FormatException('Unsupported outbox kind: $value'),
+  };
+}
+
 enum OutboxState { pending, failed, sent }
 
 class OutboxEntry {
@@ -29,7 +44,7 @@ class OutboxEntry {
 
   final int? id;
   final String requestId;
-  final String kind;
+  final OutboxKind kind;
   final Map<String, Object?> payload;
   final OutboxPriority priority;
   final DateTime createdAt;
@@ -39,7 +54,7 @@ class OutboxEntry {
 
   Map<String, Object?> toDatabaseRow() => {
     'request_id': requestId,
-    'kind': kind,
+    'kind': kind.storageName,
     'payload_json': jsonEncode(payload),
     'priority': priority.storageValue,
     'created_at': createdAt.toUtc().toIso8601String(),
@@ -53,7 +68,7 @@ class OutboxEntry {
     return OutboxEntry(
       id: row['id']! as int,
       requestId: row['request_id']! as String,
-      kind: row['kind']! as String,
+      kind: OutboxKind.fromStorageName(row['kind']! as String),
       payload: Map<String, Object?>.from(decodedPayload as Map),
       priority: OutboxPriority.fromStorageValue(row['priority']! as int),
       createdAt: DateTime.parse(row['created_at']! as String),

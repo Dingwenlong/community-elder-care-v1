@@ -9,22 +9,22 @@ import 'package:mobile/core/outbox/outbox_entry.dart';
 import 'package:mobile/core/outbox/outbox_repository.dart';
 import 'package:mobile/core/outbox/outbox_sync_service.dart';
 import 'package:mobile/elder/home/elder_today_controller.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
+import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('offline emergency remains queued and reconnect sends it once', (
+  testWidgets('offline emergency gives guidance and retries the same request', (
     tester,
   ) async {
     final databasePath = path.join(
       await getDatabasesPath(),
-      'outbox-test-${const Uuid().v4()}.db',
+      'elder-help-test-${const Uuid().v4()}.db',
     );
     final repository = OutboxRepository(databasePath: databasePath);
-    final sender = FakeOutboxSender()..online = false;
+    final sender = ReconnectableOutboxSender()..online = false;
     addTearDown(() async {
       await repository.close();
       await deleteDatabase(databasePath);
@@ -42,7 +42,7 @@ void main() {
             ),
           ),
           elderTodayGatewayProvider.overrideWithValue(
-            const OfflineTodayGateway(),
+            const EmptyTodayGateway(),
           ),
           outboxRepositoryProvider.overrideWithValue(repository),
           outboxSenderProvider.overrideWithValue(sender),
@@ -50,34 +50,33 @@ void main() {
         child: const CommunityCareApp(),
       ),
     );
-    await tester.pumpAndSettle();
+    await pumpUntilText(tester, '我需要帮助');
 
     await tester.tap(find.text('我需要帮助'));
     await pumpUntilText(tester, '紧急情况');
+
+    expect(find.text('身体不适'), findsOneWidget);
+    expect(find.text('生活服务'), findsOneWidget);
+    expect(find.text('想找人说说话'), findsOneWidget);
+
     await tester.tap(find.text('紧急情况'));
-    await pumpUntilText(tester, '确认发送');
+    await pumpUntilText(tester, '确认发送紧急求助');
+    expect(sender.attemptedRequestIds, isEmpty);
+    expect(find.text('如果能够操作，请立即呼叫身边的人。'), findsOneWidget);
+    expect(find.text('系统正在把演示求助发送给社区；当前不会真实拨打 120。'), findsOneWidget);
+
     await tester.tap(find.text('确认发送'));
     await pumpUntilText(tester, '尚未送达');
-
-    expect(find.text('尚未送达'), findsOneWidget);
-    final pending = await repository.pending();
-    final queued = expectSingle(pending);
+    final queued = (await repository.pending()).single;
     expect(queued.priority, OutboxPriority.high);
-    expect(
-      queued.requestId,
-      matches(
-        RegExp(
-          r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
-        ),
-      ),
-    );
+    expect(sender.attemptedRequestIds, [queued.requestId]);
 
     sender.online = true;
     await tester.tap(find.text('重新发送'));
     await pumpUntilText(tester, '已送达');
 
-    expect(find.text('已送达'), findsOneWidget);
     expect(sender.sentRequestIds, [queued.requestId]);
+    expect(sender.attemptedRequestIds, [queued.requestId, queued.requestId]);
     expect(await repository.pending(), isEmpty);
 
     await tester.pumpWidget(const SizedBox.shrink());
@@ -92,24 +91,8 @@ Future<void> pumpUntilText(WidgetTester tester, String text) async {
   fail('Timed out waiting for "$text".');
 }
 
-OutboxEntry expectSingle(List<OutboxEntry> entries) {
-  expect(entries, hasLength(1));
-  return entries.single;
-}
-
-class FakeOutboxSender implements OutboxSender {
-  bool online = false;
-  final sentRequestIds = <String>[];
-
-  @override
-  Future<void> send(OutboxEntry entry) async {
-    if (!online) throw StateError('offline');
-    sentRequestIds.add(entry.requestId);
-  }
-}
-
-class OfflineTodayGateway implements ElderTodayGateway {
-  const OfflineTodayGateway();
+class EmptyTodayGateway implements ElderTodayGateway {
+  const EmptyTodayGateway();
 
   @override
   Future<ElderTodaySnapshot> loadToday(String elderId) async =>
@@ -130,4 +113,17 @@ class OfflineTodayGateway implements ElderTodayGateway {
     String requestId,
     DateTime nextReminderAt,
   ) async {}
+}
+
+class ReconnectableOutboxSender implements OutboxSender {
+  bool online = false;
+  final attemptedRequestIds = <String>[];
+  final sentRequestIds = <String>[];
+
+  @override
+  Future<void> send(OutboxEntry entry) async {
+    attemptedRequestIds.add(entry.requestId);
+    if (!online) throw StateError('offline');
+    sentRequestIds.add(entry.requestId);
+  }
 }
