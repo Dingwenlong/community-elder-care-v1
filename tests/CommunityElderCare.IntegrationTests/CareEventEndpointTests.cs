@@ -146,7 +146,8 @@ public sealed class CareEventEndpointTests
         Assert.Equal("FamilyReport", created.GetProperty("source").GetString());
         Assert.Equal("NeedsConfirmation", created.GetProperty("level").GetString());
         Assert.Equal("PendingConfirmation", created.GetProperty("status").GetString());
-        Assert.Equal(JsonValueKind.Null, created.GetProperty("currentOwnerUserId").ValueKind);
+        Assert.False(created.TryGetProperty("currentOwnerUserId", out _));
+        Assert.False(created.TryGetProperty("responsibilityQueue", out _));
 
         var retry = await client.PostAsJsonAsync(
             "/api/v1/care-events",

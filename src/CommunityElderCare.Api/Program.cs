@@ -176,6 +176,7 @@ app.MapCheckInEndpoints();
 app.MapCareEventEndpoints();
 app.MapVisitEndpoints();
 app.MapServiceOrderEndpoints();
+app.MapFamilyEndpoints();
 
 app.Run();
 

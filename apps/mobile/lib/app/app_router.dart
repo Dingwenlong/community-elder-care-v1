@@ -10,7 +10,11 @@ import '../elder/help/help_category_page.dart';
 import '../elder/chat/elder_chat_page.dart';
 import '../elder/reminders/reminder_page.dart';
 import '../elder/settings/elder_settings_page.dart';
-import '../family/family_shell.dart';
+import '../family/events/family_event_detail_page.dart';
+import '../family/events/family_event_list_page.dart';
+import '../family/home/family_home_page.dart';
+import '../family/records/family_care_records_page.dart';
+import '../family/settings/family_settings_page.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final session = ref.watch(sessionControllerProvider);
@@ -49,7 +53,20 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/family/home',
-        builder: (context, state) => const FamilyShell(),
+        builder: (context, state) => const FamilyHomePage(),
+      ),
+      GoRoute(
+        path: '/family/events',
+        builder: (context, state) => const FamilyEventListPage(),
+      ),
+      GoRoute(
+        path: '/family/events/:eventId',
+        builder: (context, state) =>
+            FamilyEventDetailPage(eventId: state.pathParameters['eventId']!),
+      ),
+      GoRoute(
+        path: '/family/records',
+        builder: (context, state) => const FamilyCareRecordsPage(),
       ),
       GoRoute(
         path: '/elder/settings',
@@ -57,7 +74,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/family/settings',
-        builder: (context, state) => const DemoSettingsPage(),
+        builder: (context, state) => const FamilySettingsPage(),
       ),
       GoRoute(
         path: '/use-community-web',

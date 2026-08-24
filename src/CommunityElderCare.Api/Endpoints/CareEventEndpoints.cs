@@ -1,4 +1,5 @@
 using CommunityElderCare.Api.Contracts.CareEvents;
+using CommunityElderCare.Api.Contracts.Family;
 using CommunityElderCare.Api.Identity;
 using CommunityElderCare.Core.CareEvents;
 using CommunityElderCare.Core.Common;
@@ -69,7 +70,9 @@ public static class CareEventEndpoints
             actorKind);
         var result = await service.CreateAsync(command, actor, cancellationToken);
         return result.IsSuccess
-            ? Results.Ok(ToResponse(result.Value!.CareEvent, result.Value.IsDuplicate))
+            ? Results.Ok(actor.Role == DemoRole.Family
+                ? ToFamilyResponse(result.Value!.CareEvent, result.Value.IsDuplicate)
+                : ToResponse(result.Value!.CareEvent, result.Value.IsDuplicate))
             : ToProblem(result);
     }
 
@@ -91,7 +94,9 @@ public static class CareEventEndpoints
             return Problem(StatusCodes.Status403Forbidden, "CONSENT_REQUIRED", "Family consent is required");
         }
 
-        return Results.Ok(events.Select(careEvent => ToResponse(careEvent, false)).ToList());
+        return actor.Role == DemoRole.Family
+            ? Results.Ok(events.Select(careEvent => ToFamilyResponse(careEvent, false)).ToList())
+            : Results.Ok(events.Select(careEvent => ToResponse(careEvent, false)).ToList());
     }
 
     private static async Task<IResult> GetAsync(
@@ -117,7 +122,9 @@ public static class CareEventEndpoints
             return Problem(StatusCodes.Status403Forbidden, "CONSENT_REQUIRED", "Family consent is required");
         }
 
-        return Results.Ok(ToResponse(careEvent, false));
+        return Results.Ok(actor.Role == DemoRole.Family
+            ? ToFamilyResponse(careEvent, false)
+            : ToResponse(careEvent, false));
     }
 
     private static async Task<IResult> AcceptAsync(
@@ -203,6 +210,22 @@ public static class CareEventEndpoints
                 item.IsSimulation))
             .ToList(),
         CareEventStateMachine.AllowedTransitions(careEvent.Status));
+
+    private static FamilyCareEventResponse ToFamilyResponse(
+        CareEvent careEvent,
+        bool isDuplicate) => new(
+        careEvent.Id,
+        careEvent.Source.ToString(),
+        careEvent.Level.ToString(),
+        careEvent.Status.ToString(),
+        careEvent.Status switch
+        {
+            CareEventStatus.PendingConfirmation => "社区正在电话确认",
+            CareEventStatus.FollowUpPending => "已安排次日回访",
+            CareEventStatus.Closed => "本次照料已完成",
+            _ => "社区正在跟进",
+        },
+        isDuplicate);
 
     private static IResult ToProblem(OperationResult<CareEventOperationResult> result)
     {
