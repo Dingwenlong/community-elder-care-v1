@@ -1,6 +1,7 @@
 using CommunityElderCare.Core.Elders;
 using CommunityElderCare.Core.Identity;
 using CommunityElderCare.Core.CheckIns;
+using CommunityElderCare.Core.CareEvents;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommunityElderCare.Infrastructure.Persistence;
@@ -31,6 +32,14 @@ public sealed class CommunityCareDbContext(DbContextOptions<CommunityCareDbConte
     public DbSet<Reminder> Reminders => Set<Reminder>();
 
     public DbSet<IdempotencyRecord> IdempotencyRecords => Set<IdempotencyRecord>();
+
+    public DbSet<CareEvent> CareEvents => Set<CareEvent>();
+
+    public DbSet<CareEventEvidence> CareEventEvidence => Set<CareEventEvidence>();
+
+    public DbSet<CareEventTransition> CareEventTransitions => Set<CareEventTransition>();
+
+    public DbSet<ContactAttempt> ContactAttempts => Set<ContactAttempt>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

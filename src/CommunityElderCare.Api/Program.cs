@@ -9,6 +9,9 @@ using CommunityElderCare.Infrastructure.Identity;
 using CommunityElderCare.Core.Identity;
 using CommunityElderCare.Core.CheckIns;
 using CommunityElderCare.Infrastructure.CheckIns;
+using CommunityElderCare.Core.CareEvents;
+using CommunityElderCare.Infrastructure.CareEvents;
+using CommunityElderCare.Infrastructure.Background;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -22,11 +25,21 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton(_ => new EscalationPolicy(
+    TimeSpan.FromMinutes(builder.Configuration.GetValue("CareEvents:DemoEscalation:PhoneAttemptMinutes", 2)),
+    TimeSpan.FromMinutes(builder.Configuration.GetValue("CareEvents:DemoEscalation:EmergencyContactMinutes", 5)),
+    TimeSpan.FromMinutes(builder.Configuration.GetValue("CareEvents:DemoEscalation:UnableToConfirmMinutes", 10))));
 builder.Services.AddSingleton<IPasswordHasher<UserAccount>, PasswordHasher<UserAccount>>();
 builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<IAccessPolicy, AccessPolicy>();
 builder.Services.AddScoped<ICheckInService, CheckInService>();
+builder.Services.AddScoped<ICareEventService, CareEventService>();
 builder.Services.AddScoped<IElderProfileQuery, ElderProfileQuery>();
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddHostedService<MissedCheckInWorker>();
+    builder.Services.AddHostedService<ContactEscalationWorker>();
+}
 builder.Services.AddDbContext<CommunityCareDbContext>(options =>
     options.UseSqlite(
         builder.Configuration.GetConnectionString("CommunityCare")
@@ -156,6 +169,7 @@ app.MapAuthEndpoints();
 app.MapConsentEndpoints();
 app.MapBreakGlassEndpoints();
 app.MapCheckInEndpoints();
+app.MapCareEventEndpoints();
 
 app.Run();
 
