@@ -206,6 +206,12 @@ public static class CareEventEndpoints
 
     private static IResult ToProblem(OperationResult<CareEventOperationResult> result)
     {
+        var responseCode = result.ErrorCode is
+            "RESOLUTION_REQUIRED" or
+            "MANDATORY_TASK_INCOMPLETE" or
+            "FOLLOW_UP_INCOMPLETE"
+                ? "CLOSE_GUARD_FAILED"
+                : result.ErrorCode ?? "UNKNOWN";
         var statusCode = result.ErrorCode switch
         {
             "NOT_FOUND" => StatusCodes.Status404NotFound,
@@ -218,7 +224,7 @@ public static class CareEventEndpoints
         };
         return Problem(
             statusCode,
-            result.ErrorCode ?? "UNKNOWN",
+            responseCode,
             result.ErrorMessage ?? "Request failed");
     }
 

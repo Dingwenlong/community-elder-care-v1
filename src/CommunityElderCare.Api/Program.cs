@@ -12,6 +12,8 @@ using CommunityElderCare.Infrastructure.CheckIns;
 using CommunityElderCare.Core.CareEvents;
 using CommunityElderCare.Infrastructure.CareEvents;
 using CommunityElderCare.Infrastructure.Background;
+using CommunityElderCare.Core.CareWork;
+using CommunityElderCare.Infrastructure.CareWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -34,6 +36,8 @@ builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<IAccessPolicy, AccessPolicy>();
 builder.Services.AddScoped<ICheckInService, CheckInService>();
 builder.Services.AddScoped<ICareEventService, CareEventService>();
+builder.Services.AddScoped<IVisitService, VisitService>();
+builder.Services.AddScoped<IServiceOrderService, ServiceOrderService>();
 builder.Services.AddScoped<IElderProfileQuery, ElderProfileQuery>();
 if (!builder.Environment.IsEnvironment("Testing"))
 {
@@ -170,6 +174,8 @@ app.MapConsentEndpoints();
 app.MapBreakGlassEndpoints();
 app.MapCheckInEndpoints();
 app.MapCareEventEndpoints();
+app.MapVisitEndpoints();
+app.MapServiceOrderEndpoints();
 
 app.Run();
 

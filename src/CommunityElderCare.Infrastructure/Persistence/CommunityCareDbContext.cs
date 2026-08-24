@@ -2,6 +2,7 @@ using CommunityElderCare.Core.Elders;
 using CommunityElderCare.Core.Identity;
 using CommunityElderCare.Core.CheckIns;
 using CommunityElderCare.Core.CareEvents;
+using CommunityElderCare.Core.CareWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommunityElderCare.Infrastructure.Persistence;
@@ -40,6 +41,12 @@ public sealed class CommunityCareDbContext(DbContextOptions<CommunityCareDbConte
     public DbSet<CareEventTransition> CareEventTransitions => Set<CareEventTransition>();
 
     public DbSet<ContactAttempt> ContactAttempts => Set<ContactAttempt>();
+
+    public DbSet<VisitTask> VisitTasks => Set<VisitTask>();
+
+    public DbSet<ServiceOrder> ServiceOrders => Set<ServiceOrder>();
+
+    public DbSet<FollowUp> FollowUps => Set<FollowUp>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
