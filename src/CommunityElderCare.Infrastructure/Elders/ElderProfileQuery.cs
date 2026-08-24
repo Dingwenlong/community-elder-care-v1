@@ -29,6 +29,7 @@ public sealed class ElderProfileQuery(CommunityCareDbContext dbContext) : IElder
         CancellationToken cancellationToken)
     {
         return await ApplyAreaFilter(dbContext.ElderProfiles.AsNoTracking(), areaCode)
+            .AsSplitQuery()
             .Include(profile => profile.HealthRisks)
             .Include(profile => profile.ServiceNeeds)
             .Include(profile => profile.EmergencyContacts.OrderBy(contact => contact.ContactOrder))
