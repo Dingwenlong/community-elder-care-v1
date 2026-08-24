@@ -14,6 +14,8 @@ using CommunityElderCare.Infrastructure.CareEvents;
 using CommunityElderCare.Infrastructure.Background;
 using CommunityElderCare.Core.CareWork;
 using CommunityElderCare.Infrastructure.CareWork;
+using CommunityElderCare.Core.Ai;
+using CommunityElderCare.Infrastructure.Ai;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -38,6 +40,19 @@ builder.Services.AddScoped<ICheckInService, CheckInService>();
 builder.Services.AddScoped<ICareEventService, CareEventService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
 builder.Services.AddScoped<IServiceOrderService, ServiceOrderService>();
+var cloudLlmOptions = new CloudLlmOptions
+{
+    BaseUrl = builder.Configuration[$"{CloudLlmOptions.SectionName}:BaseUrl"],
+    Model = builder.Configuration[$"{CloudLlmOptions.SectionName}:Model"],
+    ApiKey = builder.Configuration["COMMUNITYCARE_LLM_API_KEY"],
+};
+builder.Services.AddSingleton(cloudLlmOptions);
+builder.Services.AddSingleton<FixedContentFallback>();
+builder.Services.AddHttpClient<OpenAiCompatibleLlmClient>(client =>
+    client.Timeout = Timeout.InfiniteTimeSpan);
+builder.Services.AddScoped<ICloudLlmClient>(services =>
+    services.GetRequiredService<OpenAiCompatibleLlmClient>());
+builder.Services.AddScoped<IAiCareService, AiCareService>();
 builder.Services.AddScoped<IElderProfileQuery, ElderProfileQuery>();
 if (!builder.Environment.IsEnvironment("Testing"))
 {
@@ -177,6 +192,7 @@ app.MapCareEventEndpoints();
 app.MapVisitEndpoints();
 app.MapServiceOrderEndpoints();
 app.MapFamilyEndpoints();
+app.MapAiEndpoints();
 
 app.Run();
 

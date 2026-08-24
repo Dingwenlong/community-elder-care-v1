@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CommunityElderCare.IntegrationTests;
 
-public sealed class CommunityCareWebFactory : WebApplicationFactory<Program>
+public class CommunityCareWebFactory : WebApplicationFactory<Program>
 {
     private const string TestPassword = "DemoPassword!2026";
     private const string TestSigningKey = "test-only-signing-key-2026-08-24-community-care";

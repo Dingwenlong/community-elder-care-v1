@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
+import '../../ai/ai_draft_confirmation_card.dart';
 import '../settings/elder_settings_page.dart';
 import 'elder_chat_controller.dart';
 
@@ -46,7 +47,7 @@ class _ElderChatPageState extends ConsumerState<ElderChatPage> {
               child: Padding(
                 padding: EdgeInsets.all(14),
                 child: Text(
-                  'AI 当前不可用，核心求助功能仍可使用',
+                  'AI 仅作辅助，核心求助由安全规则和人工处理',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                 ),
               ),
@@ -78,11 +79,67 @@ class _ElderChatPageState extends ConsumerState<ElderChatPage> {
             for (final message in state.messages)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
-                child: Text(
-                  '${message.fromElder ? '我' : '固定回复'}：${message.text}',
-                  style: const TextStyle(fontSize: 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      message.fromElder ? '我' : '固定回复',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(message.text, style: const TextStyle(fontSize: 18)),
+                  ],
                 ),
               ),
+            if (state.serviceRequestDraft case final draft?) ...[
+              AiDraftConfirmationCard(
+                draft: draft,
+                onConfirm: state.isSending
+                    ? null
+                    : () => ref
+                          .read(elderChatControllerProvider.notifier)
+                          .confirmDraft(),
+              ),
+              const SizedBox(height: 12),
+            ],
+            if (state.memoryCandidate case final memory?) ...[
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: const Color(0xFF7AA7D8)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(14),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text(
+                        '记忆候选',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(memory.generatedText),
+                      const SizedBox(height: 10),
+                      OutlinedButton(
+                        onPressed: state.isSending
+                            ? null
+                            : () => ref
+                                  .read(elderChatControllerProvider.notifier)
+                                  .confirmMemory(),
+                        child: const Text('确认记忆'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
             TextField(
               controller: _input,
               minLines: 1,

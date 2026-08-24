@@ -3,6 +3,7 @@ using CommunityElderCare.Core.Identity;
 using CommunityElderCare.Core.CheckIns;
 using CommunityElderCare.Core.CareEvents;
 using CommunityElderCare.Core.CareWork;
+using CommunityElderCare.Core.Ai;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommunityElderCare.Infrastructure.Persistence;
@@ -47,6 +48,10 @@ public sealed class CommunityCareDbContext(DbContextOptions<CommunityCareDbConte
     public DbSet<ServiceOrder> ServiceOrders => Set<ServiceOrder>();
 
     public DbSet<FollowUp> FollowUps => Set<FollowUp>();
+
+    public DbSet<AiDraft> AiDrafts => Set<AiDraft>();
+
+    public DbSet<MemoryCandidate> MemoryCandidates => Set<MemoryCandidate>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

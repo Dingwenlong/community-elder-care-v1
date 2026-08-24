@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../ai/ai_memory_controller.dart';
 import '../../auth/session_controller.dart';
 
 final elderFontScaleProvider = StateProvider<double>((ref) => 1);
@@ -13,6 +14,7 @@ class ElderSettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final fontScale = ref.watch(elderFontScaleProvider);
     final ttsEnabled = ref.watch(elderTtsEnabledProvider);
+    final memories = ref.watch(aiMemoryControllerProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('老人设置')),
       body: ListView(
@@ -32,12 +34,34 @@ class ElderSettingsPage extends ConsumerWidget {
               style: TextStyle(fontSize: 18),
             ),
           ),
-          const _SettingsSection(
+          _SettingsSection(
             title: 'AI 记忆',
-            child: Text(
-              '暂无可用的 AI 记忆。启用后可在此逐条查看和删除。',
-              style: TextStyle(fontSize: 18),
-            ),
+            child: memories.isLoading
+                ? const LinearProgressIndicator()
+                : memories.memories.isEmpty
+                ? Text(
+                    memories.errorMessage ?? '暂无已确认的 AI 记忆。',
+                    style: const TextStyle(fontSize: 18),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final memory in memories.memories) ...[
+                        Text(
+                          memory.generatedText,
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        const SizedBox(height: 6),
+                        OutlinedButton(
+                          onPressed: () => ref
+                              .read(aiMemoryControllerProvider.notifier)
+                              .delete(memory.id),
+                          child: const Text('删除记忆'),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ],
+                  ),
           ),
           _SettingsSection(
             title: '字体大小',

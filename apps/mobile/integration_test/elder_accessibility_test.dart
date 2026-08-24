@@ -42,7 +42,7 @@ void main() {
 
     final homeContext = tester.element(find.text('老人首页'));
     GoRouter.of(homeContext).go('/elder/chat');
-    await pumpUntilText(tester, 'AI 当前不可用，核心求助功能仍可使用');
+    await pumpUntilText(tester, 'AI 仅作辅助，核心求助由安全规则和人工处理');
     expect(find.text('朗读回复'), findsOneWidget);
     expectControlsAtLeast44Dp(tester);
 
