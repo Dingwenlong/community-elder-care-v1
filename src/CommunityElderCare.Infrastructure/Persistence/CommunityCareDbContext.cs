@@ -1,5 +1,6 @@
 using CommunityElderCare.Core.Elders;
 using CommunityElderCare.Core.Identity;
+using CommunityElderCare.Core.CheckIns;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommunityElderCare.Infrastructure.Persistence;
@@ -24,6 +25,12 @@ public sealed class CommunityCareDbContext(DbContextOptions<CommunityCareDbConte
     public DbSet<BreakGlassGrant> BreakGlassGrants => Set<BreakGlassGrant>();
 
     public DbSet<AccessAuditRecord> AccessAuditRecords => Set<AccessAuditRecord>();
+
+    public DbSet<CheckIn> CheckIns => Set<CheckIn>();
+
+    public DbSet<Reminder> Reminders => Set<Reminder>();
+
+    public DbSet<IdempotencyRecord> IdempotencyRecords => Set<IdempotencyRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

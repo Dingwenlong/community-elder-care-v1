@@ -7,6 +7,8 @@ using CommunityElderCare.Infrastructure.Elders;
 using CommunityElderCare.Infrastructure.Persistence;
 using CommunityElderCare.Infrastructure.Identity;
 using CommunityElderCare.Core.Identity;
+using CommunityElderCare.Core.CheckIns;
+using CommunityElderCare.Infrastructure.CheckIns;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -23,6 +25,7 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<IPasswordHasher<UserAccount>, PasswordHasher<UserAccount>>();
 builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<IAccessPolicy, AccessPolicy>();
+builder.Services.AddScoped<ICheckInService, CheckInService>();
 builder.Services.AddScoped<IElderProfileQuery, ElderProfileQuery>();
 builder.Services.AddDbContext<CommunityCareDbContext>(options =>
     options.UseSqlite(
@@ -105,6 +108,39 @@ await using (var scope = app.Services.CreateAsyncScope())
             DemoIdentitySeed.ElderUserId));
         await dbContext.SaveChangesAsync();
     }
+
+    if (!await dbContext.Reminders.AnyAsync())
+    {
+        var now = timeProvider.GetUtcNow();
+        var dayStart = new DateTimeOffset(now.Year, now.Month, now.Day, 0, 0, 0, now.Offset);
+        var mainElderId = DemoSeedBuilder.Build(20, 20260824, now).MainElderId;
+        dbContext.Reminders.AddRange(
+            Reminder.Create(
+                Guid.Parse("44444444-4444-4444-4444-444444444401"),
+                mainElderId,
+                ReminderType.Medication,
+                "按既有医嘱查看今日服药提醒",
+                dayStart.AddHours(8)),
+            Reminder.Create(
+                Guid.Parse("44444444-4444-4444-4444-444444444402"),
+                mainElderId,
+                ReminderType.FollowUpAppointment,
+                "演示复诊预约提醒",
+                dayStart.AddHours(10)),
+            Reminder.Create(
+                Guid.Parse("44444444-4444-4444-4444-444444444403"),
+                mainElderId,
+                ReminderType.CommunityActivity,
+                "社区活动演示提醒",
+                dayStart.AddHours(14)),
+            Reminder.Create(
+                Guid.Parse("44444444-4444-4444-4444-444444444404"),
+                mainElderId,
+                ReminderType.VisitSchedule,
+                "上门探访演示提醒",
+                dayStart.AddHours(16)));
+        await dbContext.SaveChangesAsync();
+    }
 }
 
 app.UseAuthentication();
@@ -119,6 +155,7 @@ app.MapElderEndpoints();
 app.MapAuthEndpoints();
 app.MapConsentEndpoints();
 app.MapBreakGlassEndpoints();
+app.MapCheckInEndpoints();
 
 app.Run();
 
