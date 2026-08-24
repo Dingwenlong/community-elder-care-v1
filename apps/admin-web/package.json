@@ -21,10 +21,11 @@
     "vue-router": "^5.2.0"
   },
   "devDependencies": {
+    "@testing-library/user-event": "^14.6.6",
+    "@testing-library/vue": "^8.1.0",
     "@tsconfig/node24": "^24.0.4",
     "@types/jsdom": "^28.0.3",
     "@types/node": "^24.13.3",
-    "@testing-library/vue": "^8.1.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vitest/eslint-plugin": "^1.6.23",
     "@vue/eslint-config-typescript": "^14.9.0",
@@ -35,6 +36,7 @@
     "eslint-plugin-vue": "~10.9.2",
     "jiti": "^2.7.0",
     "jsdom": "^29.1.1",
+    "msw": "^2.15.0",
     "npm-run-all2": "^9.0.2",
     "oxlint": "~1.73.0",
     "typescript": "~6.0.0",

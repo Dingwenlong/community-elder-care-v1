@@ -1,0 +1,34 @@
+:root {
+  --font-display: "Microsoft YaHei UI", "Noto Sans SC", sans-serif;
+  --font-body: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --font-numeric: Bahnschrift, "DIN Alternate", sans-serif;
+  --ink-strong: #10253f;
+  --ink: #263d57;
+  --ink-muted: #61738a;
+  --paper: #f5f7fa;
+  --surface: #ffffff;
+  --surface-muted: #eef2f6;
+  --line: #d7dee7;
+  --line-strong: #b9c5d2;
+  --navy: #0b315d;
+  --navy-deep: #082747;
+  --action: #0969da;
+  --action-hover: #0758b8;
+  --action-soft: #e8f1fc;
+  --emergency: #c92a2a;
+  --emergency-soft: #fff0f0;
+  --warning: #a15c00;
+  --warning-soft: #fff5e6;
+  --success: #216e4e;
+  --success-soft: #e9f7f0;
+  --focus: #ffb000;
+  --sidebar-width: 232px;
+  --header-height: 72px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+}

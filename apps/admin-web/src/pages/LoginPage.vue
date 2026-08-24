@@ -1,0 +1,199 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+import { ApiError } from '@/api/apiClient'
+import DemoDataBadge from '@/components/DemoDataBadge.vue'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+const router = useRouter()
+const username = ref('')
+const password = ref('')
+const submitting = ref(false)
+const errorMessage = ref('')
+
+async function submit() {
+  errorMessage.value = ''
+  submitting.value = true
+  try {
+    const session = await auth.login(username.value, password.value)
+    if (session.shell === 'community' || session.shell === 'service' || session.shell === 'admin') {
+      await router.replace('/dashboard')
+    } else {
+      await router.replace('/not-authorized')
+    }
+  } catch (error) {
+    errorMessage.value = error instanceof ApiError ? error.message : '登录未完成，请稍后重试。'
+  } finally {
+    submitting.value = false
+  }
+}
+</script>
+
+<template>
+  <main class="login-shell">
+    <section class="login-context" aria-labelledby="product-name">
+      <DemoDataBadge />
+      <h1 id="product-name">社区独居老人照料系统</h1>
+      <p>社区工作人员处理安全确认、探访和服务闭环的参赛演示环境。</p>
+      <dl>
+        <div><dt>数据</dt><dd>20 份虚构档案</dd></div>
+        <div><dt>外部动作</dt><dd>电话、短信与设备均为模拟记录</dd></div>
+        <div><dt>权限</dt><dd>按角色、社区范围和老人授权控制</dd></div>
+      </dl>
+    </section>
+
+    <section class="login-panel" aria-labelledby="login-title">
+      <div class="login-form-wrap">
+        <p class="login-context-label">参赛演示入口</p>
+        <h2 id="login-title">登录工作区</h2>
+        <p>可使用社区、服务或管理员演示账号。密码由运行环境提供。</p>
+        <form @submit.prevent="submit">
+          <label for="username">演示账号</label>
+          <input id="username" v-model="username" autocomplete="username" required />
+          <label for="password">演示密码</label>
+          <input
+            id="password"
+            v-model="password"
+            type="password"
+            autocomplete="current-password"
+            required
+          />
+          <p class="account-hint">账号示例：community.demo、service.demo、admin.demo</p>
+          <p v-if="errorMessage" class="login-error" role="alert">{{ errorMessage }}</p>
+          <button class="primary-button" type="submit" :disabled="submitting">
+            {{ submitting ? '正在登录' : '登录演示系统' }}
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+</template>
+
+<style scoped>
+.login-shell {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: minmax(340px, 0.85fr) minmax(480px, 1.15fr);
+  background: var(--surface);
+}
+
+.login-context {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(40px, 7vw, 96px);
+  color: #e8f1fb;
+  background: var(--navy-deep);
+}
+
+.login-context h1 {
+  max-width: 540px;
+  margin: var(--space-5) 0;
+  color: white;
+  font-size: clamp(34px, 4vw, 54px);
+}
+
+.login-context > p {
+  max-width: 520px;
+  color: #c4d5e8;
+  font-size: 18px;
+}
+
+.login-context dl {
+  display: grid;
+  gap: var(--space-4);
+  margin: var(--space-7) 0 0;
+}
+
+.login-context dl div {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgb(255 255 255 / 24%);
+}
+
+.login-context dt {
+  color: #86baf1;
+  font-weight: 700;
+}
+
+.login-context dd {
+  margin: 0;
+}
+
+.login-panel {
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  background: var(--paper);
+}
+
+.login-form-wrap {
+  width: min(460px, 100%);
+}
+
+.login-context-label {
+  margin-bottom: var(--space-2);
+  color: var(--action);
+  font-weight: 700;
+}
+
+.login-form-wrap h2 {
+  margin-bottom: var(--space-2);
+  font-size: 30px;
+}
+
+.login-form-wrap > p:not(.login-context-label) {
+  margin-bottom: var(--space-6);
+  color: var(--ink-muted);
+}
+
+form {
+  display: grid;
+}
+
+label {
+  margin-bottom: var(--space-2);
+  color: var(--ink-strong);
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  background: var(--surface);
+}
+
+.account-hint {
+  margin: 0 0 var(--space-5);
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+
+.login-error {
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+  color: var(--emergency);
+  background: var(--emergency-soft);
+}
+
+@media (max-width: 820px) {
+  .login-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .login-context {
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .login-context dl {
+    margin-top: var(--space-5);
+  }
+}
+</style>
