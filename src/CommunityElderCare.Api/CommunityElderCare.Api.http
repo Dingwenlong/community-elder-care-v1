@@ -9,3 +9,10 @@ GET {{CommunityElderCare.Api_HostAddress}}/health/ready
 Accept: application/json
 
 ###
+
+GET {{CommunityElderCare.Api_HostAddress}}/api/v1/elders?attentionLevel=High
+X-Demo-Role: CommunityStaff
+X-Demo-Area-Code: A01
+Accept: application/json
+
+###

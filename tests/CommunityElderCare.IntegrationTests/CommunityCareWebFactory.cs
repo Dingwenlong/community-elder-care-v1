@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using CommunityElderCare.Core.Identity;
 
 namespace CommunityElderCare.IntegrationTests;
 
@@ -21,8 +22,37 @@ public sealed class CommunityCareWebFactory : WebApplicationFactory<Program>
         builder.ConfigureAppConfiguration((_, configuration) =>
             configuration.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["ConnectionStrings:CommunityCare"] = $"Data Source={_databasePath}",
+                ["ConnectionStrings:CommunityCare"] = $"Data Source={_databasePath};Pooling=False",
             }));
+    }
+
+    public HttpClient CreateAuthenticatedClient(
+        DemoRole role,
+        string? areaCode = null,
+        Guid? familyFor = null,
+        Guid? elderId = null,
+        Guid? assignedTaskId = null)
+    {
+        var client = CreateClient();
+        client.DefaultRequestHeaders.Add("X-Demo-Role", role.ToString());
+        if (!string.IsNullOrWhiteSpace(areaCode))
+        {
+            client.DefaultRequestHeaders.Add("X-Demo-Area-Code", areaCode);
+        }
+        if (familyFor.HasValue)
+        {
+            client.DefaultRequestHeaders.Add("X-Demo-Family-For", familyFor.Value.ToString());
+        }
+        if (elderId.HasValue)
+        {
+            client.DefaultRequestHeaders.Add("X-Demo-Elder-Id", elderId.Value.ToString());
+        }
+        if (assignedTaskId.HasValue)
+        {
+            client.DefaultRequestHeaders.Add("X-Demo-Assigned-Task", assignedTaskId.Value.ToString());
+        }
+
+        return client;
     }
 
     public override async ValueTask DisposeAsync()
