@@ -111,6 +111,7 @@ await using (var scope = app.Services.CreateAsyncScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<CommunityCareDbContext>();
     var timeProvider = scope.ServiceProvider.GetRequiredService<TimeProvider>();
     await dbContext.Database.MigrateAsync();
+    await RuntimeCopyUpgrade.ApplyAsync(dbContext);
     if (!await dbContext.ElderProfiles.AnyAsync())
     {
         var seed = DemoSeedBuilder.Build(20, 20260824, timeProvider.GetUtcNow());
