@@ -44,7 +44,7 @@ public sealed class MissedCheckInWorker(
                     CareEventTrigger.MissedCheckIn,
                     CareEventSource.CheckIn,
                     sourceEventId,
-                    "演示记录：老人未在计划时间内完成平安确认",
+                    "老人未在计划时间内完成平安确认",
                     overdue.DueAt,
                     CareEventActorKind.Background),
                 actor: null,

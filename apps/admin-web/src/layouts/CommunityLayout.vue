@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
-import DemoDataBadge from '@/components/DemoDataBadge.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -16,7 +15,7 @@ const roleLabel = computed(() => {
     ServiceWorker: '服务人员',
     Administrator: '系统管理员',
   }
-  return auth.role ? labels[auth.role] : '演示用户'
+  return auth.role ? labels[auth.role] : '当前用户'
 })
 
 const canViewElders = computed(() =>
@@ -58,7 +57,7 @@ async function signOut() {
         <RouterLink v-if="isAdministrator" to="/settings">系统设置</RouterLink>
         <RouterLink v-if="isServiceWorker" to="/my-tasks">我的任务</RouterLink>
       </nav>
-      <p class="sidebar-note">参赛演示环境<br />不接入真实设备或电话</p>
+      <p class="sidebar-note">社区照料工作台<br />外部通知与救援操作均为模拟</p>
     </aside>
 
     <div class="community-workspace">
@@ -69,7 +68,6 @@ async function signOut() {
         </div>
         <div class="account-area">
           <span>{{ roleLabel }}</span>
-          <DemoDataBadge v-if="auth.isDemoMode" />
           <button class="text-button" type="button" @click="signOut">退出</button>
         </div>
       </header>
@@ -114,23 +112,28 @@ async function signOut() {
   height: 34px;
   place-items: center;
   border: 1px solid rgb(255 255 255 / 68%);
+  border-radius: var(--radius-sm);
   font-size: 16px;
 }
 
 .primary-nav {
   display: grid;
-  padding: var(--space-4) 0;
+  padding: var(--space-3) 0;
 }
 
 .primary-nav a {
   display: flex;
-  min-height: 52px;
+  min-height: 44px;
   align-items: center;
   padding: 0 var(--space-5);
   border-left: 4px solid transparent;
   color: #dfeaf7;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
 }
 
 .primary-nav a:hover {
@@ -138,9 +141,9 @@ async function signOut() {
 }
 
 .primary-nav a.router-link-active {
-  border-left-color: #75b7ff;
+  border-left-color: var(--focus);
   color: white;
-  background: #0d4d8c;
+  background: var(--navy-deep);
 }
 
 .sidebar-note {
@@ -206,10 +209,18 @@ async function signOut() {
 }
 
 .workspace-main {
-  padding: var(--space-6);
+  max-width: calc(var(--content-max-width) + var(--space-6) * 2);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-6);
 }
 
-@media (max-width: 760px) {
+@media (max-width: 1279px) {
+  .workspace-main {
+    padding: var(--space-5);
+  }
+}
+
+@media (max-width: 767px) {
   .community-sidebar {
     position: static;
     width: 100%;

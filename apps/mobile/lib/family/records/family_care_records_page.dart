@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/session_controller.dart';
 import '../../core/api/api_client.dart';
 import '../../core/api/api_problem.dart';
+import '../../core/theme/app_theme.dart';
 
 final familyCareRecordsGatewayProvider = Provider<FamilyCareRecordsGateway>((
   ref,
@@ -71,16 +72,42 @@ class FamilyCareRecordsPage extends ConsumerWidget {
       appBar: AppBar(title: const Text('照料记录')),
       body: records.when(
         data: (items) => ListView.separated(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           itemCount: items.length,
-          separatorBuilder: (context, index) => const Divider(),
+          separatorBuilder: (context, index) =>
+              const SizedBox(height: AppSpacing.md),
           itemBuilder: (context, index) {
             final record = items[index];
-            return ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(record.summary),
-              subtitle: Text(
-                '${record.occurredAt.year}-${record.occurredAt.month.toString().padLeft(2, '0')}-${record.occurredAt.day.toString().padLeft(2, '0')} · ${_kindLabel(record.kind)}',
+            return Container(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: AppRadius.lgAll,
+                border: Border(
+                  left: BorderSide(color: _kindColor(record.kind), width: 4),
+                ),
+                boxShadow: AppShadows.sm,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    record.summary,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.inkStrong,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    '${record.occurredAt.year}-${record.occurredAt.month.toString().padLeft(2, '0')}-${record.occurredAt.day.toString().padLeft(2, '0')} · ${_kindLabel(record.kind)}',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.inkMuted,
+                    ),
+                  ),
+                ],
               ),
             );
           },
@@ -103,4 +130,11 @@ String _kindLabel(String kind) => switch (kind) {
   'ServiceOrder' => '服务',
   'FollowUp' => '回访',
   _ => '照料',
+};
+
+Color _kindColor(String kind) => switch (kind) {
+  'Visit' => AppColors.primary,
+  'ServiceOrder' => AppColors.accentWarm,
+  'FollowUp' => AppColors.success,
+  _ => AppColors.navy,
 };

@@ -29,6 +29,13 @@ async function renderWithRouter(path: string, role: DemoRole) {
         children: [
           { path: 'dashboard', component: DashboardPage },
           { path: 'elders', component: { template: '<h1>老人档案</h1>' } },
+          { path: 'care-events', component: { template: '<h1>照料事件</h1>' } },
+          { path: 'visits', component: { template: '<h1>探访任务</h1>' } },
+          { path: 'service-orders', component: { template: '<h1>服务工单</h1>' } },
+          { path: 'device-signals', component: { template: '<h1>设备信号</h1>' } },
+          { path: 'reports', component: { template: '<h1>报告与审计</h1>' } },
+          { path: 'settings', component: { template: '<h1>系统设置</h1>' } },
+          { path: 'my-tasks', component: { template: '<h1>我的任务</h1>' } },
         ],
       },
     ],
@@ -61,10 +68,12 @@ describe('CommunityLayout', () => {
     expect(screen.getByRole('link', { name: '我的任务' })).toBeTruthy()
   })
 
-  it('shows the demo-data marker on every authenticated route', async () => {
+  it('uses product copy while keeping the simulation safety notice', async () => {
     await renderWithRouter('/elders', 'CommunityStaff')
 
-    expect(screen.getByText('演示数据')).toBeTruthy()
+    expect(screen.queryByText('演示数据')).toBeNull()
+    const sidebar = screen.getByRole('complementary', { name: '社区工作区导航' })
+    expect(sidebar.textContent).toContain('外部通知与救援操作均为模拟')
     expect(screen.getByRole('heading', { name: '老人档案' })).toBeTruthy()
   })
 

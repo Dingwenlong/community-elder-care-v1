@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { ApiError } from '@/api/apiClient'
-import DemoDataBadge from '@/components/DemoDataBadge.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -36,11 +35,10 @@ async function submit() {
 <template>
   <main class="login-shell">
     <section class="login-context" aria-labelledby="product-name">
-      <DemoDataBadge />
       <h1 id="product-name">社区独居老人照料系统</h1>
-      <p>社区工作人员处理安全确认、探访和服务闭环的参赛演示环境。</p>
+      <p>社区工作人员在这里处理安全确认、探访和服务记录。</p>
       <dl>
-        <div><dt>数据</dt><dd>20 份虚构档案</dd></div>
+        <div><dt>档案</dt><dd>20 位老人档案</dd></div>
         <div><dt>外部动作</dt><dd>电话、短信与设备均为模拟记录</dd></div>
         <div><dt>权限</dt><dd>按角色、社区范围和老人授权控制</dd></div>
       </dl>
@@ -48,13 +46,13 @@ async function submit() {
 
     <section class="login-panel" aria-labelledby="login-title">
       <div class="login-form-wrap">
-        <p class="login-context-label">参赛演示入口</p>
+        <p class="login-context-label">工作人员入口</p>
         <h2 id="login-title">登录工作区</h2>
-        <p>可使用社区、服务或管理员演示账号。密码由运行环境提供。</p>
+        <p>请使用已经开通的社区、服务或管理员账号登录。</p>
         <form @submit.prevent="submit">
-          <label for="username">演示账号</label>
+          <label for="username">账号</label>
           <input id="username" v-model="username" autocomplete="username" required />
-          <label for="password">演示密码</label>
+          <label for="password">密码</label>
           <input
             id="password"
             v-model="password"
@@ -62,10 +60,9 @@ async function submit() {
             autocomplete="current-password"
             required
           />
-          <p class="account-hint">账号示例：community.demo、service.demo、admin.demo</p>
           <p v-if="errorMessage" class="login-error" role="alert">{{ errorMessage }}</p>
           <button class="primary-button" type="submit" :disabled="submitting">
-            {{ submitting ? '正在登录' : '登录演示系统' }}
+            {{ submitting ? '正在登录' : '登录' }}
           </button>
         </form>
       </div>

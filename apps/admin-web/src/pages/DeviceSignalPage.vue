@@ -5,9 +5,9 @@ import DeviceSimulator from '@/components/DeviceSimulator.vue'
 <template>
   <div class="device-page">
     <header class="page-header">
-      <p class="page-kicker">设备演示</p>
+      <p class="page-kicker">设备模拟</p>
       <h1>设备信号</h1>
-      <p>用于参赛演示的 SOS 与居家活动异常模拟，不代表已经部署真实硬件。</p>
+      <p>用于发送 SOS 与居家活动异常模拟信号，不代表已经部署真实硬件。</p>
     </header>
     <DeviceSimulator />
   </div>

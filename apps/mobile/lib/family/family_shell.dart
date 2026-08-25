@@ -29,7 +29,7 @@ class FamilyShell extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(12),
               child: Text(
-                '演示模式',
+                '授权范围内信息',
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
             ),

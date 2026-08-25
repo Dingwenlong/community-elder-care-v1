@@ -4,10 +4,28 @@ import { onMounted, ref } from 'vue'
 import { apiClient, ApiError } from '@/api/apiClient'
 import type { ServiceOrderItem } from '@/api/contracts'
 import StatusNotice from '@/components/StatusNotice.vue'
+import AppBadge from '@/components/ui/AppBadge.vue'
+import AppTable from '@/components/ui/AppTable.vue'
 
 const orders = ref<ServiceOrderItem[]>([])
 const loading = ref(true)
 const errorMessage = ref('')
+
+const orderStatusLabels: Record<string, string> = {
+  Assigned: '已分派',
+  Accepted: '已接单',
+  InProgress: '处理中',
+  Completed: '已完成',
+  Cancelled: '已取消',
+}
+
+const orderStatusTones: Record<string, 'l2' | 'l3' | 'closed' | 'neutral'> = {
+  Assigned: 'l3',
+  Accepted: 'l3',
+  InProgress: 'l2',
+  Completed: 'closed',
+  Cancelled: 'neutral',
+}
 
 async function load() {
   loading.value = true
@@ -36,28 +54,30 @@ onMounted(load)
     <StatusNotice v-else-if="errorMessage" kind="error" :title="errorMessage" />
     <StatusNotice v-else-if="!orders.length" kind="empty" title="当前没有服务工单" />
 
-    <div v-else class="work-table-wrap surface">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">老人</th>
-            <th scope="col">服务类型</th>
-            <th scope="col">预约时段</th>
-            <th scope="col">联系说明</th>
-            <th scope="col">状态</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="order in orders" :key="order.orderId">
-            <td>{{ order.elderDisplayName }}</td>
-            <td>{{ order.serviceType }}</td>
-            <td>{{ order.scheduledWindow }}</td>
-            <td>{{ order.contactInstruction }}</td>
-            <td>{{ order.status }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <AppTable v-else min-width="840px">
+      <thead>
+        <tr>
+          <th scope="col">老人</th>
+          <th scope="col">服务类型</th>
+          <th scope="col">预约时段</th>
+          <th scope="col">联系说明</th>
+          <th scope="col">状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="order in orders" :key="order.orderId">
+          <td>{{ order.elderDisplayName }}</td>
+          <td>{{ order.serviceType }}</td>
+          <td>{{ order.scheduledWindow }}</td>
+          <td>{{ order.contactInstruction }}</td>
+          <td>
+            <AppBadge :tone="orderStatusTones[order.status] ?? 'neutral'">
+              {{ orderStatusLabels[order.status] ?? order.status }}
+            </AppBadge>
+          </td>
+        </tr>
+      </tbody>
+    </AppTable>
   </section>
 </template>
 
@@ -67,33 +87,5 @@ onMounted(load)
   color: var(--action);
   font-size: 13px;
   font-weight: 700;
-}
-
-.work-table-wrap {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  min-width: 840px;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--line);
-  text-align: left;
-  vertical-align: top;
-}
-
-th {
-  color: var(--ink-muted);
-  background: var(--paper);
-  font-size: 13px;
-}
-
-tbody tr:last-child td {
-  border-bottom: 0;
 }
 </style>

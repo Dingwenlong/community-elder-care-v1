@@ -11,7 +11,7 @@ async function load() {
   try {
     summary.value = await apiClient.request<DemoSummary>('/api/v1/reports/demo-summary')
   } catch (error) {
-    errorMessage.value = error instanceof ApiError ? error.message : '演示报告载入失败。'
+    errorMessage.value = error instanceof ApiError ? error.message : '运行报告载入失败。'
   }
 }
 
@@ -23,13 +23,13 @@ onMounted(load)
     <header class="page-header">
       <div>
         <p class="page-kicker">报告与审计</p>
-        <h1>演示运行概览</h1>
+        <h1>运行概览</h1>
       </div>
       <RouterLink to="/audit">查看审计记录</RouterLink>
     </header>
-    <p class="demo-statement">基于演示数据</p>
+    <p class="demo-statement">当前数据</p>
     <p v-if="errorMessage" class="error" role="alert">{{ errorMessage }}</p>
-    <div v-else-if="summary" class="metrics" aria-label="演示聚合指标">
+    <div v-else-if="summary" class="metrics" aria-label="运行指标">
       <article><span>老人档案</span><strong>{{ summary.elderCount }}</strong></article>
       <article><span>未结事件</span><strong>{{ summary.openEventCount }}</strong></article>
       <article><span>已完成探访</span><strong>{{ summary.completedVisitCount }}</strong></article>

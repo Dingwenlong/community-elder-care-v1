@@ -54,7 +54,7 @@ class GrantedFamilyStatusGateway implements FamilyStatusGateway {
   @override
   Future<FamilyStatusSnapshot> load(String elderId) async =>
       FamilyStatusSnapshot(
-        elderDisplayName: '演示·李安康',
+        elderDisplayName: '李安康',
         grantedFields: const {
           ConsentField.recentStatus,
           ConsentField.careEventSummary,

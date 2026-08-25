@@ -74,7 +74,7 @@ public sealed class ServiceOrderService(
         AddEvidence(
             careEvent,
             "ServiceOrderCreated",
-            $"已创建演示服务工单：{order.ServiceType}，{order.ScheduledWindow}",
+            $"已创建服务工单：{order.ServiceType}，{order.ScheduledWindow}",
             now,
             $"service-order:{order.Id:N}:created");
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -114,7 +114,7 @@ public sealed class ServiceOrderService(
         AddEvidence(
             careEvent,
             "ServiceOrderAccepted",
-            $"服务人员已接收演示工单：{order.ServiceType}",
+            $"服务人员已接收工单：{order.ServiceType}",
             now,
             $"service-order:{order.Id:N}:accepted");
         await dbContext.SaveChangesAsync(cancellationToken);

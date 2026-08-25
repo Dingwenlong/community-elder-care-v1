@@ -23,7 +23,7 @@ extension HelpCategoryCopy on HelpCategory {
   };
 
   String get summary => switch (this) {
-    HelpCategory.emergency => '老人主动发起紧急演示求助',
+    HelpCategory.emergency => '老人主动发起紧急模拟求助',
     HelpCategory.unwell => '老人报告身体不适，需要社区确认',
     HelpCategory.lifeService => '老人提出生活服务需求',
     HelpCategory.wantToTalk => '老人希望有人陪伴交谈',

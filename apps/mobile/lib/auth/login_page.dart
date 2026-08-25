@@ -59,21 +59,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 8),
-                  const Text('老人和家属演示 App'),
+                  const Text('老人和家属端'),
                   const SizedBox(height: 24),
                   TextField(
                     controller: _username,
                     autocorrect: false,
-                    decoration: const InputDecoration(labelText: '演示账号'),
+                    decoration: const InputDecoration(labelText: '账号'),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _password,
                     obscureText: true,
-                    decoration: const InputDecoration(labelText: '演示密码'),
+                    decoration: const InputDecoration(labelText: '密码'),
                   ),
                   const SizedBox(height: 12),
-                  const Text('账号示例：elder.demo、family.demo'),
                   if (_errorMessage != null) ...[
                     const SizedBox(height: 12),
                     Text(
@@ -87,7 +86,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   const SizedBox(height: 20),
                   FilledButton(
                     onPressed: _submitting ? null : _submit,
-                    child: Text(_submitting ? '正在登录' : '登录演示 App'),
+                    child: Text(_submitting ? '正在登录' : '登录'),
                   ),
                 ],
               ),

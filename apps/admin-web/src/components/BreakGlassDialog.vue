@@ -38,7 +38,10 @@ function submit() {
 <style scoped>
 .break-glass {
   padding: var(--space-5);
-  border-color: var(--emergency);
+  border: 1px solid var(--emergency);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .emergency-label {
@@ -50,7 +53,7 @@ function submit() {
 
 h2 {
   margin-bottom: var(--space-2);
-  font-size: 20px;
+  font: var(--text-title);
 }
 
 form {
@@ -62,10 +65,23 @@ textarea {
   width: 100%;
   min-height: 88px;
   padding: var(--space-3);
-  border: 1px solid var(--line-strong);
-  border-radius: 2px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
   background: var(--surface);
   resize: vertical;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+textarea:hover {
+  border-color: var(--line-strong);
+}
+
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--emergency);
+  box-shadow: 0 0 0 3px var(--emergency-soft);
 }
 
 .emergency-button {
@@ -73,11 +89,27 @@ textarea {
   justify-self: start;
   padding: 0 var(--space-5);
   border: 1px solid var(--emergency);
-  border-radius: 3px;
+  border-radius: var(--radius-md);
   color: white;
   background: var(--emergency);
   font-weight: 700;
   cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.emergency-button:hover:not(:disabled) {
+  background: #a82121;
+}
+
+.emergency-button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.emergency-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .form-error {

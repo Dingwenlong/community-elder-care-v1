@@ -87,7 +87,7 @@ class _DemoModeBanner extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(12),
         child: Text(
-          '演示模式 · 不会拨打真实电话',
+          '模拟服务 · 不会真实拨号',
           style: TextStyle(
             color: Color(0xFF173B67),
             fontWeight: FontWeight.w700,

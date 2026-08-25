@@ -4,7 +4,6 @@ import { useRoute } from 'vue-router'
 
 import { apiClient, ApiError } from '@/api/apiClient'
 import type { ElderDetail } from '@/api/contracts'
-import DemoDataBadge from '@/components/DemoDataBadge.vue'
 import StatusNotice from '@/components/StatusNotice.vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -65,7 +64,6 @@ onMounted(loadElder)
       <div>
         <div class="name-line">
           <h1>{{ elder.demoDisplayName }}</h1>
-          <DemoDataBadge />
         </div>
         <p v-if="elder.areaCode">{{ elder.areaCode }} 社区照料范围</p>
       </div>
@@ -195,7 +193,7 @@ onMounted(loadElder)
 
 .detail-section h2 {
   margin-bottom: var(--space-5);
-  font-size: 19px;
+  font: var(--text-title);
 }
 
 .fact-grid {
@@ -255,7 +253,7 @@ onMounted(loadElder)
   grid-column: 1 / -1;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1023px) {
   .detail-grid {
     grid-template-columns: 1fr;
   }
@@ -265,7 +263,7 @@ onMounted(loadElder)
   }
 }
 
-@media (max-width: 680px) {
+@media (max-width: 767px) {
   .detail-heading,
   .heading-actions {
     align-items: stretch;

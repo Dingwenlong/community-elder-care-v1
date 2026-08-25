@@ -31,7 +31,7 @@ public static class ReportEndpoints
 
         return Results.Ok(new
         {
-            label = "基于演示数据",
+            label = "当前数据",
             elderCount = await dbContext.ElderProfiles.CountAsync(item => item.IsDemoData, cancellationToken),
             openEventCount = await dbContext.CareEvents.CountAsync(item =>
                 item.IsDemoData &&

@@ -6,7 +6,7 @@ import '../../ai/local_danger_cue_scanner.dart';
 
 const _offlineReply = 'AI 当前不可用，核心求助功能仍可使用。你可以查看提醒，或点击“我需要帮助”。';
 const _emergencyGuidancePrimary = '如果能够操作，请立即呼叫身边的人。';
-const _emergencyGuidanceDelivery = '系统正在把演示求助发送给社区；当前不会真实拨打 120。';
+const _emergencyGuidanceDelivery = '系统正在把模拟求助发送给社区；当前不会真实拨打 120。';
 
 final elderChatControllerProvider =
     StateNotifierProvider<ElderChatController, ElderChatState>((ref) {

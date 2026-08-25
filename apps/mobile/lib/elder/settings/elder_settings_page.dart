@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../ai/ai_memory_controller.dart';
 import '../../auth/session_controller.dart';
+import '../../core/theme/app_theme.dart';
 
 final elderFontScaleProvider = StateProvider<double>((ref) => 1);
 final elderTtsEnabledProvider = StateProvider<bool>((ref) => true);
@@ -18,12 +19,12 @@ class ElderSettingsPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('老人设置')),
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         children: [
           const _SettingsSection(
-            title: '应急联系人（演示）',
+            title: '应急联系人',
             child: Text(
-              '演示联系人01 · 子女 · 199****0001',
+              '李女士 · 子女 · 199****0001',
               style: TextStyle(fontSize: 18),
             ),
           ),
@@ -79,33 +80,36 @@ class ElderSettingsPage extends ConsumerWidget {
           ),
           _SettingsSection(
             title: '文字转语音',
-            child: SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('允许手动朗读提醒和固定回复'),
-              subtitle: const Text('只在点击朗读按钮后发声，不录音。'),
-              value: ttsEnabled,
-              onChanged: (value) =>
-                  ref.read(elderTtsEnabledProvider.notifier).state = value,
-            ),
-          ),
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              color: Color(0xFFE8F1FB),
-              border: Border.fromBorderSide(
-                BorderSide(color: Color(0xFF7AA7D8)),
+            child: Material(
+              color: Colors.transparent,
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('允许手动朗读提醒和固定回复'),
+                subtitle: const Text('只在点击朗读按钮后发声，不录音。'),
+                value: ttsEnabled,
+                onChanged: (value) =>
+                    ref.read(elderTtsEnabledProvider.notifier).state = value,
               ),
             ),
-            child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Text('演示模式', style: TextStyle(fontSize: 18)),
+          ),
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: AppColors.primarySoft,
+              borderRadius: AppRadius.smAll,
+              border: Border.all(color: AppColors.primary),
+            ),
+            child: const Text(
+              '当前账号',
+              style: TextStyle(fontSize: 18, color: AppColors.navy),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           OutlinedButton(
             onPressed: () => ref
                 .read(sessionControllerProvider.notifier)
                 .switchDemoAccount(),
-            child: const Text('切换演示账号'),
+            child: const Text('切换账号'),
           ),
         ],
       ),
@@ -121,16 +125,27 @@ class _SettingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: AppRadius.lgAll,
+        boxShadow: AppShadows.sm,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              color: AppColors.inkStrong,
+            ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           child,
         ],
       ),

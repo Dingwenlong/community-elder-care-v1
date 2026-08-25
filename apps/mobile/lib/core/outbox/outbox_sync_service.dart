@@ -127,7 +127,7 @@ class EmergencyOutboxController extends StateNotifier<EmergencyDeliveryState> {
         kind: OutboxKind.careEvent,
         payload: {
           'trigger': 'ExplicitSos',
-          'summary': '老人主动发起演示求助',
+          'summary': '老人主动发起模拟求助',
           'occurredAt': DateTime.now().toUtc().toIso8601String(),
         },
         priority: OutboxPriority.high,

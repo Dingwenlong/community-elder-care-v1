@@ -179,7 +179,7 @@ public sealed class AuditSaveChangesInterceptor(
             action,
             entry.Metadata.ClrType.Name,
             entityId,
-            "演示业务资料已更新",
+            "业务资料已更新",
             null,
             null);
     }

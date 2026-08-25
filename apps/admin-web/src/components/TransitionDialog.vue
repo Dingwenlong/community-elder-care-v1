@@ -75,6 +75,7 @@ function submit() {
 <style scoped>
 .transition-panel {
   padding: var(--space-5);
+  border-radius: var(--radius-lg);
 }
 
 .section-kicker {
@@ -86,14 +87,15 @@ function submit() {
 
 h2 {
   margin-bottom: var(--space-4);
-  font-size: 20px;
+  font: var(--text-title);
 }
 
 .escalation-warning {
   padding: var(--space-3);
-  border-left: 4px solid #b87600;
-  color: #684300;
-  background: #fff7e0;
+  border-left: 4px solid var(--warning);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--warning);
+  background: var(--warning-soft);
 }
 
 form {
@@ -105,10 +107,23 @@ textarea {
   width: 100%;
   min-height: 88px;
   padding: var(--space-3);
-  border: 1px solid var(--line-strong);
-  border-radius: 2px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
   background: var(--surface);
   resize: vertical;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+textarea:hover {
+  border-color: var(--line-strong);
+}
+
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--action);
+  box-shadow: 0 0 0 3px var(--action-soft);
 }
 
 .form-error {

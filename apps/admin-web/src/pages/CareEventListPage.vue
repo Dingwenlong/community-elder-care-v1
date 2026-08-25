@@ -5,6 +5,8 @@ import { apiClient, ApiError } from '@/api/apiClient'
 import type { CareEvent, CareEventStatus, ElderSummary } from '@/api/contracts'
 import EventLevelBadge from '@/components/EventLevelBadge.vue'
 import StatusNotice from '@/components/StatusNotice.vue'
+import AppBadge from '@/components/ui/AppBadge.vue'
+import AppTable from '@/components/ui/AppTable.vue'
 
 const events = ref<CareEvent[]>([])
 const elders = ref<ElderSummary[]>([])
@@ -20,6 +22,17 @@ const statusLabels: Record<CareEventStatus, string> = {
   FollowUpPending: '待随访',
   Closed: '已结案',
   FalseAlarm: '误报',
+}
+
+const statusTones: Record<CareEventStatus, 'l1' | 'l2' | 'l3' | 'closed' | 'neutral'> = {
+  PendingConfirmation: 'l2',
+  Accepted: 'l3',
+  UnableToConfirm: 'l2',
+  InProgress: 'l3',
+  Resolved: 'l3',
+  FollowUpPending: 'l3',
+  Closed: 'closed',
+  FalseAlarm: 'neutral',
 }
 
 const nextActionLabels: Partial<Record<CareEventStatus, string>> = {
@@ -92,45 +105,47 @@ onMounted(load)
       title="当前没有待处理照料事件"
     />
 
-    <div v-else class="event-table-wrap surface">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">级别</th>
-            <th scope="col">状态</th>
-            <th scope="col">老人</th>
-            <th scope="col">当前负责人</th>
-            <th scope="col">等待时间</th>
-            <th scope="col">下一步</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="event in sortedEvents" :key="event.id">
-            <td>
-              <EventLevelBadge :level="event.level" />
-              <span
-                v-if="
-                  event.contactAttempts.some((item) => item.isSimulation) ||
-                  event.evidence.some((item) => item.isSimulation)
-                "
-                class="simulation-label"
-                >模拟</span
-              >
-            </td>
-            <td>{{ statusLabels[event.status] }}</td>
-            <td>
-              <RouterLink :to="`/care-events/${event.id}`">
-                {{ elderNames.get(event.elderId) ?? '演示老人' }}
-              </RouterLink>
-              <span class="event-summary">{{ eventSummary(event) }}</span>
-            </td>
-            <td>{{ event.currentOwnerUserId ? '已分派' : event.responsibilityQueue }}</td>
-            <td>{{ waitingTime(event.createdAt) }}</td>
-            <td>{{ nextAction(event) }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <AppTable v-else>
+      <thead>
+        <tr>
+          <th scope="col">级别</th>
+          <th scope="col">状态</th>
+          <th scope="col">老人</th>
+          <th scope="col">当前负责人</th>
+          <th scope="col">等待时间</th>
+          <th scope="col">下一步</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="event in sortedEvents" :key="event.id">
+          <td>
+            <EventLevelBadge :level="event.level" />
+            <span
+              v-if="
+                event.contactAttempts.some((item) => item.isSimulation) ||
+                event.evidence.some((item) => item.isSimulation)
+              "
+              class="simulation-label"
+              >模拟</span
+            >
+          </td>
+          <td>
+            <AppBadge :tone="statusTones[event.status]">
+              {{ statusLabels[event.status] }}
+            </AppBadge>
+          </td>
+          <td>
+            <RouterLink :to="`/care-events/${event.id}`">
+              {{ elderNames.get(event.elderId) ?? '老人' }}
+            </RouterLink>
+            <span class="event-summary">{{ eventSummary(event) }}</span>
+          </td>
+          <td>{{ event.currentOwnerUserId ? '已分派' : event.responsibilityQueue }}</td>
+          <td>{{ waitingTime(event.createdAt) }}</td>
+          <td>{{ nextAction(event) }}</td>
+        </tr>
+      </tbody>
+    </AppTable>
   </section>
 </template>
 
@@ -142,36 +157,11 @@ onMounted(load)
   font-weight: 700;
 }
 
-.event-table-wrap {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 920px;
-}
-
-th,
-td {
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--line);
-  text-align: left;
-  vertical-align: top;
-}
-
-th {
-  color: var(--ink-muted);
-  background: var(--paper);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-tbody tr:last-child td {
-  border-bottom: 0;
-}
-
 tbody tr:has(.event-level--Emergency) {
+  background: var(--emergency-soft);
+}
+
+tbody tr:has(.event-level--Emergency):hover {
   background: var(--emergency-soft);
 }
 

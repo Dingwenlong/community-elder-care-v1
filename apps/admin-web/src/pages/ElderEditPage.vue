@@ -172,7 +172,7 @@ onMounted(loadElder)
           <input :id="`contact-name-${index}`" v-model="contact.demoName" required />
           <label :for="`contact-relation-${index}`">关系</label>
           <input :id="`contact-relation-${index}`" v-model="contact.relationship" required />
-          <label :for="`contact-phone-${index}`">演示电话</label>
+          <label :for="`contact-phone-${index}`">联系电话</label>
           <input
             :id="`contact-phone-${index}`"
             v-model="contact.phoneNumber"
@@ -221,7 +221,7 @@ onMounted(loadElder)
 .form-section h2,
 .reason-section h2 {
   margin-bottom: var(--space-5);
-  font-size: 19px;
+  font: var(--text-title);
 }
 
 .form-section-heading h2 {
@@ -230,7 +230,8 @@ onMounted(loadElder)
 
 label {
   color: var(--ink-strong);
-  font-weight: 700;
+  font: var(--text-secondary);
+  font-weight: 600;
 }
 
 input,
@@ -238,9 +239,26 @@ select,
 textarea {
   width: 100%;
   padding: 9px 12px;
-  border: 1px solid var(--line-strong);
-  border-radius: 2px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
   background: var(--surface);
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--line-strong);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--action);
+  box-shadow: 0 0 0 3px var(--action-soft);
 }
 
 .form-section > label,
@@ -295,10 +313,17 @@ legend {
   resize: vertical;
 }
 
+.reason-section {
+  position: sticky;
+  bottom: var(--space-4);
+  box-shadow: var(--shadow-md);
+}
+
 .form-error,
 .form-success {
   padding: var(--space-3);
   margin-bottom: var(--space-3);
+  border-radius: var(--radius-sm);
 }
 
 .form-error {
@@ -311,10 +336,14 @@ legend {
   background: var(--success-soft);
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1023px) {
   .field-row,
   fieldset {
     grid-template-columns: 1fr;
+  }
+
+  .reason-section {
+    position: static;
   }
 }
 </style>

@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/vue'
+import { cleanup, render, screen, waitFor, within } from '@testing-library/vue'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
@@ -46,7 +46,7 @@ describe('DeviceSimulator', () => {
     await waitFor(() => {
       expect(receivedTypes).toEqual(['SosButton', 'NoWaterActivity', 'DeviceOffline'])
     })
-    expect(screen.getByText('模拟信号')).toBeTruthy()
+    expect(within(screen.getByRole('status')).getByText('模拟信号')).toBeTruthy()
     expect(screen.getByRole('link', { name: '查看照料事件' }).getAttribute('href')).toBe(
       `/care-events/${eventId}`,
     )
@@ -74,6 +74,8 @@ describe('DeviceSimulator', () => {
     expect(screen.getAllByRole('button').every((button) => button.hasAttribute('disabled'))).toBe(
       true,
     )
-    expect(await screen.findByText('模拟信号')).toBeTruthy()
+    await waitFor(() => {
+      expect(within(screen.getByRole('status')).getByText('模拟信号')).toBeTruthy()
+    })
   })
 })

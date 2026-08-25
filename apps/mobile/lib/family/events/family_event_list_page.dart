@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../auth/session_controller.dart';
 import '../../core/api/api_client.dart';
+import '../../core/theme/app_theme.dart';
 import 'family_report_controller.dart';
 
 final familyEventQueryGatewayProvider = Provider<FamilyEventQueryGateway>((
@@ -66,10 +67,13 @@ class FamilyEventListPage extends ConsumerWidget {
         onRefresh: () => ref.refresh(familyEventListProvider.future),
         child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           children: [
-            const Text('这里只显示已授权的事件摘要。', style: TextStyle(fontSize: 18)),
-            const SizedBox(height: 16),
+            const Text(
+              '这里只显示已授权的事件摘要。',
+              style: TextStyle(fontSize: 18, color: AppColors.inkMuted),
+            ),
+            const SizedBox(height: AppSpacing.lg),
             FilledButton(
               onPressed: report.isSending
                   ? null
@@ -78,17 +82,14 @@ class FamilyEventListPage extends ConsumerWidget {
                         .report(),
               child: const Text('报告联系不上老人'),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: AppSpacing.xl),
             events.when(
               data: (items) => Column(
                 children: [
                   for (final event in items)
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(event.summary),
-                      subtitle: Text(_statusLabel(event.status)),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.go('/family/events/${event.id}'),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                      child: _EventListCard(event: event),
                     ),
                 ],
               ),
@@ -102,9 +103,75 @@ class FamilyEventListPage extends ConsumerWidget {
   }
 }
 
+class _EventListCard extends StatelessWidget {
+  const _EventListCard({required this.event});
+
+  final FamilyEventSummary event;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.surface,
+      borderRadius: AppRadius.lgAll,
+      child: InkWell(
+        borderRadius: AppRadius.lgAll,
+        onTap: () => context.go('/family/events/${event.id}'),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 64),
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            borderRadius: AppRadius.lgAll,
+            boxShadow: AppShadows.sm,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      event.summary,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.inkStrong,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      _statusLabel(event.status),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: _statusColor(event.status),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(
+                Icons.chevron_right,
+                size: 28,
+                color: AppColors.inkMuted,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 String _statusLabel(String status) => switch (status) {
   'PendingConfirmation' => '社区正在电话确认',
   'FollowUpPending' => '已安排次日回访',
   'Closed' => '照料已完成',
   _ => '社区正在跟进',
+};
+
+Color _statusColor(String status) => switch (status) {
+  'PendingConfirmation' => AppColors.warning,
+  'FollowUpPending' => AppColors.primary,
+  'Closed' => AppColors.success,
+  _ => AppColors.navy,
 };

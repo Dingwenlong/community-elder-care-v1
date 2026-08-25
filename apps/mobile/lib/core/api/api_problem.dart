@@ -10,7 +10,7 @@ class ApiProblem implements Exception {
   final String message;
 
   static const messages = <String, String>{
-    'INVALID_CREDENTIALS': '演示账号或密码不正确。',
+    'INVALID_CREDENTIALS': '账号或密码不正确。',
     'FORBIDDEN_SCOPE': '当前账号没有执行这项操作的权限。',
     'CONSENT_REQUIRED': '老人尚未授权查看这项资料。',
     'NOT_FOUND': '没有找到对应资料。',

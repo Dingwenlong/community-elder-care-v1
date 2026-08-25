@@ -14,6 +14,8 @@ public sealed class DemoSeedBuilderTests
         var second = DemoSeedBuilder.Build(20, 20260824, baseTime);
 
         Assert.Equal(20, first.Elders.Count);
+        Assert.Equal("李安康", first.Elders[0].DemoDisplayName);
+        Assert.All(first.Elders, elder => Assert.DoesNotContain("演示", elder.DemoDisplayName));
         Assert.Equal(first.Elders.Select(x => x.Id), second.Elders.Select(x => x.Id));
         Assert.All(first.Elders, x => Assert.True(x.IsDemoData));
         Assert.Contains(first.Elders, x => x.AttentionLevel == CareAttentionLevel.High);

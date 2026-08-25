@@ -1,0 +1,87 @@
+{
+  "$schema": "community-elder-care/design-tokens@1.0",
+  "description": "社区独居老人照料系统设计令牌（单一事实来源）。管理端 tokens.css 与客户端 app_theme.dart 的数值必须与本文件一致。",
+  "version": "1.0.0",
+  "color": {
+    "brand": {
+      "primary": "#0969DA",
+      "primaryHover": "#0758B8",
+      "primarySoft": "#E8F1FC",
+      "navy": "#0B315D",
+      "navyDeep": "#082747"
+    },
+    "accent": {
+      "warm": "#FFB000",
+      "warmStrong": "#8A5A00",
+      "warmSoft": "#FFF5E6"
+    },
+    "semantic": {
+      "danger": "#C92A2A",
+      "dangerSoft": "#FFF0F0",
+      "warning": "#A15C00",
+      "warningSoft": "#FFF5E6",
+      "success": "#216E4E",
+      "successSoft": "#E9F7F0"
+    },
+    "neutral": {
+      "inkStrong": "#10253F",
+      "ink": "#263D57",
+      "inkMuted": "#61738A",
+      "paper": "#F5F7FA",
+      "surface": "#FFFFFF",
+      "surfaceMuted": "#EEF2F6",
+      "surfaceZebra": "#FAFBFC",
+      "line": "#D7DEE7",
+      "lineStrong": "#B9C5D2"
+    },
+    "eventLevel": {
+      "l1": { "fg": "#C92A2A", "bg": "#FFF0F0", "label": "紧急" },
+      "l2": { "fg": "#A15C00", "bg": "#FFF5E6", "label": "重要" },
+      "l3": { "fg": "#0B315D", "bg": "#E8F1FC", "label": "常规" },
+      "closed": { "fg": "#216E4E", "bg": "#E9F7F0", "label": "已结案" }
+    },
+    "overlay": {
+      "modalBackdrop": "rgba(8, 39, 71, 0.45)"
+    }
+  },
+  "font": {
+    "display": ["Microsoft YaHei UI", "Noto Sans SC", "PingFang SC", "sans-serif"],
+    "body": ["Noto Sans SC", "Microsoft YaHei", "PingFang SC", "sans-serif"],
+    "numeric": ["Bahnschrift", "DIN Alternate", "sans-serif"]
+  },
+  "text": {
+    "display":   { "admin": { "size": 28, "weight": 700 }, "elder": { "size": 32, "weight": 700 }, "family": { "size": 28, "weight": 700 } },
+    "title":     { "admin": { "size": 20, "weight": 600 }, "elder": { "size": 24, "weight": 700 }, "family": { "size": 20, "weight": 600 } },
+    "body":      { "admin": { "size": 16, "weight": 400 }, "elder": { "size": 20, "weight": 400 }, "family": { "size": 16, "weight": 400 } },
+    "secondary": { "admin": { "size": 14, "weight": 400 }, "elder": { "size": 18, "weight": 400 }, "family": { "size": 14, "weight": 400 } },
+    "caption":   { "admin": { "size": 12, "weight": 400 }, "elder": null, "family": { "size": 12, "weight": 400 } },
+    "action":    { "admin": { "size": 16, "weight": 600 }, "elder": { "size": 24, "weight": 700 }, "family": { "size": 16, "weight": 600 } },
+    "lineHeight": { "body": 1.5, "heading": 1.3 }
+  },
+  "spacing": { "1": 4, "2": 8, "3": 12, "4": 16, "45": 20, "5": 24, "6": 32, "7": 48 },
+  "radius": { "sm": 6, "md": 10, "lg": 14, "xl": 20, "pill": 999 },
+  "shadow": {
+    "sm": "0 1px 2px rgba(16,37,63,.06), 0 1px 3px rgba(16,37,63,.08)",
+    "md": "0 4px 12px rgba(16,37,63,.10)",
+    "lg": "0 12px 32px rgba(16,37,63,.16)"
+  },
+  "motion": {
+    "duration": { "fast": 120, "normal": 200, "slow": 250, "emphasis": 300, "celebration": 500 },
+    "easing": "cubic-bezier(0.2, 0, 0, 1)"
+  },
+  "breakpoint": { "desktop": 1280, "laptop": 1024, "tablet": 768, "mobile": 0 },
+  "layout": {
+    "sidebarWidth": 232,
+    "sidebarCollapsedWidth": 64,
+    "headerHeight": 72,
+    "contentMaxWidth": 1440,
+    "elderContentMaxWidthDp": 560
+  },
+  "accessibility": {
+    "adminMinContrast": 4.5,
+    "elderMinContrast": 7.0,
+    "elderFontScaleOptions": [1.0, 1.3, 1.6],
+    "minTouchTarget": 44,
+    "elderMinTouchTarget": 64
+  }
+}

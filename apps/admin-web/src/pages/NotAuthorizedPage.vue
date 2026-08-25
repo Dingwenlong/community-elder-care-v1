@@ -3,7 +3,7 @@
     <div class="surface notice-panel">
       <p>访问范围受限</p>
       <h1>当前账号不能打开这个工作区</h1>
-      <span>老人端和家属端请使用移动端演示；服务人员只能查看分配给自己的任务。</span>
+      <span>老人端和家属端请使用移动端；服务人员只能查看分配给自己的任务。</span>
       <RouterLink class="primary-button" to="/dashboard">返回可用工作台</RouterLink>
     </div>
   </main>

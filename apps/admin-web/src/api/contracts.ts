@@ -195,7 +195,7 @@ export interface AuditEntry {
 }
 
 export interface DemoSummary {
-  label: '基于演示数据'
+  label: '当前数据'
   elderCount: number
   openEventCount: number
   completedVisitCount: number

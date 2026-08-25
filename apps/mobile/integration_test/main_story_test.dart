@@ -195,7 +195,7 @@ class MainStoryFamilyGateway implements FamilyStatusGateway {
   @override
   Future<FamilyStatusSnapshot> load(String elderId) async =>
       FamilyStatusSnapshot(
-        elderDisplayName: '演示·李安康',
+        elderDisplayName: '李安康',
         grantedFields: const {
           ConsentField.recentStatus,
           ConsentField.careEventSummary,
@@ -204,8 +204,8 @@ class MainStoryFamilyGateway implements FamilyStatusGateway {
         consentExpiresAt: DateTime.utc(2027, 8, 24),
         recentStatus: '今天 08:05 已完成平安确认',
         reminderSummary: null,
-        careProgress: '社区正在处理演示照料事件',
-        visitSummary: '社区人员已完成演示上门探访',
+        careProgress: '社区正在处理照料事件',
+        visitSummary: '社区人员已完成上门探访',
         lastCommunityConfirmation: '今天 08:12 社区已记录确认进展',
       );
 }

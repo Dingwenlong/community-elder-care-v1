@@ -4,6 +4,8 @@ import { onMounted, ref, watch } from 'vue'
 import { apiClient, ApiError } from '@/api/apiClient'
 import type { ElderSummary } from '@/api/contracts'
 import StatusNotice from '@/components/StatusNotice.vue'
+import AppBadge from '@/components/ui/AppBadge.vue'
+import AppTable from '@/components/ui/AppTable.vue'
 
 const attentionLevel = ref('')
 const elders = ref<ElderSummary[]>([])
@@ -15,6 +17,12 @@ const attentionLabels: Record<ElderSummary['attentionLevel'], string> = {
   Routine: '常规关注',
   Priority: '重点关注',
   HighAttention: '高关注',
+}
+
+const attentionTones: Record<ElderSummary['attentionLevel'], 'l1' | 'l2' | 'neutral'> = {
+  Routine: 'neutral',
+  Priority: 'l2',
+  HighAttention: 'l1',
 }
 
 async function loadElders() {
@@ -55,7 +63,7 @@ onMounted(loadElders)
   <header class="page-heading elder-list-heading">
     <div>
       <h1>老人档案</h1>
-      <p>仅显示当前社区工作范围内的演示档案。</p>
+      <p>仅显示当前社区工作范围内的老人档案。</p>
     </div>
     <RouterLink class="secondary-button" to="/dashboard">返回工作台</RouterLink>
   </header>
@@ -82,42 +90,40 @@ onMounted(loadElders)
     message="可调整关注等级后再次查看。"
   />
 
-  <div v-else class="surface table-wrap">
-    <table>
-      <caption class="visually-hidden">
-        社区老人档案列表
-      </caption>
-      <thead>
-        <tr>
-          <th scope="col">姓名</th>
-          <th scope="col">年龄</th>
-          <th scope="col">关注等级</th>
-          <th scope="col">最新状态</th>
-          <th scope="col">下次探访</th>
-          <th scope="col">当前事件</th>
-          <th scope="col">操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="elder in elders" :key="elder.id">
-          <td>
-            <strong>{{ elder.demoDisplayName }}</strong>
-            <small>{{ elder.areaCode }}</small>
-          </td>
-          <td aria-label="年龄未在列表接口提供">—</td>
-          <td>
-            <span class="attention-label" :data-level="elder.attentionLevel">
-              {{ attentionLabels[elder.attentionLevel] }}
-            </span>
-          </td>
-          <td>{{ elder.latestStatus ?? `下次平安确认 ${displayTime(elder.nextCheckInDueAt)}` }}</td>
-          <td>{{ elder.nextVisit ?? '未载入' }}</td>
-          <td>{{ elder.currentOpenEvent ?? '未载入' }}</td>
-          <td><RouterLink :to="`/elders/${elder.id}`">查看档案</RouterLink></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <AppTable v-else min-width="940px">
+    <caption class="visually-hidden">
+      社区老人档案列表
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">姓名</th>
+        <th scope="col">年龄</th>
+        <th scope="col">关注等级</th>
+        <th scope="col">最新状态</th>
+        <th scope="col">下次探访</th>
+        <th scope="col">当前事件</th>
+        <th scope="col">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="elder in elders" :key="elder.id">
+        <td>
+          <strong>{{ elder.demoDisplayName }}</strong>
+          <small>{{ elder.areaCode }}</small>
+        </td>
+        <td aria-label="年龄未在列表接口提供">—</td>
+        <td>
+          <AppBadge :tone="attentionTones[elder.attentionLevel]">
+            {{ attentionLabels[elder.attentionLevel] }}
+          </AppBadge>
+        </td>
+        <td>{{ elder.latestStatus ?? `下次平安确认 ${displayTime(elder.nextCheckInDueAt)}` }}</td>
+        <td>{{ elder.nextVisit ?? '未载入' }}</td>
+        <td>{{ elder.currentOpenEvent ?? '未载入' }}</td>
+        <td><RouterLink :to="`/elders/${elder.id}`">查看档案</RouterLink></td>
+      </tr>
+    </tbody>
+  </AppTable>
 </template>
 
 <style scoped>
@@ -145,7 +151,7 @@ onMounted(loadElders)
   min-width: 180px;
   padding: 0 var(--space-3);
   border: 1px solid var(--line-strong);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   background: var(--surface);
 }
 
@@ -159,39 +165,6 @@ onMounted(loadElders)
   margin-top: var(--space-3);
 }
 
-.table-wrap {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  min-width: 940px;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--line);
-  text-align: left;
-  vertical-align: middle;
-}
-
-th {
-  color: var(--ink-strong);
-  background: var(--surface-muted);
-  font-size: 14px;
-  font-weight: 700;
-}
-
-tbody tr:last-child td {
-  border-bottom: 0;
-}
-
-tbody tr:hover {
-  background: #f8fafc;
-}
-
 td strong,
 td small {
   display: block;
@@ -202,28 +175,7 @@ td small {
   color: var(--ink-muted);
 }
 
-.attention-label {
-  display: inline-block;
-  padding: 2px 8px;
-  border: 1px solid var(--line-strong);
-  border-radius: 2px;
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-.attention-label[data-level='HighAttention'] {
-  border-color: #e3a2a2;
-  color: var(--emergency);
-  background: var(--emergency-soft);
-}
-
-.attention-label[data-level='Priority'] {
-  border-color: #e4c28d;
-  color: var(--warning);
-  background: var(--warning-soft);
-}
-
-@media (max-width: 720px) {
+@media (max-width: 767px) {
   .elder-list-heading,
   .filter-bar {
     align-items: stretch;

@@ -224,7 +224,7 @@ public sealed class CareEventService(
                 CareEventStatus.UnableToConfirm,
                 CareEventActorKind.Background,
                 actorUserId: null,
-                "演示升级时限内仍未确认",
+                "升级时限内仍未确认",
                 resolution: null,
                 now);
             if (!decision.IsAllowed)
@@ -468,7 +468,7 @@ public sealed class CareEventService(
             EscalationAction.ElderReminder =>
                 (ContactAttemptKind.ElderReminder, "老人端", "已生成模拟提醒记录"),
             EscalationAction.PhoneConfirmationAttempt =>
-                (ContactAttemptKind.PhoneConfirmation, "老人演示电话", "已生成模拟电话确认记录"),
+                (ContactAttemptKind.PhoneConfirmation, "老人模拟电话", "已生成模拟电话确认记录"),
             EscalationAction.EmergencyContactAttempt =>
                 (ContactAttemptKind.EmergencyContact, "紧急联系人", "已生成模拟联系人通知记录"),
             EscalationAction.CommunityNotification =>

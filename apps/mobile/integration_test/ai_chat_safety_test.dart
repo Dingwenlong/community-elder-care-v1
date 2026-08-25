@@ -44,28 +44,52 @@ void main() {
       expect(gateway.chatInputs, ['我摔倒了，起不来']);
 
       gateway.offline = false;
-      await tester.enterText(find.byType(EditableText), '帮我申请代购生活用品');
+      final chatInput = find.byType(EditableText);
+      await tester.scrollUntilVisible(
+        chatInput,
+        300,
+        scrollable: pageScrollable(),
+      );
+      await tester.enterText(chatInput, '帮我申请代购生活用品');
       await tester.tap(find.text('发送'));
       await pumpUntilText(tester, 'AI 草稿');
       expect(gateway.confirmedDraftIds, isEmpty);
-      await tester.tap(find.text('确认提交'));
+      final confirmDraftButton = find.text('确认提交');
+      await scrollDown(tester);
+      await tester.tap(confirmDraftButton);
       await pumpUntilText(tester, '服务请求已确认提交');
       expect(gateway.confirmedDraftIds, ['draft-1']);
 
       expect(gateway.confirmedMemoryIds, isEmpty);
-      await tester.tap(find.text('确认记忆'));
+      final confirmMemoryButton = find.text('确认记忆');
+      await scrollDown(tester);
+      await tester.tap(confirmMemoryButton);
       await pumpUntilText(tester, '记忆已确认');
       expect(gateway.confirmedMemoryIds, ['memory-1']);
 
       final chatContext = tester.element(find.text('陪伴问答'));
       GoRouter.of(chatContext).go('/elder/settings');
       await pumpUntilText(tester, '喜欢参加社区书法活动');
-      await tester.tap(find.text('删除记忆'));
+      final deleteMemoryButton = find.text('删除记忆');
+      await scrollDown(tester);
+      await tester.tap(deleteMemoryButton);
       await pumpUntilMissing(tester, '喜欢参加社区书法活动');
       expect(gateway.deletedMemoryIds, ['memory-1']);
     },
   );
 }
+
+Future<void> scrollDown(WidgetTester tester) async {
+  await tester.drag(pageScrollable(), const Offset(0, -320));
+  await tester.pumpAndSettle();
+}
+
+Finder pageScrollable() => find
+    .descendant(
+      of: find.byType(ListView).last,
+      matching: find.byType(Scrollable),
+    )
+    .first;
 
 Future<void> pumpUntilText(WidgetTester tester, String text) async {
   for (var attempt = 0; attempt < 50; attempt++) {

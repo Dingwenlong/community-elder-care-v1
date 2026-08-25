@@ -63,7 +63,7 @@ void main() {
     await pumpUntilText(tester, '确认发送紧急求助');
     expect(sender.attemptedRequestIds, isEmpty);
     expect(find.text('如果能够操作，请立即呼叫身边的人。'), findsOneWidget);
-    expect(find.text('系统正在把演示求助发送给社区；当前不会真实拨打 120。'), findsOneWidget);
+    expect(find.text('系统正在把模拟求助发送给社区；当前不会真实拨打 120。'), findsOneWidget);
 
     await tester.tap(find.text('确认发送'));
     await pumpUntilText(tester, '尚未送达');

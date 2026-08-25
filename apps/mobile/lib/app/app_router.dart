@@ -101,7 +101,7 @@ class DemoSettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('演示设置')),
+      appBar: AppBar(title: const Text('账号设置')),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
@@ -115,7 +115,7 @@ class DemoSettingsPage extends ConsumerWidget {
             child: Padding(
               padding: EdgeInsets.all(12),
               child: Text(
-                '演示模式',
+                '当前账号',
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
             ),
@@ -125,7 +125,7 @@ class DemoSettingsPage extends ConsumerWidget {
             onPressed: () => ref
                 .read(sessionControllerProvider.notifier)
                 .switchDemoAccount(),
-            child: const Text('切换演示账号'),
+            child: const Text('切换账号'),
           ),
         ],
       ),

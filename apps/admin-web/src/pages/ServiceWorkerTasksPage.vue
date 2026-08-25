@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue'
 import { apiClient, ApiError } from '@/api/apiClient'
 import type { ServiceOrderItem } from '@/api/contracts'
 import StatusNotice from '@/components/StatusNotice.vue'
+import AppBadge from '@/components/ui/AppBadge.vue'
 
 const tasks = ref<ServiceOrderItem[]>([])
 const loading = ref(true)
@@ -11,6 +12,22 @@ const errorMessage = ref('')
 const completionTask = ref<ServiceOrderItem | null>(null)
 const completionResult = ref('')
 const validationError = ref('')
+
+const taskStatusLabels: Record<string, string> = {
+  Assigned: '已分派',
+  Accepted: '已接单',
+  InProgress: '处理中',
+  Completed: '已完成',
+  Cancelled: '已取消',
+}
+
+const taskStatusTones: Record<string, 'l2' | 'l3' | 'closed' | 'neutral'> = {
+  Assigned: 'l3',
+  Accepted: 'l3',
+  InProgress: 'l2',
+  Completed: 'closed',
+  Cancelled: 'neutral',
+}
 
 async function load() {
   loading.value = true
@@ -85,7 +102,14 @@ onMounted(load)
         <dl>
           <div><dt>预约时段</dt><dd>{{ task.scheduledWindow }}</dd></div>
           <div><dt>联系说明</dt><dd>{{ task.contactInstruction }}</dd></div>
-          <div><dt>当前状态</dt><dd>{{ task.status }}</dd></div>
+          <div>
+            <dt>当前状态</dt>
+            <dd>
+              <AppBadge :tone="taskStatusTones[task.status] ?? 'neutral'">
+                {{ taskStatusLabels[task.status] ?? task.status }}
+              </AppBadge>
+            </dd>
+          </div>
         </dl>
         <div class="task-actions">
           <button
@@ -137,11 +161,19 @@ onMounted(load)
 
 .task-card {
   padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  transition:
+    box-shadow var(--duration-normal) var(--ease-standard),
+    transform var(--duration-normal) var(--ease-standard);
+}
+
+.task-card:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .task-card h2 {
   margin-bottom: var(--space-4);
-  font-size: 22px;
+  font: var(--text-title);
 }
 
 dl {
@@ -182,9 +214,15 @@ form {
 textarea {
   min-height: 88px;
   padding: var(--space-3);
-  border: 1px solid var(--line-strong);
-  border-radius: 2px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
   resize: vertical;
+}
+
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--action);
+  box-shadow: 0 0 0 3px var(--action-soft);
 }
 
 .form-error {

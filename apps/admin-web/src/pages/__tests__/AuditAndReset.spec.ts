@@ -26,7 +26,7 @@ const server = setupServer(
   http.get('*/api/v1/reports/demo-summary', () => {
     reportReads++
     return HttpResponse.json({
-      label: '基于演示数据',
+      label: '当前数据',
       elderCount: 20,
       openEventCount: 1,
       completedVisitCount: 2,
@@ -77,10 +77,12 @@ afterEach(() => {
 })
 afterAll(() => server.close())
 
-describe('audit and demo operations pages', () => {
-  it('labels reports as demo aggregates and renders an audit trail', async () => {
+describe('audit and data operations pages', () => {
+  it('labels reports with normal product copy and renders an audit trail', async () => {
     render(ReportPage, renderOptions)
-    expect(await screen.findByText('基于演示数据')).toBeTruthy()
+    expect(await screen.findByText('当前数据')).toBeTruthy()
+    expect(screen.getByRole('heading', { name: '运行概览' })).toBeTruthy()
+    expect(screen.queryByText(/演示数据|演示运行/)).toBeNull()
     expect(await screen.findByText('20')).toBeTruthy()
     cleanup()
 
@@ -95,13 +97,15 @@ describe('audit and demo operations pages', () => {
     render(SettingsPage)
 
     expect(await screen.findByText('database')).toBeTruthy()
-    expect(screen.getByRole('button', { name: '恢复 20 人演示数据' }).hasAttribute('disabled')).toBe(
+    expect(screen.getByRole('button', { name: '恢复 20 人初始数据' }).hasAttribute('disabled')).toBe(
       true,
     )
     await user.type(screen.getByLabelText('输入 RESET-20'), 'RESET-20')
-    await user.click(screen.getByRole('button', { name: '恢复 20 人演示数据' }))
+    await user.click(screen.getByRole('button', { name: '恢复 20 人初始数据' }))
 
-    expect(window.confirm).toHaveBeenCalledOnce()
+    expect(window.confirm).toHaveBeenCalledExactlyOnceWith(
+      '再次确认：恢复初始数据会清除当前业务记录，是否继续？',
+    )
     expect(await screen.findByText('重置完成：20 份老人档案')).toBeTruthy()
     await waitFor(() => expect(reportReads).toBeGreaterThanOrEqual(2))
   })

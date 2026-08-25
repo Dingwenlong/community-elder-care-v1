@@ -153,10 +153,15 @@ onMounted(load)
     <StatusNotice v-else-if="errorMessage" kind="error" :title="errorMessage" />
 
     <template v-else-if="careEvent">
+      <div
+        class="level-banner"
+        :class="`level-banner--${careEvent.level}`"
+        aria-hidden="true"
+      />
       <header class="detail-heading">
         <div>
           <RouterLink to="/care-events">返回照料事件</RouterLink>
-          <p class="page-kicker">{{ elder?.demoDisplayName ?? '演示老人' }}</p>
+          <p class="page-kicker">{{ elder?.demoDisplayName ?? '老人' }}</p>
           <h1>{{ displaySummary }}</h1>
         </div>
         <div class="heading-status">
@@ -264,6 +269,24 @@ onMounted(load)
 </template>
 
 <style scoped>
+.level-banner {
+  height: 4px;
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-pill);
+}
+
+.level-banner--Emergency {
+  background: var(--emergency);
+}
+
+.level-banner--NeedsConfirmation {
+  background: var(--warning);
+}
+
+.level-banner--GeneralService {
+  background: var(--action);
+}
+
 .detail-heading {
   display: flex;
   align-items: flex-end;
@@ -286,7 +309,7 @@ onMounted(load)
 .detail-heading h1 {
   max-width: 780px;
   margin-bottom: 0;
-  font-size: 28px;
+  font: var(--text-display);
 }
 
 .heading-status {
@@ -314,7 +337,7 @@ onMounted(load)
 
 .event-facts span {
   color: var(--ink-muted);
-  font-size: 13px;
+  font: var(--text-secondary);
 }
 
 .action-section,
@@ -328,7 +351,7 @@ onMounted(load)
 .detail-section h2,
 .timeline-section h2 {
   margin-bottom: var(--space-2);
-  font-size: 20px;
+  font: var(--text-title);
 }
 
 .action-row {
@@ -367,12 +390,13 @@ onMounted(load)
 .grant-message {
   padding: var(--space-3);
   margin: var(--space-3) 0 var(--space-5);
-  color: #1d5d2d;
-  background: #e7f6eb;
+  border-radius: var(--radius-sm);
+  color: var(--success);
+  background: var(--success-soft);
   font-weight: 700;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1023px) {
   .detail-heading,
   .event-facts,
   .detail-grid {
