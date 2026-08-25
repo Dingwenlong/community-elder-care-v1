@@ -146,13 +146,6 @@ async function signOut() {
   background: var(--navy-deep);
 }
 
-.sidebar-note {
-  margin: auto var(--space-5) var(--space-5);
-  color: #b8cbe0;
-  font-size: 13px;
-  line-height: 1.7;
-}
-
 .community-workspace {
   min-height: 100vh;
   margin-left: var(--sidebar-width);
@@ -230,10 +223,6 @@ async function signOut() {
     grid-auto-flow: column;
     grid-auto-columns: max-content;
     overflow-x: auto;
-  }
-
-  .sidebar-note {
-    display: none;
   }
 
   .community-workspace {

@@ -89,38 +89,9 @@ async function submit() {
 
 .login-context h1 {
   max-width: 540px;
-  margin: var(--space-5) 0;
+  margin: 0;
   color: white;
   font-size: clamp(34px, 4vw, 54px);
-}
-
-.login-context > p {
-  max-width: 520px;
-  color: #c4d5e8;
-  font-size: 18px;
-}
-
-.login-context dl {
-  display: grid;
-  gap: var(--space-4);
-  margin: var(--space-7) 0 0;
-}
-
-.login-context dl div {
-  display: grid;
-  grid-template-columns: 92px 1fr;
-  gap: var(--space-4);
-  padding-top: var(--space-3);
-  border-top: 1px solid rgb(255 255 255 / 24%);
-}
-
-.login-context dt {
-  color: #86baf1;
-  font-weight: 700;
-}
-
-.login-context dd {
-  margin: 0;
 }
 
 .login-panel {
@@ -134,20 +105,9 @@ async function submit() {
   width: min(460px, 100%);
 }
 
-.login-context-label {
-  margin-bottom: var(--space-2);
-  color: var(--action);
-  font-weight: 700;
-}
-
 .login-form-wrap h2 {
-  margin-bottom: var(--space-2);
-  font-size: 30px;
-}
-
-.login-form-wrap > p:not(.login-context-label) {
   margin-bottom: var(--space-6);
-  color: var(--ink-muted);
+  font-size: 30px;
 }
 
 form {
@@ -169,12 +129,6 @@ input {
   background: var(--surface);
 }
 
-.account-hint {
-  margin: 0 0 var(--space-5);
-  color: var(--ink-muted);
-  font-size: 14px;
-}
-
 .login-error {
   padding: var(--space-3);
   margin-bottom: var(--space-4);
@@ -191,8 +145,5 @@ input {
     padding: var(--space-6) var(--space-5);
   }
 
-  .login-context dl {
-    margin-top: var(--space-5);
-  }
 }
 </style>

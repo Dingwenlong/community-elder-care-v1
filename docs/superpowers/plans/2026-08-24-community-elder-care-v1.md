@@ -14,7 +14,7 @@
 
 - 项目为“1 人 + Codex、10 周”的参赛演示，不按生产系统宣称能力。
 - 主要老人角色为 75 岁及以上、基本自理，但存在慢性病、跌倒或弱社会支持风险的独居老人。
-- 默认生成 20 份、允许 15～25 份完全合成档案；界面持续显示“演示数据”。
+- 默认生成 20 份、允许 15～25 份完全合成档案；界面使用正常产品文案，并持续标明模拟外部动作。
 - 老人与家属共用一个 Flutter APK，但登录后使用完全独立的路由壳、首页和字段权限。
 - 社区、服务人员和管理员使用 Vue Web；服务人员只能读取当前任务所需字段。
 - 不接入真实 120、短信、电话、医院、支付或政府平台；所有外部动作保存为模拟记录。
@@ -261,7 +261,7 @@ Run `npm create vue@latest apps/admin-web` and choose TypeScript, Router, Pinia,
 it('shows the community-care product name', () => {
   render(App)
   expect(screen.getByRole('heading', { name: '社区独居老人照料系统' })).toBeTruthy()
-  expect(screen.getByText('演示数据')).toBeTruthy()
+  expect(screen.queryByText('演示数据')).toBeNull()
 })
 ```
 
@@ -278,11 +278,11 @@ flutter create --platforms=android --org com.dingwenlong.communitycare apps/mobi
 Write `integration_test/app_shell_test.dart`:
 
 ```dart
-testWidgets('shows the elder-care demo identity', (tester) async {
+testWidgets('shows the elder-care product identity', (tester) async {
   app.main();
   await tester.pumpAndSettle();
   expect(find.text('社区独居老人照料系统'), findsOneWidget);
-  expect(find.text('演示数据'), findsOneWidget);
+  expect(find.textContaining('演示'), findsNothing);
 });
 ```
 
@@ -858,7 +858,7 @@ it('keeps dashboard concise and exposes elder records as a separate route', asyn
 })
 ```
 
-Test that service workers cannot see elder-record navigation and every authenticated page shows `演示数据`. Run `npm test -- --run` and expect FAIL.
+Test that service workers cannot see elder-record navigation and authenticated pages do not show internal demo labels. Run `npm test -- --run` and expect FAIL.
 
 - [ ] **Step 2: Implement the visual foundation without a generic dashboard kit**
 
@@ -1050,7 +1050,7 @@ class SessionState {
 }
 ```
 
-Only elder and family roles may enter the App. Route guards redirect every other role to a clear “请使用社区管理端” page. Normal UI has no role dropdown; a demo-account switch is placed in a guarded settings screen and always shows `演示模式`.
+Only elder and family roles may enter the App. Route guards redirect every other role to a clear “请使用社区管理端” page. Normal UI has no role dropdown; an account switch is placed in a guarded settings screen without internal demo labels.
 
 - [ ] **Step 4: Write the failing offline-outbox integration test**
 
@@ -1537,7 +1537,7 @@ Reset stops new demo mutations through an in-process gate, replaces only known d
 
 - [ ] **Step 5: Implement audit/report/settings pages**
 
-Audit filters by entity and time, report clearly states `基于演示数据`, and settings shows each readiness component separately. Complete the community navigation with exactly these destinations: `工作台`、`老人档案`、`照料事件`、`探访任务`、`服务工单`、`设备信号`、`报告与审计`、`系统设置`; add a component assertion for the complete label set and role-based omissions. The reset control requires typing `RESET-20` and a second confirmation; success refetches counts from the API.
+Audit filters by entity and time, report uses normal product copy, and settings shows each readiness component separately. Complete the community navigation with exactly these destinations: `工作台`、`老人档案`、`照料事件`、`探访任务`、`服务工单`、`设备信号`、`报告与审计`、`系统设置`; add a component assertion for the complete label set and role-based omissions. The reset control requires typing `RESET-20` and a second confirmation; success refetches counts from the API.
 
 - [ ] **Step 6: Implement safe demo process scripts**
 

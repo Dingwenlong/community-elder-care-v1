@@ -24,7 +24,7 @@ class ElderShell extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            const _DemoModeBanner(),
+            const _CallSafetyBanner(),
             const SizedBox(height: 20),
             const Text(
               '李奶奶，早上好',
@@ -74,8 +74,8 @@ class ElderShell extends ConsumerWidget {
   }
 }
 
-class _DemoModeBanner extends StatelessWidget {
-  const _DemoModeBanner();
+class _CallSafetyBanner extends StatelessWidget {
+  const _CallSafetyBanner();
 
   @override
   Widget build(BuildContext context) {

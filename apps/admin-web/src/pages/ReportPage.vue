@@ -47,7 +47,6 @@ onMounted(load)
 .page-kicker { margin: 0 0 var(--space-1); color: var(--action); font-size: 13px; font-weight: 700; }
 h1 { margin: 0; color: var(--ink-strong); font-family: var(--font-display); font-size: 32px; }
 .page-header a { color: var(--action); font-weight: 700; }
-.demo-statement { width: fit-content; padding-left: var(--space-3); border-left: 3px solid var(--warning); color: var(--warning); font-weight: 700; }
 .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
 article { display: grid; gap: var(--space-2); min-height: 128px; padding: var(--space-5); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--surface); }
 article span { color: var(--ink-muted); }
