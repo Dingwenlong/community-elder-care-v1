@@ -35,7 +35,7 @@
 
 物理 Android 手机验收未执行。本机只连接了 `emulator-5554`，`verify-physical-phone.ps1` 按设计返回非零：`Expected exactly one connected non-emulator Android device, found 0.`
 
-公开仓库的首轮 GitHub Actions 也尚未发生。工作流已经写入仓库，必须在推送后读取远端运行结果，不能拿本机通过代替 CI 通过。
+公开仓库的首轮 GitHub Actions 已在提交 `70ed0b7` 上通过，运行编号为 `32807921207`，耗时 8 分 11 秒。.NET、Web、Flutter Android、ESP32 和非敏感证据上传均完成。远端结果独立记录，不拿本机通过代替 CI 通过。
 
 5 至 7 分钟人工彩排尚未执行，ESP32 实物路径也没有运行。当前通过的是 Web 模拟器路径和固件编译门禁。
 
