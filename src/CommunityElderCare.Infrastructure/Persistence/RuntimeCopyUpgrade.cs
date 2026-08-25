@@ -15,27 +15,40 @@ public static class RuntimeCopyUpgrade
         ArgumentNullException.ThrowIfNull(dbContext);
 
         var seed = DemoSeedBuilder.Build(25, Seed, DateTimeOffset.UnixEpoch);
-        foreach (var (elder, index) in seed.Elders.Select((elder, index) => (elder, index)))
+        if (await dbContext.ElderProfiles.AnyAsync(
+                item => item.IsDemoData && item.DemoDisplayName.StartsWith("演示·"),
+                cancellationToken))
         {
-            var oldName = $"演示·{elder.DemoDisplayName}";
-            var currentName = elder.DemoDisplayName;
-            await dbContext.ElderProfiles
-                .Where(item =>
-                    item.Id == elder.Id &&
-                    item.IsDemoData &&
-                    item.DemoDisplayName == oldName)
-                .ExecuteUpdateAsync(
-                    setters => setters.SetProperty(item => item.DemoDisplayName, currentName),
-                    cancellationToken);
+            foreach (var elder in seed.Elders)
+            {
+                var oldName = $"演示·{elder.DemoDisplayName}";
+                var currentName = elder.DemoDisplayName;
+                await dbContext.ElderProfiles
+                    .Where(item =>
+                        item.Id == elder.Id &&
+                        item.IsDemoData &&
+                        item.DemoDisplayName == oldName)
+                    .ExecuteUpdateAsync(
+                        setters => setters.SetProperty(item => item.DemoDisplayName, currentName),
+                        cancellationToken);
+            }
+        }
 
-            var contact = elder.EmergencyContacts.Single();
-            var oldContactName = $"演示联系人{index + 1:00}";
-            var currentContactName = contact.DemoName;
-            await dbContext.EmergencyContacts
-                .Where(item => item.Id == contact.Id && item.DemoName == oldContactName)
-                .ExecuteUpdateAsync(
-                    setters => setters.SetProperty(item => item.DemoName, currentContactName),
-                    cancellationToken);
+        if (await dbContext.EmergencyContacts.AnyAsync(
+                item => item.DemoName.StartsWith("演示联系人"),
+                cancellationToken))
+        {
+            foreach (var (elder, index) in seed.Elders.Select((elder, index) => (elder, index)))
+            {
+                var contact = elder.EmergencyContacts.Single();
+                var oldContactName = $"演示联系人{index + 1:00}";
+                var currentContactName = contact.DemoName;
+                await dbContext.EmergencyContacts
+                    .Where(item => item.Id == contact.Id && item.DemoName == oldContactName)
+                    .ExecuteUpdateAsync(
+                        setters => setters.SetProperty(item => item.DemoName, currentContactName),
+                        cancellationToken);
+            }
         }
 
         await UpdateReminderAsync(
