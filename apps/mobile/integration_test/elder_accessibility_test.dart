@@ -49,7 +49,7 @@ void main() {
     final chatContext = tester.element(find.text('陪伴问答'));
     GoRouter.of(chatContext).go('/elder/settings');
     await pumpUntilText(tester, '授权摘要');
-    expect(find.text('应急联系人（演示）'), findsOneWidget);
+    expect(find.text('应急联系人'), findsOneWidget);
     expect(find.text('AI 记忆'), findsOneWidget);
     expect(find.text('字体大小'), findsOneWidget);
     expect(find.text('文字转语音'), findsOneWidget);

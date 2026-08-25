@@ -99,7 +99,7 @@ public sealed class DemoResetService(
         dbContext.Devices.Add(Device.Register(
             DemoDeviceIds.MainSosDevice,
             seed.MainElderId,
-            "客厅 SOS 演示设备",
+            "客厅 SOS 设备",
             string.IsNullOrWhiteSpace(rawDeviceToken)
                 ? null
                 : DeviceTokenValidator.HashToken(rawDeviceToken),
@@ -112,7 +112,7 @@ public sealed class DemoResetService(
             "DemoDataset",
             seed.MainElderId,
             baseTime,
-            "管理员确认恢复 20 人演示数据",
+            "管理员确认恢复 20 人初始数据",
             null,
             "Ready"));
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -210,19 +210,19 @@ public sealed class DemoResetService(
                 Guid.Parse("44444444-4444-4444-4444-444444444402"),
                 elderId,
                 ReminderType.FollowUpAppointment,
-                "演示复诊预约提醒",
+                "复诊预约提醒",
                 dayStart.AddHours(10)),
             Reminder.Create(
                 Guid.Parse("44444444-4444-4444-4444-444444444403"),
                 elderId,
                 ReminderType.CommunityActivity,
-                "社区活动演示提醒",
+                "社区活动提醒",
                 dayStart.AddHours(14)),
             Reminder.Create(
                 Guid.Parse("44444444-4444-4444-4444-444444444404"),
                 elderId,
                 ReminderType.VisitSchedule,
-                "上门探访演示提醒",
+                "上门探访提醒",
                 dayStart.AddHours(16)));
     }
 }

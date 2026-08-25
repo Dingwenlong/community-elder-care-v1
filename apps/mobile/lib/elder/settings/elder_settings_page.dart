@@ -21,9 +21,9 @@ class ElderSettingsPage extends ConsumerWidget {
         padding: const EdgeInsets.all(20),
         children: [
           const _SettingsSection(
-            title: '应急联系人（演示）',
+            title: '应急联系人',
             child: Text(
-              '演示联系人01 · 子女 · 199****0001',
+              '联系人01 · 子女 · 199****0001',
               style: TextStyle(fontSize: 18),
             ),
           ),
@@ -88,24 +88,11 @@ class ElderSettingsPage extends ConsumerWidget {
                   ref.read(elderTtsEnabledProvider.notifier).state = value,
             ),
           ),
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              color: Color(0xFFE8F1FB),
-              border: Border.fromBorderSide(
-                BorderSide(color: Color(0xFF7AA7D8)),
-              ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Text('演示模式', style: TextStyle(fontSize: 18)),
-            ),
-          ),
-          const SizedBox(height: 16),
           OutlinedButton(
             onPressed: () => ref
                 .read(sessionControllerProvider.notifier)
                 .switchDemoAccount(),
-            child: const Text('切换演示账号'),
+            child: const Text('切换账号'),
           ),
         ],
       ),

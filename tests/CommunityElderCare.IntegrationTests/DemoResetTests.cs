@@ -53,7 +53,7 @@ public sealed class DemoResetTests
                 CareEventTrigger.MissedCheckIn,
                 CareEventSource.CheckIn,
                 $"missed-check-in:{main.ElderId:N}:{main.DueAt.UtcTicks}",
-                "演示记录：老人未在计划时间内完成平安确认",
+                "老人未在计划时间内完成平安确认",
                 main.DueAt,
                 CareEventActorKind.Background),
             null,

@@ -55,7 +55,7 @@ onMounted(loadElders)
   <header class="page-heading elder-list-heading">
     <div>
       <h1>老人档案</h1>
-      <p>仅显示当前社区工作范围内的演示档案。</p>
+      <p>仅显示当前社区工作范围内的老人档案。</p>
     </div>
     <RouterLink class="secondary-button" to="/dashboard">返回工作台</RouterLink>
   </header>

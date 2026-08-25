@@ -120,7 +120,7 @@ onMounted(load)
             <td>{{ statusLabels[event.status] }}</td>
             <td>
               <RouterLink :to="`/care-events/${event.id}`">
-                {{ elderNames.get(event.elderId) ?? '演示老人' }}
+                {{ elderNames.get(event.elderId) ?? '老人' }}
               </RouterLink>
               <span class="event-summary">{{ eventSummary(event) }}</span>
             </td>

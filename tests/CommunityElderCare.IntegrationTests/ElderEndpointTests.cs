@@ -141,7 +141,7 @@ public sealed class ElderEndpointTests
         {
             new
             {
-                demoName = "演示联系人99",
+                demoName = "联系人99",
                 relationship = "子女",
                 phoneNumber = "19900009999",
                 contactOrder = 1,

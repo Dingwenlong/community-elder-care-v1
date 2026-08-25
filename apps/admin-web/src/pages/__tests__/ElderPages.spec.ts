@@ -128,13 +128,13 @@ describe('ElderListPage', () => {
 })
 
 describe('ElderDetailPage', () => {
-  it('shows authorized community fields and keeps the demo marker visible', async () => {
+  it('shows authorized community fields without an internal demo marker', async () => {
     await renderPage(ElderDetailPage, `/elders/${elderId}`)
 
     expect(await screen.findByRole('heading', { name: '李秀兰' })).toBeTruthy()
     expect(screen.getByText('跌倒风险')).toBeTruthy()
     expect(screen.getByText('助餐协助')).toBeTruthy()
-    expect(screen.getByText('演示数据')).toBeTruthy()
+    expect(screen.queryByText('演示数据')).toBeNull()
   })
 
   it.each<DemoRole>(['Family', 'ServiceWorker'])(
@@ -156,7 +156,7 @@ describe('ElderDetailPage', () => {
       expect(await screen.findByRole('heading', { name: '李秀兰' })).toBeTruthy()
       expect(screen.queryByRole('heading', { name: '健康风险' })).toBeNull()
       expect(screen.queryByText('暂无')).toBeNull()
-      expect(screen.getByText('演示数据')).toBeTruthy()
+      expect(screen.queryByText('演示数据')).toBeNull()
     },
   )
 })

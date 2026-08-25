@@ -39,7 +39,7 @@ class _FamilySettingsPageState extends ConsumerState<FamilySettingsPage> {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text('照料进展通知'),
-            subtitle: const Text('仅接收当前授权范围内的演示通知。'),
+            subtitle: const Text('仅接收当前授权范围内的照料通知。'),
             value: _notificationsEnabled,
             onChanged: (value) => setState(() {
               _notificationsEnabled = value;
@@ -50,7 +50,7 @@ class _FamilySettingsPageState extends ConsumerState<FamilySettingsPage> {
             onPressed: () => ref
                 .read(sessionControllerProvider.notifier)
                 .switchDemoAccount(),
-            child: const Text('切换演示账号'),
+            child: const Text('切换账号'),
           ),
         ],
       ),

@@ -61,10 +61,11 @@ describe('CommunityLayout', () => {
     expect(screen.getByRole('link', { name: '我的任务' })).toBeTruthy()
   })
 
-  it('shows the demo-data marker on every authenticated route', async () => {
+  it('does not expose internal demo markers on authenticated routes', async () => {
     await renderWithRouter('/elders', 'CommunityStaff')
 
-    expect(screen.getByText('演示数据')).toBeTruthy()
+    expect(screen.queryByText('演示数据')).toBeNull()
+    expect(screen.queryByText(/参赛演示环境/)).toBeNull()
     expect(screen.getByRole('heading', { name: '老人档案' })).toBeTruthy()
   })
 

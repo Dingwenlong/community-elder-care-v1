@@ -16,12 +16,17 @@ public sealed class DemoSeedBuilderTests
         Assert.Equal(20, first.Elders.Count);
         Assert.Equal(first.Elders.Select(x => x.Id), second.Elders.Select(x => x.Id));
         Assert.All(first.Elders, x => Assert.True(x.IsDemoData));
+        Assert.All(first.Elders, x => Assert.DoesNotContain("演示", x.DemoDisplayName));
         Assert.Contains(first.Elders, x => x.AttentionLevel == CareAttentionLevel.High);
         Assert.True(first.Elders[0].NextCheckInDueAt < baseTime);
         Assert.Equal(["A01", "A02", "A03"], first.Elders.Select(x => x.AreaCode).Distinct().Order().ToArray());
         Assert.All(
             first.Elders.SelectMany(x => x.EmergencyContacts),
-            contact => Assert.Matches("^1990000[0-9]{4}$", contact.PhoneNumber));
+            contact =>
+            {
+                Assert.DoesNotContain("演示", contact.DemoName);
+                Assert.Matches("^1990000[0-9]{4}$", contact.PhoneNumber);
+            });
     }
 
     [Theory]

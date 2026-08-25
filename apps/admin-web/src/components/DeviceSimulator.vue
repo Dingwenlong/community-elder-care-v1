@@ -47,10 +47,10 @@ async function send(signalType: DeviceSignalType, buttonState: string | null) {
         <p class="eyebrow">Web 设备模拟器</p>
         <h2 id="device-simulator-title">安全设备信号</h2>
       </div>
-      <span class="demo-label">仅演示</span>
+      <span class="demo-label">模拟设备信号</span>
     </header>
     <p class="explanation">
-      下列操作调用与 ESP32 相同的设备信号服务。它们只创建演示记录，不连接真实设备或联系人。
+      下列操作调用与 ESP32 相同的设备信号服务。它们只创建模拟信号，不连接真实设备或联系人。
     </p>
     <div class="actions">
       <button

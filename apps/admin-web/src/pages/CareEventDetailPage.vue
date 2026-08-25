@@ -156,7 +156,7 @@ onMounted(load)
       <header class="detail-heading">
         <div>
           <RouterLink to="/care-events">返回照料事件</RouterLink>
-          <p class="page-kicker">{{ elder?.demoDisplayName ?? '演示老人' }}</p>
+          <p class="page-kicker">{{ elder?.demoDisplayName ?? '老人' }}</p>
           <h1>{{ displaySummary }}</h1>
         </div>
         <div class="heading-status">

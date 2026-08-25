@@ -32,7 +32,7 @@ class HelpCategoryPage extends ConsumerWidget {
       style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
     ),
     const SizedBox(height: 8),
-    const Text('系统只执行演示流程，不会真实拨号。', style: TextStyle(fontSize: 18)),
+    const Text('求助会发送至社区，不会直接拨打电话。', style: TextStyle(fontSize: 18)),
     const SizedBox(height: 20),
     for (final category in HelpCategory.values) ...[
       LargeActionButton(
@@ -65,7 +65,7 @@ class HelpCategoryPage extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         const Text(
-          '系统正在把演示求助发送给社区；当前不会真实拨打 120。',
+          '系统正在把求助发送给社区；当前不会真实拨打 120。',
           style: TextStyle(fontSize: 18),
         ),
         const SizedBox(height: 18),
@@ -75,8 +75,8 @@ class HelpCategoryPage extends ConsumerWidget {
       ],
       if (state.deliveryStatus == HelpDeliveryStatus.idle)
         LargeActionButton(
-          label: urgent ? '确认发送' : '发送演示请求',
-          semanticLabel: urgent ? '确认发送紧急演示求助' : '发送${category.label}演示请求',
+          label: urgent ? '确认发送' : '发送请求',
+          semanticLabel: urgent ? '确认发送紧急求助' : '发送${category.label}请求',
           onPressed: controller.submit,
         ),
       if (state.deliveryStatus == HelpDeliveryStatus.sending)

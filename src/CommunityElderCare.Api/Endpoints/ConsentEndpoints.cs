@@ -97,7 +97,7 @@ public static class ConsentEndpoints
             "CONSENT_GRANTED",
             actor.UserId,
             elderId,
-            "老人授权演示",
+            "老人授权家属查看照料信息",
             now,
             string.Join(',', request.Fields.Distinct().Order())));
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -135,7 +135,7 @@ public static class ConsentEndpoints
             "CONSENT_REVOKED",
             actor.UserId,
             elderId,
-            "老人撤回授权演示",
+            "老人撤回家属查看授权",
             now,
             "ALL"));
         await dbContext.SaveChangesAsync(cancellationToken);

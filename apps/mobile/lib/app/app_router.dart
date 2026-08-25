@@ -101,31 +101,15 @@ class DemoSettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('演示设置')),
+      appBar: AppBar(title: const Text('账户设置')),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              color: Color(0xFFE8F1FB),
-              border: Border.fromBorderSide(
-                BorderSide(color: Color(0xFF7AA7D8)),
-              ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Text(
-                '演示模式',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
           FilledButton(
             onPressed: () => ref
                 .read(sessionControllerProvider.notifier)
                 .switchDemoAccount(),
-            child: const Text('切换演示账号'),
+            child: const Text('切换账号'),
           ),
         ],
       ),

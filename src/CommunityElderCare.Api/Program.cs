@@ -182,19 +182,19 @@ await using (var scope = app.Services.CreateAsyncScope())
                 Guid.Parse("44444444-4444-4444-4444-444444444402"),
                 mainElderId,
                 ReminderType.FollowUpAppointment,
-                "演示复诊预约提醒",
+                "复诊预约提醒",
                 dayStart.AddHours(10)),
             Reminder.Create(
                 Guid.Parse("44444444-4444-4444-4444-444444444403"),
                 mainElderId,
                 ReminderType.CommunityActivity,
-                "社区活动演示提醒",
+                "社区活动提醒",
                 dayStart.AddHours(14)),
             Reminder.Create(
                 Guid.Parse("44444444-4444-4444-4444-444444444404"),
                 mainElderId,
                 ReminderType.VisitSchedule,
-                "上门探访演示提醒",
+                "上门探访提醒",
                 dayStart.AddHours(16)));
         await dbContext.SaveChangesAsync();
     }
@@ -212,7 +212,7 @@ await using (var scope = app.Services.CreateAsyncScope())
         dbContext.Devices.Add(Device.Register(
             DemoDeviceIds.MainSosDevice,
             mainElderId,
-            "客厅 SOS 演示设备",
+            "客厅 SOS 设备",
             deviceTokenHash,
             deviceSeedTime));
     }

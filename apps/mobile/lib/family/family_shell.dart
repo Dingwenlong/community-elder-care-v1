@@ -19,22 +19,6 @@ class FamilyShell extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: const [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: Color(0xFFE8F1FB),
-              border: Border.fromBorderSide(
-                BorderSide(color: Color(0xFF7AA7D8)),
-              ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Text(
-                '演示模式',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
-            ),
-          ),
-          SizedBox(height: 24),
           Text(
             '已授权照料摘要',
             style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),

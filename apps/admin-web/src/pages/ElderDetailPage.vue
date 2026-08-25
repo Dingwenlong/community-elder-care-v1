@@ -4,7 +4,6 @@ import { useRoute } from 'vue-router'
 
 import { apiClient, ApiError } from '@/api/apiClient'
 import type { ElderDetail } from '@/api/contracts'
-import DemoDataBadge from '@/components/DemoDataBadge.vue'
 import StatusNotice from '@/components/StatusNotice.vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -65,7 +64,6 @@ onMounted(loadElder)
       <div>
         <div class="name-line">
           <h1>{{ elder.demoDisplayName }}</h1>
-          <DemoDataBadge />
         </div>
         <p v-if="elder.areaCode">{{ elder.areaCode }} 社区照料范围</p>
       </div>

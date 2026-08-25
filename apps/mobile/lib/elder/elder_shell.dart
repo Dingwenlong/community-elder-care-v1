@@ -24,7 +24,7 @@ class ElderShell extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            const _DemoModeBanner(),
+            const _CallSafetyBanner(),
             const SizedBox(height: 20),
             const Text(
               '李奶奶，早上好',
@@ -74,8 +74,8 @@ class ElderShell extends ConsumerWidget {
   }
 }
 
-class _DemoModeBanner extends StatelessWidget {
-  const _DemoModeBanner();
+class _CallSafetyBanner extends StatelessWidget {
+  const _CallSafetyBanner();
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,7 @@ class _DemoModeBanner extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(12),
         child: Text(
-          '演示模式 · 不会拨打真实电话',
+          '求助将发送至社区 · 不会直接拨打电话',
           style: TextStyle(
             color: Color(0xFF173B67),
             fontWeight: FontWeight.w700,

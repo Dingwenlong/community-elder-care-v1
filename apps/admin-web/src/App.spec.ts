@@ -12,7 +12,7 @@ describe('App', () => {
         {
           path: '/',
           component: {
-            template: '<main><h1>社区独居老人照料系统</h1><span>演示数据</span></main>',
+            template: '<main><h1>社区独居老人照料系统</h1></main>',
           },
         },
       ],
@@ -22,6 +22,5 @@ describe('App', () => {
     render(App, { global: { plugins: [router] } })
 
     expect(screen.getByRole('heading', { name: '社区独居老人照料系统' })).toBeTruthy()
-    expect(screen.getByText('演示数据')).toBeTruthy()
   })
 })

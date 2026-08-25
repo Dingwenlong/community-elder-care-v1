@@ -30,7 +30,7 @@ class ElderHomePage extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            const _DemoModeBanner(),
+            const _CallSafetyBanner(),
             const SizedBox(height: 18),
             Text(
               _dateLabel(snapshot?.serverTime ?? DateTime.now()),
@@ -42,7 +42,7 @@ class ElderHomePage extends ConsumerWidget {
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
-            const Text('今日天气：晴，27°C（演示）', style: TextStyle(fontSize: 18)),
+            const Text('今日天气：晴，27°C', style: TextStyle(fontSize: 18)),
             const SizedBox(height: 18),
             if (state.isLoading)
               const Center(child: CircularProgressIndicator())
@@ -106,8 +106,8 @@ class ElderHomePage extends ConsumerWidget {
 
 String _dateLabel(DateTime date) => '${date.year}年${date.month}月${date.day}日';
 
-class _DemoModeBanner extends StatelessWidget {
-  const _DemoModeBanner();
+class _CallSafetyBanner extends StatelessWidget {
+  const _CallSafetyBanner();
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +119,7 @@ class _DemoModeBanner extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(12),
         child: Text(
-          '演示模式 · 不会拨打真实电话',
+          '求助将发送至社区 · 不会直接拨打电话',
           style: TextStyle(
             color: Color(0xFF173B67),
             fontSize: 18,

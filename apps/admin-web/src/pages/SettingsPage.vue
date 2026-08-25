@@ -21,7 +21,7 @@ async function refresh() {
 
 async function resetDemo() {
   if (!canReset.value) return
-  if (!window.confirm('再次确认：恢复演示数据会清除当前演示过程，是否继续？')) return
+  if (!window.confirm('再次确认：恢复初始数据会清除当前处理记录，是否继续？')) return
   submitting.value = true
   message.value = ''
   errorMessage.value = ''
@@ -34,7 +34,7 @@ async function resetDemo() {
     confirmation.value = ''
     message.value = `重置完成：${result.elderCount} 份老人档案`
   } catch (error) {
-    errorMessage.value = error instanceof ApiError ? error.message : '演示数据重置失败。'
+    errorMessage.value = error instanceof ApiError ? error.message : '数据恢复失败。'
   } finally {
     submitting.value = false
   }
@@ -49,7 +49,7 @@ onMounted(async () => {
 
 <template>
   <section class="settings-page">
-    <header class="page-header"><p class="page-kicker">系统设置</p><h1>演示运行状态</h1></header>
+    <header class="page-header"><p class="page-kicker">系统设置</p><h1>系统运行状态</h1></header>
     <p v-if="errorMessage" class="error" role="alert">{{ errorMessage }}</p>
     <section class="readiness" aria-labelledby="readiness-title">
       <h2 id="readiness-title">就绪组件</h2>
@@ -62,12 +62,12 @@ onMounted(async () => {
       </div>
     </section>
     <section class="reset-section" aria-labelledby="reset-title">
-      <h2 id="reset-title">恢复演示数据</h2>
-      <p>只清理本系统已知的演示记录，并恢复固定的 20 份虚构档案。当前档案数：{{ summary?.elderCount ?? '—' }}。</p>
+      <h2 id="reset-title">恢复初始数据</h2>
+      <p>只清理本系统已知的记录，并恢复固定的 20 份初始档案。当前档案数：{{ summary?.elderCount ?? '—' }}。</p>
       <label for="reset-confirmation">输入 RESET-20</label>
       <input id="reset-confirmation" v-model="confirmation" autocomplete="off" />
       <button type="button" :disabled="!canReset" @click="resetDemo">
-        {{ submitting ? '正在重置' : '恢复 20 人演示数据' }}
+        {{ submitting ? '正在恢复' : '恢复 20 人初始数据' }}
       </button>
       <p v-if="message" class="success" role="status">{{ message }}</p>
     </section>

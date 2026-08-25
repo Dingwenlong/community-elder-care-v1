@@ -64,9 +64,9 @@ test('reset to closure keeps one event and one auditable timeline', async ({ pag
   expect((await signalResponse.json()).careEventId).toBe(eventId)
 
   await page.goto('/login')
-  await page.getByLabel('演示账号').fill('community.demo')
-  await page.getByLabel('演示密码').fill(password!)
-  await page.getByRole('button', { name: '登录演示系统' }).click()
+  await page.getByLabel('账号').fill('community.demo')
+  await page.getByLabel('密码').fill(password!)
+  await page.getByRole('button', { name: '登录' }).click()
   await expect(page.getByRole('heading', { name: '社区工作台' })).toBeVisible()
   await page.goto(`/care-events/${eventId}`)
   await page.getByRole('button', { name: '受理事件' }).click()

@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
-import DemoDataBadge from '@/components/DemoDataBadge.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -16,7 +15,7 @@ const roleLabel = computed(() => {
     ServiceWorker: '服务人员',
     Administrator: '系统管理员',
   }
-  return auth.role ? labels[auth.role] : '演示用户'
+  return auth.role ? labels[auth.role] : '用户'
 })
 
 const canViewElders = computed(() =>
@@ -58,7 +57,6 @@ async function signOut() {
         <RouterLink v-if="isAdministrator" to="/settings">系统设置</RouterLink>
         <RouterLink v-if="isServiceWorker" to="/my-tasks">我的任务</RouterLink>
       </nav>
-      <p class="sidebar-note">参赛演示环境<br />不接入真实设备或电话</p>
     </aside>
 
     <div class="community-workspace">
@@ -69,7 +67,6 @@ async function signOut() {
         </div>
         <div class="account-area">
           <span>{{ roleLabel }}</span>
-          <DemoDataBadge v-if="auth.isDemoMode" />
           <button class="text-button" type="button" @click="signOut">退出</button>
         </div>
       </header>
@@ -143,13 +140,6 @@ async function signOut() {
   background: #0d4d8c;
 }
 
-.sidebar-note {
-  margin: auto var(--space-5) var(--space-5);
-  color: #b8cbe0;
-  font-size: 13px;
-  line-height: 1.7;
-}
-
 .community-workspace {
   min-height: 100vh;
   margin-left: var(--sidebar-width);
@@ -219,10 +209,6 @@ async function signOut() {
     grid-auto-flow: column;
     grid-auto-columns: max-content;
     overflow-x: auto;
-  }
-
-  .sidebar-note {
-    display: none;
   }
 
   .community-workspace {

@@ -66,7 +66,7 @@ public sealed class VisitService(
         AddEvidence(
             careEvent,
             "VisitScheduled",
-            $"已安排演示探访：{visit.ScheduledStartAt:yyyy-MM-dd HH:mm}",
+            $"已安排探访：{visit.ScheduledStartAt:yyyy-MM-dd HH:mm}",
             now,
             $"visit:{visit.Id:N}:scheduled");
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -120,7 +120,7 @@ public sealed class VisitService(
         AddEvidence(
             careEvent,
             "VisitStarted",
-            "工作人员已开始演示探访",
+            "工作人员已开始探访",
             now,
             $"visit:{visit.Id:N}:started");
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -236,7 +236,7 @@ public sealed class VisitService(
         AddEvidence(
             careEvent,
             "FollowUpScheduled",
-            $"已安排演示随访：{followUp.DueAt:yyyy-MM-dd HH:mm}",
+            $"已安排随访：{followUp.DueAt:yyyy-MM-dd HH:mm}",
             now,
             $"follow-up:{followUp.Id:N}:scheduled");
         await dbContext.SaveChangesAsync(cancellationToken);

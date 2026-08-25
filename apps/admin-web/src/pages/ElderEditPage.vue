@@ -172,7 +172,7 @@ onMounted(loadElder)
           <input :id="`contact-name-${index}`" v-model="contact.demoName" required />
           <label :for="`contact-relation-${index}`">关系</label>
           <input :id="`contact-relation-${index}`" v-model="contact.relationship" required />
-          <label :for="`contact-phone-${index}`">演示电话</label>
+          <label :for="`contact-phone-${index}`">联系电话</label>
           <input
             :id="`contact-phone-${index}`"
             v-model="contact.phoneNumber"
