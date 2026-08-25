@@ -91,7 +91,7 @@ test('reset to closure keeps one event and one auditable timeline', async ({ pag
   await page.getByLabel('对外确认摘要').fill('已当面确认老人状态')
   await page.getByRole('textbox', { name: '探访结果' }).fill('完成演示探访并确认安全')
   await page.getByRole('button', { name: '提交探访结果' }).click()
-  await expect(page.getByText('Completed', { exact: true })).toBeVisible()
+  await expect(page.getByText('已完成', { exact: true })).toBeVisible()
 
   await page.goto(`/care-events/${eventId}`)
   await page.getByRole('button', { name: '模拟电话' }).click()
