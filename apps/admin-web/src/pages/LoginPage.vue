@@ -166,10 +166,14 @@ input {
   }
 
   .login-context {
-    min-height: 220px;
+    height: 220px;
+    min-height: 0;
   }
 
   .login-context__content {
+    box-sizing: border-box;
+    height: 100%;
+    min-height: 0;
     padding: var(--space-6) var(--space-5);
   }
 
