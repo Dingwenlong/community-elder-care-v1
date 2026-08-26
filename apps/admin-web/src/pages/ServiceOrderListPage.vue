@@ -52,7 +52,12 @@ onMounted(load)
 
     <StatusNotice v-if="loading" kind="loading" title="正在载入服务工单" />
     <StatusNotice v-else-if="errorMessage" kind="error" :title="errorMessage" />
-    <StatusNotice v-else-if="!orders.length" kind="empty" title="当前没有服务工单" />
+    <StatusNotice
+      v-else-if="!orders.length"
+      kind="empty"
+      illustration="care-work"
+      title="当前没有服务工单"
+    />
 
     <AppTable v-else min-width="840px">
       <thead>

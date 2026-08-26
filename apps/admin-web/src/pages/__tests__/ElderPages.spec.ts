@@ -114,7 +114,10 @@ describe('ElderListPage', () => {
     await renderPage(ElderListPage, '/elders')
 
     expect(screen.getByText('正在载入老人档案')).toBeTruthy()
-    expect(await screen.findByText('当前筛选条件下没有老人档案')).toBeTruthy()
+    const emptyTitle = await screen.findByText('当前筛选条件下没有老人档案')
+    expect(emptyTitle.closest('.status-notice')?.querySelector('img')?.getAttribute('src')).toContain(
+      'elder-records-empty.webp',
+    )
 
     cleanup()
     server.use(

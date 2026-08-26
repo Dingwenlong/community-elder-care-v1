@@ -91,7 +91,12 @@ onMounted(load)
 
     <StatusNotice v-if="loading" kind="loading" title="正在载入我的任务" />
     <StatusNotice v-else-if="errorMessage" kind="error" :title="errorMessage" />
-    <StatusNotice v-else-if="!tasks.length" kind="empty" title="当前没有获派任务" />
+    <StatusNotice
+      v-else-if="!tasks.length"
+      kind="empty"
+      illustration="care-work"
+      title="当前没有获派任务"
+    />
 
     <div v-else class="task-list">
       <article v-for="task in tasks" :key="task.orderId" class="task-card surface">

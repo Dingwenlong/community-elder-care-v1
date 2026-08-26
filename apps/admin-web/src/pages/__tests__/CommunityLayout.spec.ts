@@ -1,6 +1,8 @@
 import { cleanup, render, screen, within } from '@testing-library/vue'
+import { http, HttpResponse } from 'msw'
+import { setupServer } from 'msw/node'
 import { createPinia, setActivePinia } from 'pinia'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { defineComponent } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router'
 
@@ -8,7 +10,18 @@ import CommunityLayout from '@/layouts/CommunityLayout.vue'
 import DashboardPage from '@/pages/DashboardPage.vue'
 import { useAuthStore, type DemoRole } from '@/stores/auth'
 
-afterEach(cleanup)
+const server = setupServer(
+  http.get('*/api/v1/care-events', () => HttpResponse.json([])),
+  http.get('*/api/v1/elders', () => HttpResponse.json([])),
+)
+
+beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
+afterEach(() => {
+  cleanup()
+  server.resetHandlers()
+  window.sessionStorage.clear()
+})
+afterAll(() => server.close())
 
 async function renderWithRouter(path: string, role: DemoRole) {
   const pinia = createPinia()
@@ -49,6 +62,15 @@ async function renderWithRouter(path: string, role: DemoRole) {
 }
 
 describe('CommunityLayout', () => {
+  it('uses the care-event illustration when the dashboard has no pending events', async () => {
+    await renderWithRouter('/dashboard', 'CommunityStaff')
+
+    const title = await screen.findByText('当前没有载入事件')
+    expect(title.closest('.status-notice')?.querySelector('img')?.getAttribute('src')).toContain(
+      'care-events-empty.webp',
+    )
+  })
+
   it('keeps dashboard concise and exposes elder records as a separate route', async () => {
     await renderWithRouter('/dashboard', 'CommunityStaff')
 

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { ApiError } from '@/api/apiClient'
+import loginCommunityVisit from '@/assets/illustrations/login-community-visit.webp'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -35,13 +36,12 @@ async function submit() {
 <template>
   <main class="login-shell">
     <section class="login-context" aria-labelledby="product-name">
-      <h1 id="product-name">社区独居老人照料系统</h1>
-      <p>社区工作人员在这里处理安全确认、探访和服务记录。</p>
-      <dl>
-        <div><dt>档案</dt><dd>20 位老人档案</dd></div>
-        <div><dt>外部动作</dt><dd>电话、短信与设备均为模拟记录</dd></div>
-        <div><dt>权限</dt><dd>按角色、社区范围和老人授权控制</dd></div>
-      </dl>
+      <img class="login-context__cover" :src="loginCommunityVisit" alt="" aria-hidden="true" />
+      <div class="login-context__scrim" aria-hidden="true"></div>
+      <div class="login-context__content">
+        <h1 id="product-name">社区独居老人照料系统</h1>
+        <p>社区工作人员在这里处理安全确认、探访和服务记录。</p>
+      </div>
     </section>
 
     <section class="login-panel" aria-labelledby="login-title">
@@ -79,15 +79,39 @@ async function submit() {
 }
 
 .login-context {
+  position: relative;
+  overflow: hidden;
+  background: var(--navy-deep);
+}
+
+.login-context__cover,
+.login-context__scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.login-context__cover {
+  object-fit: cover;
+}
+
+.login-context__scrim {
+  background: rgb(10 35 66 / 78%);
+}
+
+.login-context__content {
   display: flex;
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
   flex-direction: column;
   justify-content: center;
   padding: clamp(40px, 7vw, 96px);
   color: #e8f1fb;
-  background: var(--navy-deep);
 }
 
-.login-context h1 {
+.login-context__content h1 {
   max-width: 540px;
   margin: 0;
   color: white;
@@ -142,6 +166,10 @@ input {
   }
 
   .login-context {
+    min-height: 220px;
+  }
+
+  .login-context__content {
     padding: var(--space-6) var(--space-5);
   }
 

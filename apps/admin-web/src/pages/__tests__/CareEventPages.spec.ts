@@ -120,6 +120,20 @@ async function renderEventPage(component: object, path: string) {
 }
 
 describe('CareEventListPage', () => {
+  it('uses the care-event illustration when the event queue is empty', async () => {
+    server.use(
+      http.get('*/api/v1/care-events', () => HttpResponse.json([])),
+      http.get('*/api/v1/elders', () => HttpResponse.json([])),
+    )
+
+    await renderEventPage(CareEventListPage, '/care-events')
+
+    const title = await screen.findByText('当前没有待处理照料事件')
+    expect(title.closest('.status-notice')?.querySelector('img')?.getAttribute('src')).toContain(
+      'care-events-empty.webp',
+    )
+  })
+
   it('sorts emergencies before waiting time and keeps level separate from status', async () => {
     await renderEventPage(CareEventListPage, '/care-events')
 

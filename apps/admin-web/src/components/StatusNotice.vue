@@ -1,9 +1,22 @@
 <script setup lang="ts">
+import careEventsIllustration from '@/assets/illustrations/care-events-empty.webp'
+import careWorkIllustration from '@/assets/illustrations/care-work-empty.webp'
+import elderRecordsIllustration from '@/assets/illustrations/elder-records-empty.webp'
+
+type StatusNoticeIllustration = 'care-events' | 'elder-records' | 'care-work'
+
+const illustrationSources: Record<StatusNoticeIllustration, string> = {
+  'care-events': careEventsIllustration,
+  'elder-records': elderRecordsIllustration,
+  'care-work': careWorkIllustration,
+}
+
 withDefaults(
   defineProps<{
     kind?: 'loading' | 'empty' | 'error' | 'info'
     title: string
     message?: string
+    illustration?: StatusNoticeIllustration
   }>(),
   { kind: 'info', message: '' },
 )
@@ -15,6 +28,13 @@ withDefaults(
     :class="`status-notice--${kind}`"
     :role="kind === 'error' ? 'alert' : 'status'"
   >
+    <img
+      v-if="kind === 'empty' && illustration"
+      class="status-notice__illustration"
+      :src="illustrationSources[illustration]"
+      alt=""
+      aria-hidden="true"
+    />
     <strong>{{ title }}</strong>
     <span v-if="message">{{ message }}</span>
     <slot />
@@ -32,6 +52,11 @@ withDefaults(
 
 .status-notice strong {
   color: var(--ink-strong);
+}
+
+.status-notice__illustration {
+  width: min(180px, 100%);
+  margin-bottom: var(--space-2);
 }
 
 .status-notice span {

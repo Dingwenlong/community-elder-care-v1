@@ -86,6 +86,7 @@ onMounted(loadElders)
   <StatusNotice
     v-else-if="elders.length === 0"
     kind="empty"
+    illustration="elder-records"
     title="当前筛选条件下没有老人档案"
     message="可调整关注等级后再次查看。"
   />

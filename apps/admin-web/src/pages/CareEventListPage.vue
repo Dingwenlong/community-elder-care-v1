@@ -102,6 +102,7 @@ onMounted(load)
     <StatusNotice
       v-else-if="!sortedEvents.length"
       kind="empty"
+      illustration="care-events"
       title="当前没有待处理照料事件"
     />
 

@@ -207,6 +207,8 @@ onMounted(load)
       <StatusNotice v-else-if="errorMessage" kind="error" :title="errorMessage" />
       <StatusNotice
         v-else-if="!topPending.length"
+        kind="empty"
+        illustration="care-events"
         title="当前没有载入事件"
         message="照料事件接入后会在这里按优先级显示。"
       />

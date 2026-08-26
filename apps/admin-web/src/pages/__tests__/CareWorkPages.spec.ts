@@ -6,6 +6,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 
 import ServiceWorkerTasksPage from '@/pages/ServiceWorkerTasksPage.vue'
+import ServiceOrderListPage from '@/pages/ServiceOrderListPage.vue'
 import VisitListPage from '@/pages/VisitListPage.vue'
 import { useAuthStore, type DemoRole } from '@/stores/auth'
 
@@ -66,6 +67,18 @@ function setSession(role: DemoRole) {
 }
 
 describe('VisitListPage', () => {
+  it('uses the care-work illustration when there are no visit tasks', async () => {
+    server.use(http.get('*/api/v1/visits', () => HttpResponse.json([])))
+
+    const pinia = setSession('CommunityStaff')
+    render(VisitListPage, { global: { plugins: [pinia] } })
+
+    const title = await screen.findByText('当前没有探访任务')
+    expect(title.closest('.status-notice')?.querySelector('img')?.getAttribute('src')).toContain(
+      'care-work-empty.webp',
+    )
+  })
+
   it('keeps raw staff notes separate from the confirmed result', async () => {
     let requestBody: Record<string, unknown> | undefined
     server.use(
@@ -94,7 +107,33 @@ describe('VisitListPage', () => {
   })
 })
 
+describe('ServiceOrderListPage', () => {
+  it('uses the care-work illustration when there are no service orders', async () => {
+    server.use(http.get('*/api/v1/service-orders', () => HttpResponse.json([])))
+
+    const pinia = setSession('CommunityStaff')
+    render(ServiceOrderListPage, { global: { plugins: [pinia] } })
+
+    const title = await screen.findByText('当前没有服务工单')
+    expect(title.closest('.status-notice')?.querySelector('img')?.getAttribute('src')).toContain(
+      'care-work-empty.webp',
+    )
+  })
+})
+
 describe('ServiceWorkerTasksPage', () => {
+  it('uses the care-work illustration when there are no assigned tasks', async () => {
+    server.use(http.get('*/api/v1/service-orders/my-tasks', () => HttpResponse.json([])))
+
+    const pinia = setSession('ServiceWorker')
+    render(ServiceWorkerTasksPage, { global: { plugins: [pinia] } })
+
+    const title = await screen.findByText('当前没有获派任务')
+    expect(title.closest('.status-notice')?.querySelector('img')?.getAttribute('src')).toContain(
+      'care-work-empty.webp',
+    )
+  })
+
   it('renders only the minimal assigned-order fields', async () => {
     const pinia = setSession('ServiceWorker')
     render(ServiceWorkerTasksPage, { global: { plugins: [pinia] } })
