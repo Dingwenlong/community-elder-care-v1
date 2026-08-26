@@ -163,6 +163,7 @@ input {
 @media (max-width: 820px) {
   .login-shell {
     grid-template-columns: 1fr;
+    grid-template-rows: 220px auto;
   }
 
   .login-context {
