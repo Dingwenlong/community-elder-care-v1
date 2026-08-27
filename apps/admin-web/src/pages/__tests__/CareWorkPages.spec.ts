@@ -1,10 +1,13 @@
-import { cleanup, render, screen } from '@testing-library/vue'
+import { cleanup, render, screen, waitFor } from '@testing-library/vue'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import { createPinia, setActivePinia } from 'pinia'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 
+import OperationsPage from '@/pages/OperationsPage.vue'
+import CareTaskComposer from '@/components/CareTaskComposer.vue'
+import type { CareEvent } from '@/api/contracts'
 import ServiceWorkerTasksPage from '@/pages/ServiceWorkerTasksPage.vue'
 import ServiceOrderListPage from '@/pages/ServiceOrderListPage.vue'
 import VisitListPage from '@/pages/VisitListPage.vue'
@@ -58,7 +61,7 @@ function setSession(role: DemoRole) {
   const pinia = createPinia()
   setActivePinia(pinia)
   useAuthStore().setSession({
-    token: 'test-token',
+    token: 'header.' + btoa(JSON.stringify({ sub: '33333333-3333-3333-3333-333333333301' })) + '.signature',
     role,
     shell: role === 'ServiceWorker' ? 'service' : 'community',
     isDemoMode: true,
@@ -145,5 +148,62 @@ describe('ServiceWorkerTasksPage', () => {
     expect(screen.queryByText('健康风险')).toBeNull()
     expect(screen.queryByText('家属')).toBeNull()
     expect(screen.queryByText('社区备注')).toBeNull()
+  })
+})
+
+
+describe('OperationsPage', () => {
+  const people = [
+    { userId: 'owner', displayName: '周敏', role: 'CommunityStaff', areaCode: 'A01', pendingCount: 1, overdueCount: 0 },
+    { userId: 'other', displayName: '陈佳', role: 'CommunityStaff', areaCode: 'A01', pendingCount: 0, overdueCount: 0 },
+    { userId: 'worker', displayName: '王芳', role: 'ServiceWorker', areaCode: 'A01', pendingCount: 0, overdueCount: 0 },
+  ]
+  const task = { taskId: visitId, taskType: 'Visit', careEventId: 'event', elderDisplayName: '李秀兰', assignedUserId: 'owner', assignedDisplayName: '周敏', areaCode: 'A01', status: 'Assigned', dueAt: null, version: 'version-1', eventOwnerUserId: 'owner', isOverdue: false }
+  function setup() {
+    const pinia = setSession('CommunityStaff')
+    useAuthStore().setSession({ token: 'header.' + btoa(JSON.stringify({ sub: 'owner' })) + '.signature', role: 'CommunityStaff', shell: 'community', isDemoMode: true })
+    server.use(http.get('*/api/v1/operations/personnel', () => HttpResponse.json(people)),
+      http.get('*/api/v1/operations/tasks', () => HttpResponse.json([task])))
+    return { global: { plugins: [pinia], stubs: { RouterLink: { template: '<a><slot /></a>' } } } }
+  }
+  it('submits the current version and preserves unknown deadlines', async () => {
+    let body: Record<string, unknown> | undefined
+    const options = setup()
+    server.use(http.post('*/api/v1/visits/:id/reassign', async ({ request }) => { body = await request.json() as Record<string, unknown>; return HttpResponse.json({ taskId: visitId }) }))
+    render(OperationsPage, options)
+    expect(await screen.findByText('未设截止时间')).toBeTruthy()
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: '转派' }))
+    await user.selectOptions(screen.getByLabelText('新负责人'), 'other')
+    expect(screen.getByLabelText('新负责人').textContent).not.toContain('王芳')
+    await user.type(screen.getByLabelText('转派原因'), '调整上门安排')
+    await user.click(screen.getByRole('button', { name: '确认保存' }))
+    expect(await screen.findByText('任务已转派，原工作人员不能再操作此任务。')).toBeTruthy()
+    expect(body).toEqual({ assignedUserId: 'other', reason: '调整上门安排', expectedVersion: 'version-1' })
+  })
+  it('keeps a conflict visible without claiming successful reassignment', async () => {
+    render(OperationsPage, setup())
+    server.use(http.post('*/api/v1/visits/:id/reassign', () => HttpResponse.json({ code: 'CONCURRENT_CHANGE' }, { status: 409 })))
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('button', { name: '转派' }))
+    await user.selectOptions(screen.getByLabelText('新负责人'), 'other')
+    await user.type(screen.getByLabelText('转派原因'), '调整上门安排')
+    await user.click(screen.getByRole('button', { name: '确认保存' }))
+    expect(await screen.findByRole('alert')).toHaveProperty('textContent', '资料已被更新，请刷新后重试。')
+    expect(screen.getByRole('dialog')).toBeTruthy()
+  })
+  it('creates an order with an actual deadline and a selected worker', async () => {
+    let body: Record<string, unknown> | undefined
+    const options = setup()
+    server.use(http.post('*/api/v1/care-events/event/service-orders', async ({ request }) => { body = await request.json() as Record<string, unknown>; return HttpResponse.json({}) }))
+    render(CareTaskComposer, { ...options, props: { careEvent: { id: 'event', currentOwnerUserId: 'owner', status: 'Accepted' } as CareEvent } })
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: '创建工单' }))
+    await user.selectOptions(await screen.findByLabelText('任务负责人'), 'worker')
+    await user.type(screen.getByLabelText('联系说明'), '到达后联系社区')
+    await user.click(screen.getByRole('button', { name: '保存任务' }))
+    await waitFor(() => expect(body?.assignedWorkerUserId).toBe('worker'))
+    expect(body?.dueAt).toMatch(/Z$/)
+    expect(body?.isMandatory).toBe(true)
   })
 })

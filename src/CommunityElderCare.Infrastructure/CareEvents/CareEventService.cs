@@ -67,7 +67,7 @@ public sealed class CareEventService(
                     await dbContext.SaveChangesAsync(cancellationToken);
                     return Success(match, isDuplicate: false);
                 }
-                catch (DbUpdateException)
+                catch (DbUpdateException error) when (error is not DbUpdateConcurrencyException)
                 {
                     dbContext.ChangeTracker.Clear();
                     var duplicate = await FindBySourceEventIdAsync(
@@ -114,7 +114,7 @@ public sealed class CareEventService(
             await dbContext.SaveChangesAsync(cancellationToken);
             return Success(careEvent, isDuplicate: false);
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException error) when (error is not DbUpdateConcurrencyException)
         {
             dbContext.ChangeTracker.Clear();
             var duplicate = await FindBySourceEventIdAsync(
@@ -288,7 +288,7 @@ public sealed class CareEventService(
             await dbContext.SaveChangesAsync(cancellationToken);
             return Success(careEvent, isDuplicate: false);
         }
-        catch (DbUpdateException) when (!string.IsNullOrWhiteSpace(command.SourceEventId))
+        catch (DbUpdateException error) when (error is not DbUpdateConcurrencyException && !string.IsNullOrWhiteSpace(command.SourceEventId))
         {
             dbContext.ChangeTracker.Clear();
             var duplicate = await FindBySourceEventIdAsync(

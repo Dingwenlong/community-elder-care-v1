@@ -27,6 +27,8 @@ public sealed class Device
     public string DisplayName { get; private set; } = string.Empty;
     public string? TokenHash { get; private set; }
     public DateTimeOffset RegisteredAt { get; private set; }
+    public void SetEnabled(bool enabled) => IsEnabled = enabled;
+
     public bool IsEnabled { get; private set; }
     public bool IsDemoData { get; private set; } = true;
 

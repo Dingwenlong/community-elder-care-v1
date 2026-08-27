@@ -3,7 +3,7 @@ using CommunityElderCare.Core.Identity;
 
 namespace CommunityElderCare.Core.CareWork;
 
-public sealed class VisitTask
+public sealed class VisitTask : IAssignableCareTask
 {
     private VisitTask()
     {
@@ -29,6 +29,16 @@ public sealed class VisitTask
         CreatedAt = createdAt;
         Status = WorkStatus.Assigned;
         IsDemoData = true;
+    }
+
+    public Guid Version { get; private set; } = Guid.NewGuid();
+    Guid IAssignableCareTask.AssignedUserId => AssignedStaffUserId;
+
+    public void Reassign(Guid userId)
+    {
+        if (Status != WorkStatus.Assigned || userId == Guid.Empty)
+            throw new InvalidOperationException("Only unstarted tasks can be reassigned.");
+        AssignedStaffUserId = userId;
     }
 
     public Guid Id { get; private set; }

@@ -3,7 +3,7 @@ using CommunityElderCare.Core.Identity;
 
 namespace CommunityElderCare.Core.CareWork;
 
-public sealed class ServiceOrder
+public sealed class ServiceOrder : IAssignableCareTask
 {
     private ServiceOrder()
     {
@@ -33,6 +33,16 @@ public sealed class ServiceOrder
         IsDemoData = true;
     }
 
+    public Guid Version { get; private set; } = Guid.NewGuid();
+    Guid IAssignableCareTask.AssignedUserId => AssignedWorkerUserId;
+
+    public void Reassign(Guid userId)
+    {
+        if (Status != WorkStatus.Assigned || userId == Guid.Empty)
+            throw new InvalidOperationException("Only unstarted tasks can be reassigned.");
+        AssignedWorkerUserId = userId;
+    }
+
     public Guid Id { get; private set; }
     public Guid CareEventId { get; private set; }
     public Guid ElderId { get; private set; }
@@ -42,6 +52,7 @@ public sealed class ServiceOrder
     public Guid AssignedWorkerUserId { get; private set; }
     public bool IsMandatory { get; private set; }
     public WorkStatus Status { get; private set; }
+    public DateTimeOffset? DueAt { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset? AcceptedAt { get; private set; }
     public DateTimeOffset? CompletedAt { get; private set; }
@@ -59,7 +70,8 @@ public sealed class ServiceOrder
         string contactInstruction,
         Guid assignedWorkerUserId,
         bool isMandatory,
-        DateTimeOffset createdAt)
+        DateTimeOffset createdAt,
+        DateTimeOffset? dueAt = null)
     {
         if (id == Guid.Empty || careEventId == Guid.Empty || elderId == Guid.Empty ||
             assignedWorkerUserId == Guid.Empty ||
@@ -79,7 +91,7 @@ public sealed class ServiceOrder
             contactInstruction.Trim(),
             assignedWorkerUserId,
             isMandatory,
-            createdAt));
+            createdAt) { DueAt = dueAt });
     }
 
     public OperationResult<ServiceOrder> Accept(ActorContext actor, DateTimeOffset acceptedAt)
@@ -148,9 +160,7 @@ public sealed class ServiceOrder
 
     private bool IsAssignedWorker(ActorContext actor) =>
         actor.Role == DemoRole.ServiceWorker &&
-        actor.UserId == AssignedWorkerUserId &&
-        actor.ElderId == ElderId &&
-        actor.AssignedTaskId == Id;
+        actor.UserId == AssignedWorkerUserId;
 
     private static OperationResult<ServiceOrder> Success(ServiceOrder order) =>
         new(true, order, null, null);

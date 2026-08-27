@@ -94,7 +94,7 @@ test('service worker sees only the assigned minimal task', async ({ request }) =
   expect(tasks).toHaveLength(1)
   expect(tasks[0].orderId).toBe(order.orderId)
   expect(Object.keys(tasks[0]).sort()).toEqual(
-    ['contactInstruction', 'elderDisplayName', 'orderId', 'scheduledWindow', 'serviceType', 'status'].sort(),
+    ['contactInstruction', 'elderDisplayName', 'orderId', 'scheduledWindow', 'serviceType', 'status', 'dueAt'].sort(),
   )
   const communityList = await request.get(`${apiBaseUrl}/api/v1/service-orders`, {
     headers: authorization(worker),

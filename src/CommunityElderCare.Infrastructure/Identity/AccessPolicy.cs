@@ -42,9 +42,7 @@ public sealed class AccessPolicy(
 
         if (actor.Role == DemoRole.ServiceWorker)
         {
-            return actor.ElderId == elderId &&
-                actor.AssignedTaskId.HasValue &&
-                field == ConsentField.VisitSummary;
+            return false;
         }
 
         if (actor.Role == DemoRole.Administrator)

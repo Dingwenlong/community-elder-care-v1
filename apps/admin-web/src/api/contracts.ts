@@ -146,6 +146,7 @@ export interface VisitItem {
 }
 
 export interface ServiceOrderItem {
+  dueAt?: string | null
   orderId: string
   careEventId?: string
   elderDisplayName: string

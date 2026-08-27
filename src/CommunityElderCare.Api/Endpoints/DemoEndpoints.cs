@@ -9,6 +9,15 @@ public static class DemoEndpoints
     public static IEndpointRouteBuilder MapDemoEndpoints(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost("/api/v1/demo/reset", ResetAsync).RequireAuthorization();
+        endpoints.MapPost("/api/v1/demo/operations-scenario", async (
+            HttpContext context, OperationsScenarioService service, CancellationToken ct) =>
+        {
+            var actor = context.User.GetActorContext();
+            if (actor.Role != DemoRole.Administrator) return OperationsEndpoints.Forbidden();
+            if (context.Request.Headers["X-Confirm-Operations-Scenario"] != "LOAD-OPERATIONS")
+                return OperationsEndpoints.Problem(400, "SCENARIO_CONFIRMATION_REQUIRED", "请确认加载运营演示场景。");
+            return Results.Ok(await service.LoadAsync(actor, ct));
+        }).RequireAuthorization();
         return endpoints;
     }
 

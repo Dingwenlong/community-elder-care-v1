@@ -1,3 +1,4 @@
+import { createPinia } from 'pinia'
 import { cleanup, render, screen, waitFor } from '@testing-library/vue'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
@@ -11,6 +12,12 @@ import SimulationActionPanel from '@/components/SimulationActionPanel.vue'
 
 let reportReads = 0
 const server = setupServer(
+  http.get('*/api/v1/reports/operations', () => HttpResponse.json({
+    from: '2026-08-01', to: '2026-08-27', timeZone: 'Asia/Shanghai', generatedAt: '2026-08-27T10:00:00Z', areaLabel: 'A01',
+    summary: { newEventCount: 20, closedEventCount: 2, completedVisitCount: 3, completedOrderCount: 4, completedFollowUpCount: 5,
+      visitedElderCount: 3, averageAcceptanceMinutes: null, currentOpenTaskCount: 1, currentOverdueTaskCount: 0 },
+    daily: [], personnel: [],
+  })),
   http.get('*/health/ready', () =>
     HttpResponse.json({
       status: 'ready',
@@ -66,7 +73,7 @@ const server = setupServer(
 )
 
 const routerLinkStub = { props: ['to'], template: '<a :href="to"><slot /></a>' }
-const renderOptions = { global: { stubs: { RouterLink: routerLinkStub } } }
+const renderOptions = { global: { plugins: [createPinia()], stubs: { RouterLink: routerLinkStub } } }
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 afterEach(() => {
@@ -80,8 +87,8 @@ afterAll(() => server.close())
 describe('audit and data operations pages', () => {
   it('labels reports with normal product copy and renders an audit trail', async () => {
     render(ReportPage, renderOptions)
-    expect(await screen.findByText('当前数据')).toBeTruthy()
-    expect(screen.getByRole('heading', { name: '运行概览' })).toBeTruthy()
+    expect(await screen.findByText('暂无数据')).toBeTruthy()
+    expect(screen.getByRole('heading', { name: '社区照料报告' })).toBeTruthy()
     expect(screen.queryByText(/演示数据|演示运行/)).toBeNull()
     expect(await screen.findByText('20')).toBeTruthy()
     cleanup()

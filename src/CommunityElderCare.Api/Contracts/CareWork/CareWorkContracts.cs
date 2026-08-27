@@ -47,7 +47,8 @@ public sealed record CreateServiceOrderRequest(
     string ScheduledWindow,
     string ContactInstruction,
     Guid AssignedWorkerUserId,
-    bool IsMandatory);
+    bool IsMandatory,
+    DateTimeOffset? DueAt = null);
 
 public sealed record CompleteServiceOrderRequest(string Result);
 
@@ -57,7 +58,8 @@ public sealed record ServiceWorkerOrderResponse(
     string ServiceType,
     string ScheduledWindow,
     string ContactInstruction,
-    WorkStatus Status);
+    WorkStatus Status,
+    DateTimeOffset? DueAt = null);
 
 public sealed record CommunityServiceOrderResponse(
     Guid OrderId,
@@ -69,7 +71,8 @@ public sealed record CommunityServiceOrderResponse(
     WorkStatus Status,
     string? Result,
     bool IsMandatory,
-    bool IsDemoData);
+    bool IsDemoData,
+    DateTimeOffset? DueAt = null);
 
 public sealed record CreateFollowUpRequest(
     Guid AssignedStaffUserId,

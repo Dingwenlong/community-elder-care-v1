@@ -47,6 +47,9 @@ builder.Services.AddScoped<ICheckInService, CheckInService>();
 builder.Services.AddScoped<ICareEventService, CareEventService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
 builder.Services.AddScoped<IServiceOrderService, ServiceOrderService>();
+builder.Services.AddScoped<OperationsQuery>();
+builder.Services.AddScoped<OperationsReportService>();
+builder.Services.AddScoped<TaskAssignmentService>();
 var cloudLlmOptions = new CloudLlmOptions
 {
     BaseUrl = builder.Configuration[$"{CloudLlmOptions.SectionName}:BaseUrl"],
@@ -65,6 +68,7 @@ builder.Services.AddScoped<IDeviceSignalService, DeviceSignalService>();
 builder.Services.AddScoped<SimulationNotificationService>();
 builder.Services.AddScoped<BackgroundJobRecorder>();
 builder.Services.AddScoped<DemoResetService>();
+builder.Services.AddScoped<OperationsScenarioService>();
 builder.Services.AddScoped<IElderProfileQuery, ElderProfileQuery>();
 if (!builder.Environment.IsEnvironment("Testing"))
 {
@@ -106,6 +110,19 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+app.Use(async (context, next) =>
+{
+    try { await next(context); }
+    catch (DbUpdateConcurrencyException)
+    {
+        await OperationsEndpoints.Problem(409, "CONCURRENT_CHANGE", "资料已被更新，请刷新后重试。").ExecuteAsync(context);
+    }
+    catch (DbUpdateException error) when (error.InnerException is Microsoft.Data.Sqlite.SqliteException { SqliteErrorCode: 5 or 6 })
+    {
+        await OperationsEndpoints.Problem(409, "CONCURRENT_CHANGE", "另一项操作正在更新资料，请刷新后重试。").ExecuteAsync(context);
+    }
+});
+
 await using (var scope = app.Services.CreateAsyncScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<CommunityCareDbContext>();
@@ -143,6 +160,7 @@ await using (var scope = app.Services.CreateAsyncScope())
     {
         if (existingAccounts.TryGetValue(template.Id, out var existing))
         {
+            existing.InitializeOperationsProfile(template.DisplayName, template.AreaCode);
             existing.SetPasswordHash(passwordHasher.HashPassword(existing, demoPassword));
         }
         else
@@ -235,7 +253,8 @@ app.Use(async (context, next) =>
     var isMutation = !HttpMethods.IsGet(context.Request.Method) &&
         !HttpMethods.IsHead(context.Request.Method) &&
         !HttpMethods.IsOptions(context.Request.Method);
-    if (!isMutation || context.Request.Path == "/api/v1/demo/reset")
+    if ((!isMutation && !context.Request.Path.StartsWithSegments("/api/v1/reports")) ||
+        context.Request.Path == "/api/v1/demo/reset" || context.Request.Path == "/api/v1/demo/operations-scenario")
     {
         await next(context);
         return;
@@ -313,6 +332,8 @@ app.MapDeviceEndpoints();
 app.MapNotificationSimulationEndpoints();
 app.MapAuditEndpoints();
 app.MapReportEndpoints();
+app.MapOperationsEndpoints();
+app.MapDeviceManagementEndpoints();
 app.MapDemoEndpoints();
 
 app.Run();

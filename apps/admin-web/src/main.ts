@@ -1,3 +1,4 @@
+import './styles/operations.css'
 import './styles/base.css'
 
 import { createApp } from 'vue'

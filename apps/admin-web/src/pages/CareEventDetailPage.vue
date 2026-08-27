@@ -11,6 +11,8 @@ import type {
   ServiceOrderItem,
   VisitItem,
 } from '@/api/contracts'
+import { workLabels } from '@/api/operations'
+import CareTaskComposer from '@/components/CareTaskComposer.vue'
 import BreakGlassDialog from '@/components/BreakGlassDialog.vue'
 import EventLevelBadge from '@/components/EventLevelBadge.vue'
 import EventTimeline from '@/components/EventTimeline.vue'
@@ -219,18 +221,20 @@ onMounted(load)
         @submit="submitTransition"
       />
 
+      <CareTaskComposer :key="careEvent.currentOwnerUserId ?? 'unassigned'" :care-event="careEvent" @created="load" />
+
       <div class="detail-grid">
         <section class="surface detail-section">
           <h2>任务与分派</h2>
           <div v-if="visits.length || serviceOrders.length || followUps.length" class="work-groups">
             <p v-for="visit in visits" :key="visit.visitId">
-              探访 · {{ visit.elderDisplayName }} · {{ visit.status }}
+              探访 · {{ visit.elderDisplayName }} · {{ workLabels[visit.status] }}
             </p>
             <p v-for="order in serviceOrders" :key="order.orderId">
-              工单 · {{ order.serviceType }} · {{ order.status }}
+              工单 · {{ order.serviceType }} · {{ workLabels[order.status] }}
             </p>
             <p v-for="followUp in followUps" :key="followUp.followUpId">
-              随访 · {{ followUp.elderDisplayName }} · {{ followUp.status }}
+              随访 · {{ followUp.elderDisplayName }} · {{ workLabels[followUp.status] }}
             </p>
           </div>
           <p v-else class="empty-copy">当前事件尚无探访、服务工单或随访任务。</p>

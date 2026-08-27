@@ -26,6 +26,13 @@ public sealed class UserAccount
     public Guid Id { get; private set; }
 
     public string Username { get; private set; } = string.Empty;
+    public string DisplayName { get; private set; } = string.Empty;
+
+    public void InitializeOperationsProfile(string displayName, string? areaCode)
+    {
+        if (string.IsNullOrWhiteSpace(DisplayName)) DisplayName = displayName;
+        if (Role == DemoRole.ServiceWorker && AreaCode is null) AreaCode = areaCode;
+    }
 
     public string PasswordHash { get; private set; } = string.Empty;
 

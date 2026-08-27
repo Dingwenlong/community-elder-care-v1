@@ -29,7 +29,7 @@ public sealed class DeviceSignalService(
             return Failure("INVALID_DEVICE_SIGNAL", "Button state is too long.");
         }
 
-        var device = await dbContext.Devices.AsNoTracking().SingleOrDefaultAsync(
+        var device = await dbContext.Devices.SingleOrDefaultAsync(
             candidate => candidate.Id == command.DeviceId && candidate.IsEnabled,
             cancellationToken);
         if (device is null)
@@ -47,6 +47,8 @@ public sealed class DeviceSignalService(
             return Success(duplicate, isDuplicate: true);
         }
 
+        await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
+        dbContext.Entry(device).Property("Version").IsModified = true;
         var receivedAt = timeProvider.GetUtcNow();
         var mapping = Map(command.SignalType);
         var sourceEventId = $"Device:{command.DeviceId:N}:{command.EventId:N}";
@@ -82,9 +84,10 @@ public sealed class DeviceSignalService(
         try
         {
             await dbContext.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
             return Success(signal, isDuplicate: false);
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException error) when (error is not DbUpdateConcurrencyException)
         {
             dbContext.ChangeTracker.Clear();
             var concurrent = await FindSignalAsync(

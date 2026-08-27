@@ -171,7 +171,8 @@ public sealed class CareWorkEndpointTests
         using var wrongTaskClient = factory.CreateAuthenticatedClient(
             DemoRole.ServiceWorker,
             elderId: factory.MainElderId,
-            assignedTaskId: Guid.NewGuid());
+            assignedTaskId: Guid.NewGuid(),
+            userId: DemoIdentitySeed.SecondServiceWorkerUserId);
         var denied = await wrongTaskClient.PostAsync(
             $"/api/v1/service-orders/{orderId}/accept",
             content: null);

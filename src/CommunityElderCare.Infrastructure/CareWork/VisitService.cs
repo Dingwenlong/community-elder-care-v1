@@ -21,7 +21,8 @@ public sealed class VisitService(
         {
             return Failure<VisitTask>("NOT_FOUND", "Care event not found.");
         }
-        if (!IsCurrentCommunityOwner(actor, careEvent))
+        if (!IsCurrentCommunityOwner(actor, careEvent) ||
+            !await dbContext.ElderProfiles.AnyAsync(e => e.Id == careEvent.ElderId && e.AreaCode == actor.AreaCode, cancellationToken))
         {
             return Failure<VisitTask>("FORBIDDEN_SCOPE", "Only the current community owner can create a visit.");
         }
@@ -32,7 +33,7 @@ public sealed class VisitService(
         var validAssignee = await dbContext.UserAccounts.AsNoTracking().AnyAsync(
             account =>
                 account.Id == command.AssignedStaffUserId &&
-                account.Role == DemoRole.CommunityStaff,
+                account.Role == DemoRole.CommunityStaff && account.AreaCode == actor.AreaCode,
             cancellationToken);
         if (!validAssignee)
         {
@@ -90,6 +91,9 @@ public sealed class VisitService(
         {
             return Failure<VisitTask>("NOT_FOUND", "Care event not found.");
         }
+        if (actor.Role != DemoRole.CommunityStaff ||
+            !await dbContext.ElderProfiles.AnyAsync(e => e.Id == careEvent.ElderId && e.AreaCode == actor.AreaCode, cancellationToken))
+            return Failure<VisitTask>("FORBIDDEN_SCOPE", "只能处理本片区任务。");
         var now = timeProvider.GetUtcNow();
         var start = visit.Start(actor, now);
         if (!start.IsSuccess)
@@ -145,6 +149,9 @@ public sealed class VisitService(
         {
             return Failure<VisitTask>("NOT_FOUND", "Care event not found.");
         }
+        if (actor.Role != DemoRole.CommunityStaff ||
+            !await dbContext.ElderProfiles.AnyAsync(e => e.Id == careEvent.ElderId && e.AreaCode == actor.AreaCode, cancellationToken))
+            return Failure<VisitTask>("FORBIDDEN_SCOPE", "只能处理本片区任务。");
         if (careEvent.Status != CareEventStatus.InProgress)
         {
             return Failure<VisitTask>("INVALID_EVENT_STATUS", "Visit completion requires an in-progress event.");
@@ -183,7 +190,8 @@ public sealed class VisitService(
         {
             return Failure<FollowUp>("NOT_FOUND", "Care event not found.");
         }
-        if (!IsCurrentCommunityOwner(actor, careEvent))
+        if (!IsCurrentCommunityOwner(actor, careEvent) ||
+            !await dbContext.ElderProfiles.AnyAsync(e => e.Id == careEvent.ElderId && e.AreaCode == actor.AreaCode, cancellationToken))
         {
             return Failure<FollowUp>("FORBIDDEN_SCOPE", "Only the current community owner can create follow-up.");
         }
@@ -194,7 +202,7 @@ public sealed class VisitService(
         var validAssignee = await dbContext.UserAccounts.AsNoTracking().AnyAsync(
             account =>
                 account.Id == command.AssignedStaffUserId &&
-                account.Role == DemoRole.CommunityStaff,
+                account.Role == DemoRole.CommunityStaff && account.AreaCode == actor.AreaCode,
             cancellationToken);
         if (!validAssignee)
         {
@@ -261,6 +269,9 @@ public sealed class VisitService(
         {
             return Failure<FollowUp>("NOT_FOUND", "Care event not found.");
         }
+        if (actor.Role != DemoRole.CommunityStaff ||
+            !await dbContext.ElderProfiles.AnyAsync(e => e.Id == careEvent.ElderId && e.AreaCode == actor.AreaCode, cancellationToken))
+            return Failure<FollowUp>("FORBIDDEN_SCOPE", "只能处理本片区任务。");
         if (careEvent.Status != CareEventStatus.FollowUpPending)
         {
             return Failure<FollowUp>("INVALID_EVENT_STATUS", "Event is not waiting for follow-up.");

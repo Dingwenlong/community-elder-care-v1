@@ -47,7 +47,8 @@ public class CommunityCareWebFactory : WebApplicationFactory<Program>
         string? areaCode = null,
         Guid? familyFor = null,
         Guid? elderId = null,
-        Guid? assignedTaskId = null)
+        Guid? assignedTaskId = null,
+        Guid? userId = null)
     {
         var resolvedElderId = elderId ?? familyFor ??
             (role is DemoRole.Elder or DemoRole.ServiceWorker ? MainElderId : null);
@@ -58,7 +59,7 @@ public class CommunityCareWebFactory : WebApplicationFactory<Program>
                 : null);
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Sub, DemoIdentitySeed.GetUserId(role).ToString()),
+            new(JwtRegisteredClaimNames.Sub, (userId ?? DemoIdentitySeed.GetUserId(role)).ToString()),
             new("role", role.ToString()),
             new("demo_mode", "true"),
         };

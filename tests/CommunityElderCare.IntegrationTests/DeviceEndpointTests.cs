@@ -12,6 +12,46 @@ namespace CommunityElderCare.IntegrationTests;
 public sealed class DeviceEndpointTests
 {
     [Fact]
+    public async Task Device_management_preserves_history_and_rejects_disabled_ingress()
+    {
+        await using var factory = new CommunityCareWebFactory();
+        using var admin = factory.CreateAuthenticatedClient(DemoRole.Administrator);
+        using var staff = factory.CreateAuthenticatedClient(DemoRole.CommunityStaff);
+        Assert.Equal(HttpStatusCode.Forbidden, (await staff.GetAsync("/api/v1/devices")).StatusCode);
+        var payload = SignalPayload(Guid.NewGuid(), "SosButton", "Held2Seconds");
+        (await admin.PostAsJsonAsync("/api/v1/demo/device-signals", payload)).EnsureSuccessStatusCode();
+        var devices = await admin.GetFromJsonAsync<JsonElement>("/api/v1/devices");
+        var device = Assert.Single(devices.EnumerateArray());
+        Assert.Equal(JsonValueKind.Null, device.GetProperty("lastHardwareSignalAt").ValueKind);
+        Assert.Equal(JsonValueKind.String, device.GetProperty("lastSimulationSignalAt").ValueKind);
+        Assert.False(device.TryGetProperty("tokenHash", out _));
+        var id = device.GetProperty("deviceId").GetGuid();
+        var disabled = await admin.PatchAsJsonAsync($"/api/v1/devices/{id}/enabled", new
+        {
+            enabled = false, reason = "检修按钮", expectedVersion = device.GetProperty("version").GetGuid(),
+        });
+        disabled.EnsureSuccessStatusCode();
+        var history = await admin.GetFromJsonAsync<JsonElement>($"/api/v1/devices/{id}/signals?isSimulation=true");
+        Assert.Single(history.EnumerateArray());
+        Assert.Empty((await admin.GetFromJsonAsync<JsonElement>($"/api/v1/devices/{id}/signals?isSimulation=false")).EnumerateArray());
+        Assert.Equal(HttpStatusCode.NotFound, (await admin.PostAsJsonAsync("/api/v1/demo/device-signals", SignalPayload(Guid.NewGuid(), "SosButton", null))).StatusCode);
+        using var hardware = factory.CreateClient();
+        using var rejected = DeviceRequest(SignalPayload(Guid.NewGuid(), "SosButton", null), CommunityCareWebFactory.TestDeviceToken);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await hardware.SendAsync(rejected)).StatusCode);
+        var current = Assert.Single((await admin.GetFromJsonAsync<JsonElement>("/api/v1/devices")).EnumerateArray());
+        (await admin.PatchAsJsonAsync($"/api/v1/devices/{id}/enabled", new
+        {
+            enabled = true, reason = "检修完成", expectedVersion = current.GetProperty("version").GetGuid(),
+        })).EnsureSuccessStatusCode();
+        using var accepted = DeviceRequest(SignalPayload(Guid.NewGuid(), "SosButton", null), CommunityCareWebFactory.TestDeviceToken);
+        (await hardware.SendAsync(accepted)).EnsureSuccessStatusCode();
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<CommunityCareDbContext>();
+        Assert.Equal(2, await db.DeviceSignals.CountAsync());
+        Assert.Equal(2, await db.AuditEntries.CountAsync(a => a.Action == "DeviceEnabledChanged"));
+    }
+
+    [Fact]
     public async Task Valid_device_token_accepts_one_idempotent_signal()
     {
         await using var factory = new CommunityCareWebFactory();

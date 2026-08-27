@@ -56,7 +56,7 @@ public sealed class AccessPolicyTests
     }
 
     [Fact]
-    public async Task Service_worker_is_limited_to_assigned_elder_and_task()
+    public async Task Service_worker_cannot_read_general_elder_fields_using_legacy_claims()
     {
         await using var fixture = await PolicyFixture.CreateAsync(FixedNow);
         var actor = new ActorContext(
@@ -66,7 +66,7 @@ public sealed class AccessPolicyTests
             null,
             Guid.NewGuid());
 
-        Assert.True(await fixture.Policy.CanReadAsync(
+        Assert.False(await fixture.Policy.CanReadAsync(
             actor,
             fixture.MainElderId,
             ConsentField.VisitSummary,

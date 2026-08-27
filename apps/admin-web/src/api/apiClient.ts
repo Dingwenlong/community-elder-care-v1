@@ -1,4 +1,8 @@
 const problemMessages: Record<string, string> = {
+  CONCURRENT_CHANGE: '资料已被更新，请刷新后重试。',
+  INVALID_ASSIGNEE: '请选择同片区的合资格人员。',
+  INVALID_DATE_RANGE: '请选择不超过 90 天的有效日期范围。',
+  UNKNOWN_DEVICE: '设备不存在或已停用。',
   INVALID_CREDENTIALS: '账号或密码不正确。',
   FORBIDDEN_SCOPE: '当前账号没有访问这项资料的权限。',
   CONSENT_REQUIRED: '老人尚未授权查看这项资料。',
@@ -40,7 +44,7 @@ export function configureApiAuthorization(token: string | null, onUnauthorized?:
   unauthorizedHandler = onUnauthorized ?? null
 }
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+async function fetchResponse(path: string, options: RequestInit = {}): Promise<Response> {
   const headers = new Headers(options.headers)
   if (accessToken) {
     headers.set('Authorization', `Bearer ${accessToken}`)
@@ -66,10 +70,19 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     const message = problemMessages[code] ?? payload.detail ?? payload.title ?? '请求未完成，请稍后重试。'
     throw new ApiError(response.status, code, message)
   }
+  return response
+}
+
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const response = await fetchResponse(path, options)
   if (response.status === 204) {
     return undefined as T
   }
   return (await response.json()) as T
 }
 
-export const apiClient = { request }
+async function download(path: string): Promise<Blob> {
+  return (await fetchResponse(path)).blob()
+}
+
+export const apiClient = { request, download }

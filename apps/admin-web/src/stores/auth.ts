@@ -48,6 +48,13 @@ export const useAuthStore = defineStore('auth', {
   }),
   getters: {
     isAuthenticated: (state) => Boolean(state.token),
+    userId: (state): string | null => {
+      try {
+        const payload = state.token?.split('.')[1]
+        if (!payload) return null
+        return (JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/'))) as { sub?: string }).sub ?? null
+      } catch { return null }
+    },
   },
   actions: {
     restore() {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { onBeforeUnmount, watch } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -21,6 +21,11 @@ function onBackdropClick() {
 function onKeydown(event: KeyboardEvent) {
   if (event.key === 'Escape' && !props.persistent) emit('close')
 }
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', onKeydown)
+  if (props.open) document.body.style.overflow = ''
+})
 
 watch(
   () => props.open,

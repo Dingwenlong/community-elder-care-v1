@@ -54,7 +54,8 @@ public static class ServiceOrderEndpoints
                 order.Status,
                 order.Result,
                 order.IsMandatory,
-                order.IsDemoData);
+                order.IsDemoData,
+                order.DueAt);
 
         var orders = await query.ToListAsync(cancellationToken);
         return Results.Ok(orders.OrderByDescending(item => item.OrderId).ToList());
@@ -66,9 +67,7 @@ public static class ServiceOrderEndpoints
         CancellationToken cancellationToken)
     {
         var actor = httpContext.User.GetActorContext();
-        if (actor.Role != DemoRole.ServiceWorker ||
-            actor.ElderId is not Guid elderId ||
-            actor.AssignedTaskId is not Guid assignedTaskId)
+        if (actor.Role != DemoRole.ServiceWorker)
         {
             return Problem(StatusCodes.Status403Forbidden, "FORBIDDEN_SCOPE", "Task scope is required");
         }
@@ -77,16 +76,15 @@ public static class ServiceOrderEndpoints
             from order in dbContext.ServiceOrders.AsNoTracking()
             join elder in dbContext.ElderProfiles.AsNoTracking()
                 on order.ElderId equals elder.Id
-            where order.Id == assignedTaskId &&
-                order.ElderId == elderId &&
-                order.AssignedWorkerUserId == actor.UserId
+            where order.AssignedWorkerUserId == actor.UserId
             select new ServiceWorkerOrderResponse(
                 order.Id,
                 elder.DemoDisplayName,
                 order.ServiceType,
                 order.ScheduledWindow,
                 order.ContactInstruction,
-                order.Status))
+                order.Status,
+                order.DueAt))
             .ToListAsync(cancellationToken);
 
         return Results.Ok(tasks);
@@ -106,7 +104,8 @@ public static class ServiceOrderEndpoints
                 request.ScheduledWindow,
                 request.ContactInstruction,
                 request.AssignedWorkerUserId,
-                request.IsMandatory),
+                request.IsMandatory,
+                request.DueAt),
             httpContext.User.GetActorContext(),
             cancellationToken);
         return result.IsSuccess ? Results.Ok(ToResponse(result.Value!)) : ToProblem(result);
@@ -146,7 +145,8 @@ public static class ServiceOrderEndpoints
         view.Order.ServiceType,
         view.Order.ScheduledWindow,
         view.Order.ContactInstruction,
-        view.Order.Status);
+        view.Order.Status,
+        view.Order.DueAt);
 
     private static IResult ToProblem(OperationResult<ServiceWorkerOrderView> result)
     {

@@ -4,6 +4,8 @@
 
 设计取舍和痛点来源见 [设计规格](docs/superpowers/specs/2026-08-24-community-elder-care-v1-design.md)。5 至 7 分钟现场流程见 [演示讲稿](docs/demo/demo-script.md)。
 
+新增人员派单、设备台账、运营报表及 CSV / 打印功能，使用说明与复验方式见 [社区运营管理](docs/demo/community-operations.md)。
+
 ## 已实现的端
 
 - `src/`：ASP.NET Core 10 API、领域规则、后台任务、审计和 SQLite 数据层。

@@ -138,7 +138,7 @@ onMounted(load)
           <td>{{ visit.confirmedSummary || '尚未确认' }}</td>
           <td>
             <button
-              v-if="auth.role === 'CommunityStaff' && visit.status === 'Assigned'"
+              v-if="auth.role === 'CommunityStaff' && visit.assignedStaffUserId === auth.userId && visit.status === 'Assigned'"
               class="secondary-button"
               type="button"
               @click="startVisit(visit)"
@@ -146,7 +146,7 @@ onMounted(load)
               开始探访
             </button>
             <button
-              v-if="auth.role === 'CommunityStaff' && visit.status === 'InProgress'"
+              v-if="auth.role === 'CommunityStaff' && visit.assignedStaffUserId === auth.userId && visit.status === 'InProgress'"
               class="primary-button"
               type="button"
               @click="openCompletion(visit)"

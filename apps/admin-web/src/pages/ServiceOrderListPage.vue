@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 
 import { apiClient, ApiError } from '@/api/apiClient'
+import { formatTime } from '@/api/operations'
 import type { ServiceOrderItem } from '@/api/contracts'
 import StatusNotice from '@/components/StatusNotice.vue'
 import AppBadge from '@/components/ui/AppBadge.vue'
@@ -65,6 +66,7 @@ onMounted(load)
           <th scope="col">老人</th>
           <th scope="col">服务类型</th>
           <th scope="col">预约时段</th>
+          <th scope="col">截止时间（北京时间）</th>
           <th scope="col">联系说明</th>
           <th scope="col">状态</th>
         </tr>
@@ -74,6 +76,7 @@ onMounted(load)
           <td>{{ order.elderDisplayName }}</td>
           <td>{{ order.serviceType }}</td>
           <td>{{ order.scheduledWindow }}</td>
+          <td>{{ formatTime(order.dueAt ?? null) }}</td>
           <td>{{ order.contactInstruction }}</td>
           <td>
             <AppBadge :tone="orderStatusTones[order.status] ?? 'neutral'">

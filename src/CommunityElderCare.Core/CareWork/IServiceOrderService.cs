@@ -9,7 +9,8 @@ public sealed record CreateServiceOrderCommand(
     string ScheduledWindow,
     string ContactInstruction,
     Guid AssignedWorkerUserId,
-    bool IsMandatory);
+    bool IsMandatory,
+    DateTimeOffset? DueAt = null);
 
 public sealed record ServiceWorkerOrderView(
     ServiceOrder Order,

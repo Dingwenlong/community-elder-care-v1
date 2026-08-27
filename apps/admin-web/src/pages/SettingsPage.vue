@@ -40,6 +40,21 @@ async function resetDemo() {
   }
 }
 
+async function loadScenario() {
+  if (submitting.value || !window.confirm('加载近期虚构任务与设备信号用于运营演示，不删除当前记录。是否继续？')) return
+  submitting.value = true
+  message.value = ''
+  errorMessage.value = ''
+  try {
+    const result = await apiClient.request<{ alreadyLoaded: boolean }>('/api/v1/demo/operations-scenario', {
+      method: 'POST', headers: { 'X-Confirm-Operations-Scenario': 'LOAD-OPERATIONS' },
+    })
+    await refresh()
+    message.value = result.alreadyLoaded ? '运营演示场景已存在，未重复添加。' : '运营演示场景已加载，可前往人员与任务、设备信号和运营报告查看。'
+  } catch (e) { errorMessage.value = e instanceof Error ? e.message : '场景加载失败。' }
+  finally { submitting.value = false }
+}
+
 onMounted(async () => {
   try { await refresh() } catch (error) {
     errorMessage.value = error instanceof ApiError ? error.message : '系统状态载入失败。'
@@ -61,6 +76,10 @@ onMounted(async () => {
         </article>
       </div>
     </section>
+    <section class="ops-panel"><h2>运营演示场景</h2><p>添加近期的虚构照料记录、多人任务和模拟设备信号。重复加载不会覆盖已有记录；恢复初始数据后可重新加载。</p>
+      <button type="button" :disabled="submitting" @click="loadScenario">加载运营演示场景</button>
+    </section>
+    <p v-if="message" class="success" role="status">{{ message }}</p>
     <section class="reset-section" aria-labelledby="reset-title">
       <h2 id="reset-title">恢复初始数据</h2>
       <p>清除当前业务记录，并恢复 20 份初始老人档案。当前档案数：{{ summary?.elderCount ?? '—' }}。</p>
@@ -69,7 +88,6 @@ onMounted(async () => {
       <button type="button" :disabled="!canReset" @click="resetDemo">
         {{ submitting ? '正在恢复' : '恢复 20 人初始数据' }}
       </button>
-      <p v-if="message" class="success" role="status">{{ message }}</p>
     </section>
   </section>
 </template>

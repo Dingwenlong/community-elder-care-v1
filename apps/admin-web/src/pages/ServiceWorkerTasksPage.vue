@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 
 import { apiClient, ApiError } from '@/api/apiClient'
+import { formatTime } from '@/api/operations'
 import type { ServiceOrderItem } from '@/api/contracts'
 import StatusNotice from '@/components/StatusNotice.vue'
 import AppBadge from '@/components/ui/AppBadge.vue'
@@ -87,6 +88,7 @@ onMounted(load)
       <p class="page-kicker">服务人员工作区</p>
       <h1>我的任务</h1>
       <p>这里只显示本人获派工单的最小执行信息。</p>
+      <button type="button" class="primary-button" :disabled="loading" @click="load">刷新我的任务</button>
     </header>
 
     <StatusNotice v-if="loading" kind="loading" title="正在载入我的任务" />
@@ -106,6 +108,7 @@ onMounted(load)
         </div>
         <dl>
           <div><dt>预约时段</dt><dd>{{ task.scheduledWindow }}</dd></div>
+          <div><dt>截止时间（北京时间）</dt><dd>{{ formatTime(task.dueAt ?? null) }}</dd></div>
           <div><dt>联系说明</dt><dd>{{ task.contactInstruction }}</dd></div>
           <div>
             <dt>当前状态</dt>

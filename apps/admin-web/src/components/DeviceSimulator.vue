@@ -4,7 +4,8 @@ import { ref } from 'vue'
 import { apiClient, ApiError } from '@/api/apiClient'
 import type { DeviceSignalResponse, DeviceSignalType } from '@/api/contracts'
 
-const demoDeviceId = '77777777-7777-7777-7777-777777777701'
+const props = withDefaults(defineProps<{ deviceId?: string; disabled?: boolean }>(), { deviceId: '77777777-7777-7777-7777-777777777701', disabled: false })
+const emit = defineEmits<{ sent: [] }>()
 const isSending = ref(false)
 const latest = ref<DeviceSignalResponse | null>(null)
 const errorMessage = ref('')
@@ -16,7 +17,7 @@ const actions: Array<{ label: string; signalType: DeviceSignalType; buttonState:
 ]
 
 async function send(signalType: DeviceSignalType, buttonState: string | null) {
-  if (isSending.value) return
+  if (isSending.value || props.disabled) return
   isSending.value = true
   latest.value = null
   errorMessage.value = ''
@@ -24,13 +25,14 @@ async function send(signalType: DeviceSignalType, buttonState: string | null) {
     latest.value = await apiClient.request<DeviceSignalResponse>('/api/v1/demo/device-signals', {
       method: 'POST',
       body: JSON.stringify({
-        deviceId: demoDeviceId,
+        deviceId: props.deviceId,
         eventId: crypto.randomUUID(),
         deviceTime: new Date().toISOString(),
         signalType,
         buttonState,
       }),
     })
+    emit('sent')
   } catch (error) {
     errorMessage.value =
       error instanceof ApiError ? error.message : '模拟信号未送达，请检查后端状态。'
@@ -52,12 +54,13 @@ async function send(signalType: DeviceSignalType, buttonState: string | null) {
     <p class="explanation">
       下列操作调用与 ESP32 相同的设备信号服务。它们只创建模拟记录，不连接真实设备、电话或联系人。
     </p>
+    <p v-if="disabled" class="error">当前设备已停用，不能发送模拟信号。</p>
     <div class="actions">
       <button
         v-for="action in actions"
         :key="action.signalType"
         type="button"
-        :disabled="isSending"
+        :disabled="isSending || disabled"
         @click="send(action.signalType, action.buttonState)"
       >
         {{ action.label }}

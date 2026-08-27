@@ -7,6 +7,7 @@ import DashboardPage from '@/pages/DashboardPage.vue'
 import DeviceSignalPage from '@/pages/DeviceSignalPage.vue'
 import AuditPage from '@/pages/AuditPage.vue'
 import ReportPage from '@/pages/ReportPage.vue'
+import OperationsPage from '@/pages/OperationsPage.vue'
 import SettingsPage from '@/pages/SettingsPage.vue'
 import ElderDetailPage from '@/pages/ElderDetailPage.vue'
 import ElderEditPage from '@/pages/ElderEditPage.vue'
@@ -56,6 +57,11 @@ const router = createRouter({
         {
           path: 'care-events/:eventId',
           component: CareEventDetailPage,
+          meta: { roles: ['CommunityStaff', 'Administrator'] },
+        },
+        {
+          path: 'operations',
+          component: OperationsPage,
           meta: { roles: ['CommunityStaff', 'Administrator'] },
         },
         {

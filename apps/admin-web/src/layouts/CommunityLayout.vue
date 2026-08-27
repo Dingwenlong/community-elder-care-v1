@@ -50,6 +50,7 @@ async function signOut() {
         <RouterLink v-if="!isServiceWorker" to="/dashboard">工作台</RouterLink>
         <RouterLink v-if="canViewElders" to="/elders">老人档案</RouterLink>
         <RouterLink v-if="canOperateCare" to="/care-events">照料事件</RouterLink>
+        <RouterLink v-if="canOperateCare" to="/operations">人员与任务</RouterLink>
         <RouterLink v-if="canOperateCare" to="/visits">探访任务</RouterLink>
         <RouterLink v-if="canOperateCare" to="/service-orders">服务工单</RouterLink>
         <RouterLink v-if="isAdministrator" to="/device-signals">设备信号</RouterLink>

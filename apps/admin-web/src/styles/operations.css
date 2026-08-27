@@ -1,0 +1,26 @@
+.operations-page { display: grid; gap: var(--space-4); }
+.ops-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); padding-bottom: var(--space-4); border-bottom: 1px solid var(--line); }
+.ops-heading h1 { margin: 0; font: var(--text-display); color: var(--ink-strong); }
+.ops-heading p { margin-bottom: 0; }
+.ops-heading .page-kicker { margin-top: 0; margin-bottom: var(--space-1); color: var(--action); font-size: 13px; font-weight: 700; }
+.ops-panel { margin: var(--space-4) 0; padding: var(--space-5); border: 1px solid var(--line); background: var(--surface); }
+.ops-panel h2 { margin-top: 0; }
+.ops-filters, .ops-actions { display: flex; flex-wrap: wrap; align-items: end; gap: var(--space-3); }
+.ops-filters label, .ops-form label { display: grid; gap: var(--space-2); font-weight: 600; }
+.ops-filters select, .ops-filters input:not([type=checkbox]), .ops-form select, .ops-form input:not([type=checkbox]), .ops-form textarea {
+  min-height: 44px; min-width: 0; max-width: 100%; padding: var(--space-2) var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font: inherit;
+}
+.ops-form { display: grid; gap: var(--space-4); max-width: 720px; margin-top: var(--space-4); }
+.ops-check { display: flex !important; align-items: center; gap: var(--space-2); min-height: 44px; }
+.ops-check input { width: 20px; height: 20px; }
+.ops-link { border: 0; background: transparent; color: var(--action); font: inherit; text-decoration: underline; cursor: pointer; min-height: 36px; padding: 0; }
+.ops-actions { align-items: center; }
+.ops-muted { color: var(--ink-muted); font-size: 13px; }
+.ops-error { color: var(--emergency); }
+.ops-success { color: var(--success); }
+.personnel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); }
+.personnel-item { padding: var(--space-4); border-left: 3px solid var(--action); background: var(--surface); }
+.personnel-item h3 { margin: 0; }
+.personnel-item p { margin: var(--space-2) 0; }
+.personnel-item strong { font-size: 24px; font-family: var(--font-numeric); }
+@media (max-width: 600px) { .ops-heading { flex-direction: column; } .ops-filters label { flex: 1 1 100%; } }

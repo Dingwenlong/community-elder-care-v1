@@ -43,6 +43,7 @@ async function renderWithRouter(path: string, role: DemoRole) {
           { path: 'dashboard', component: DashboardPage },
           { path: 'elders', component: { template: '<h1>老人档案</h1>' } },
           { path: 'care-events', component: { template: '<h1>照料事件</h1>' } },
+          { path: 'operations', component: { template: '<h1>人员与任务</h1>' } },
           { path: 'visits', component: { template: '<h1>探访任务</h1>' } },
           { path: 'service-orders', component: { template: '<h1>服务工单</h1>' } },
           { path: 'device-signals', component: { template: '<h1>设备信号</h1>' } },
@@ -99,7 +100,7 @@ describe('CommunityLayout', () => {
     expect(screen.getByRole('heading', { name: '老人档案' })).toBeTruthy()
   })
 
-  it('shows the complete eight-destination navigation only to administrators', async () => {
+  it('shows the complete operations navigation only to administrators', async () => {
     await renderWithRouter('/dashboard', 'Administrator')
 
     const sidebar = screen.getByRole('complementary', { name: '社区工作区导航' })
@@ -107,6 +108,7 @@ describe('CommunityLayout', () => {
       '工作台',
       '老人档案',
       '照料事件',
+      '人员与任务',
       '探访任务',
       '服务工单',
       '设备信号',

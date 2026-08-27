@@ -34,13 +34,15 @@ public sealed class ServiceOrderService(
             account =>
                 account.Id == command.AssignedWorkerUserId &&
                 account.Role == DemoRole.ServiceWorker &&
-                account.ElderId == careEvent.ElderId,
+                account.AreaCode == actor.AreaCode,
             cancellationToken);
         if (!validWorker)
         {
             return Failure("INVALID_ASSIGNEE", "Order assignee must be the elder-scoped service worker.");
         }
 
+        if (!await dbContext.ElderProfiles.AnyAsync(e => e.Id == careEvent.ElderId && e.AreaCode == actor.AreaCode, cancellationToken))
+            return Failure("FORBIDDEN_SCOPE", "本片区之外的事件不能派单。");
         var now = timeProvider.GetUtcNow();
         var orderId = await dbContext.ServiceOrders.AnyAsync(
             order => order.Id == DemoIdentitySeed.MainCareTaskId,
@@ -56,7 +58,8 @@ public sealed class ServiceOrderService(
             command.ContactInstruction,
             command.AssignedWorkerUserId,
             command.IsMandatory,
-            now);
+            now,
+            command.DueAt);
         if (!create.IsSuccess)
         {
             return Failure(create.ErrorCode!, create.ErrorMessage!);
