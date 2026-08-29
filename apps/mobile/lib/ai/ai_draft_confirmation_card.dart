@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../core/widgets/app_page.dart';
+import '../core/widgets/large_action_button.dart';
 import 'ai_api_gateway.dart';
 
 class AiDraftConfirmationCard extends StatelessWidget {
@@ -14,26 +17,17 @@ class AiDraftConfirmationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF4E5),
-        border: Border.all(color: const Color(0xFF9A5A00)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'AI 草稿',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 8),
-            Text(draft.generatedText, style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 12),
-            FilledButton(onPressed: onConfirm, child: const Text('确认提交')),
-          ],
-        ),
+    return AppStatusPanel(
+      icon: LucideIcons.filePenLine,
+      title: 'AI 草稿',
+      description: draft.generatedText,
+      tone: AppNoticeTone.warning,
+      elder: true,
+      child: LargeActionButton(
+        label: '确认提交',
+        semanticLabel: '确认提交 AI 生成的服务请求草稿',
+        icon: LucideIcons.send,
+        onPressed: onConfirm,
       ),
     );
   }

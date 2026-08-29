@@ -91,12 +91,13 @@ describe('CommunityLayout', () => {
     expect(screen.getByRole('link', { name: '我的任务' })).toBeTruthy()
   })
 
-  it('uses product copy while keeping the simulation safety notice', async () => {
+  it('uses product copy without repeating workspace notes in the sidebar', async () => {
     await renderWithRouter('/elders', 'CommunityStaff')
 
     expect(screen.queryByText('演示数据')).toBeNull()
     const sidebar = screen.getByRole('complementary', { name: '社区工作区导航' })
-    expect(sidebar.textContent).toContain('外部通知与救援操作均为模拟')
+    expect(sidebar.textContent).not.toContain('社区照料工作台')
+    expect(sidebar.textContent).not.toContain('外部通知与救援操作均为模拟')
     expect(screen.getByRole('heading', { name: '老人档案' })).toBeTruthy()
   })
 

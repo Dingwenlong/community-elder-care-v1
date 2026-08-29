@@ -58,7 +58,6 @@ async function signOut() {
         <RouterLink v-if="isAdministrator" to="/settings">系统设置</RouterLink>
         <RouterLink v-if="isServiceWorker" to="/my-tasks">我的任务</RouterLink>
       </nav>
-      <p class="sidebar-note">社区照料工作台<br />外部通知与救援操作均为模拟</p>
     </aside>
 
     <div class="community-workspace">

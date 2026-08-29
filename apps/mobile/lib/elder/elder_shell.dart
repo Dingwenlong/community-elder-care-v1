@@ -1,98 +1,92 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../core/outbox/outbox_sync_service.dart';
+import '../core/theme/app_theme.dart';
+import '../core/widgets/app_navigation.dart';
+import '../core/widgets/large_action_button.dart';
 
-class ElderShell extends ConsumerWidget {
-  const ElderShell({super.key});
+class ElderShell extends StatelessWidget {
+  const ElderShell({super.key, required this.navigationShell});
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final delivery = ref.watch(emergencyOutboxControllerProvider);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('老人首页'),
-        actions: [
-          TextButton(
-            onPressed: () => context.go('/elder/settings'),
-            child: const Text('设置'),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            const _CallSafetyBanner(),
-            const SizedBox(height: 20),
-            const Text(
-              '李奶奶，早上好',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 8),
-            const Text('请完成今天的平安确认。'),
-            const SizedBox(height: 28),
-            FilledButton(onPressed: () {}, child: const Text('我今天平安')),
-            const SizedBox(height: 16),
-            OutlinedButton(
-              onPressed: delivery.isSending
-                  ? null
-                  : () => ref
-                        .read(emergencyOutboxControllerProvider.notifier)
-                        .queueEmergency(),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF173B67),
-                side: const BorderSide(color: Color(0xFF173B67), width: 2),
-              ),
-              child: const Text('我需要帮助'),
-            ),
-            if (delivery.status != EmergencyDeliveryStatus.idle) ...[
-              const SizedBox(height: 16),
-              Text(
-                delivery.status == EmergencyDeliveryStatus.sent
-                    ? '已送达'
-                    : '尚未送达',
-                style: const TextStyle(fontWeight: FontWeight.w700),
-              ),
-            ],
-            if (delivery.status == EmergencyDeliveryStatus.unsent) ...[
-              const SizedBox(height: 8),
-              OutlinedButton(
-                onPressed: delivery.isSending
-                    ? null
-                    : () => ref
-                          .read(emergencyOutboxControllerProvider.notifier)
-                          .retry(),
-                child: const Text('重新发送'),
-              ),
-            ],
-          ],
-        ),
-      ),
+  final StatefulNavigationShell navigationShell;
+
+  static const _destinations = <AppNavigationDestination>[
+    AppNavigationDestination(
+      label: '首页',
+      icon: LucideIcons.house,
+      selectedIcon: LucideIcons.house,
+    ),
+    AppNavigationDestination(
+      label: '提醒',
+      icon: LucideIcons.bell,
+      selectedIcon: LucideIcons.bell,
+    ),
+    AppNavigationDestination(
+      label: '陪伴',
+      icon: LucideIcons.messageCircle,
+      selectedIcon: LucideIcons.messageCircle,
+    ),
+    AppNavigationDestination(
+      label: '我的',
+      icon: LucideIcons.userRound,
+      selectedIcon: LucideIcons.userRound,
+    ),
+  ];
+
+  void _select(int index) {
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
     );
   }
-}
-
-class _CallSafetyBanner extends StatelessWidget {
-  const _CallSafetyBanner();
 
   @override
   Widget build(BuildContext context) {
-    return const DecoratedBox(
-      decoration: BoxDecoration(
-        color: Color(0xFFE8F1FB),
-        border: Border.fromBorderSide(BorderSide(color: Color(0xFF7AA7D8))),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(12),
-        child: Text(
-          '模拟服务 · 不会真实拨号',
-          style: TextStyle(
-            color: Color(0xFF173B67),
-            fontWeight: FontWeight.w700,
-          ),
+    return Scaffold(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 560),
+          child: navigationShell,
         ),
+      ),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Material(
+            color: AppColors.surface,
+            child: Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                border: Border(top: BorderSide(color: AppColors.line)),
+              ),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                AppSpacing.md,
+                AppSpacing.lg,
+                AppSpacing.sm,
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 528),
+                  child: LargeActionButton(
+                    label: '我需要帮助',
+                    semanticLabel: '打开求助类别',
+                    icon: LucideIcons.circleHelp,
+                    danger: true,
+                    onPressed: () => context.push('/elder/help'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          AppBottomNavigation(
+            destinations: _destinations,
+            selectedIndex: navigationShell.currentIndex,
+            onSelected: _select,
+            elder: true,
+          ),
+        ],
       ),
     );
   }

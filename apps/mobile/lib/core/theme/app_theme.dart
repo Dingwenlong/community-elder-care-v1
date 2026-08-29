@@ -35,9 +35,11 @@ abstract final class AppColors {
   static const Color surfaceZebra = Color(0xFFFAFBFC);
   static const Color line = Color(0xFFD7DEE7);
   static const Color lineStrong = Color(0xFFB9C5D2);
+  static const Color focus = Color(0xFFFFB000);
 
   // 遮罩
   static const Color modalBackdrop = Color(0x73082747); // rgba(8,39,71,.45)
+  static const Color heroScrim = Color(0x80082747);
 }
 
 /// 事件等级配色，与管理端 EventLevelBadge 语义一致。
@@ -45,18 +47,18 @@ enum AppEventLevel { l1, l2, l3, closed }
 
 extension AppEventLevelColors on AppEventLevel {
   Color get fg => switch (this) {
-        AppEventLevel.l1 => AppColors.danger,
-        AppEventLevel.l2 => AppColors.warning,
-        AppEventLevel.l3 => AppColors.navy,
-        AppEventLevel.closed => AppColors.success,
-      };
+    AppEventLevel.l1 => AppColors.danger,
+    AppEventLevel.l2 => AppColors.warning,
+    AppEventLevel.l3 => AppColors.navy,
+    AppEventLevel.closed => AppColors.success,
+  };
 
   Color get bg => switch (this) {
-        AppEventLevel.l1 => AppColors.dangerSoft,
-        AppEventLevel.l2 => AppColors.warningSoft,
-        AppEventLevel.l3 => AppColors.primarySoft,
-        AppEventLevel.closed => AppColors.successSoft,
-      };
+    AppEventLevel.l1 => AppColors.dangerSoft,
+    AppEventLevel.l2 => AppColors.warningSoft,
+    AppEventLevel.l3 => AppColors.primarySoft,
+    AppEventLevel.closed => AppColors.successSoft,
+  };
 }
 
 /// 字体族。Android 实际命中系统思源黑体，fallback 链与令牌保持一致。
@@ -104,6 +106,31 @@ abstract final class AppTextStyles {
     fontWeight: FontWeight.w700,
     height: 1.3,
     color: AppColors.surface,
+  );
+
+  static const TextStyle pageTitle = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w700,
+    height: 1.25,
+    color: AppColors.inkStrong,
+  );
+  static const TextStyle sectionTitle = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w700,
+    height: 1.35,
+    color: AppColors.inkStrong,
+  );
+  static const TextStyle bodySmall = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    height: 1.5,
+    color: AppColors.inkMuted,
+  );
+  static const TextStyle caption = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    height: 1.4,
+    color: AppColors.inkMuted,
   );
 
   /// 数字专用（时钟、统计），等宽数字防跳动。
@@ -159,11 +186,11 @@ abstract final class AppShadows {
 
 /// 动效时长（毫秒）。读取 MediaQuery.disableAnimations 后应归零。
 abstract final class AppMotion {
-  static const Duration fast = Duration(milliseconds: 120);
+  static const Duration fast = Duration(milliseconds: 150);
   static const Duration normal = Duration(milliseconds: 200);
-  static const Duration slow = Duration(milliseconds: 250);
-  static const Duration emphasis = Duration(milliseconds: 300);
-  static const Duration celebration = Duration(milliseconds: 500);
+  static const Duration slow = Duration(milliseconds: 220);
+  static const Duration emphasis = Duration(milliseconds: 220);
+  static const Duration celebration = Duration(milliseconds: 220);
   static const Cubic easing = Cubic(0.2, 0, 0, 1);
 }
 
@@ -185,27 +212,67 @@ ThemeData buildAppTheme() {
     useMaterial3: true,
     scaffoldBackgroundColor: AppColors.paper,
     colorScheme: colorScheme,
+    focusColor: AppColors.focus,
+    fontFamilyFallback: AppFonts.displayFallback,
+    visualDensity: VisualDensity.standard,
+    textTheme: const TextTheme(
+      headlineLarge: AppTextStyles.pageTitle,
+      headlineMedium: AppTextStyles.sectionTitle,
+      bodyLarge: AppTextStyles.bodySmall,
+      bodyMedium: AppTextStyles.bodySmall,
+      bodySmall: AppTextStyles.caption,
+    ),
     appBarTheme: const AppBarTheme(
       centerTitle: false,
       backgroundColor: AppColors.surface,
       foregroundColor: AppColors.inkStrong,
       elevation: 0,
       scrolledUnderElevation: 0,
+      titleTextStyle: TextStyle(
+        color: AppColors.inkStrong,
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+      ),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         minimumSize: const Size(48, 52),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         shape: const RoundedRectangleBorder(borderRadius: AppRadius.mdAll),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         minimumSize: const Size(48, 52),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         shape: const RoundedRectangleBorder(borderRadius: AppRadius.mdAll),
       ),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        minimumSize: const Size(44, 44),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+      ),
+    ),
+    iconButtonTheme: IconButtonThemeData(
+      style: IconButton.styleFrom(minimumSize: const Size(44, 44)),
+    ),
     inputDecorationTheme: const InputDecorationTheme(
       border: OutlineInputBorder(borderRadius: AppRadius.smAll),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: AppRadius.smAll,
+        borderSide: BorderSide(color: AppColors.lineStrong),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: AppRadius.smAll,
+        borderSide: BorderSide(color: AppColors.primary, width: 2),
+      ),
+      filled: true,
+      fillColor: AppColors.surface,
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.lg,
+      ),
     ),
     cardTheme: const CardThemeData(
       color: AppColors.surface,

@@ -1,48 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+import '../core/widgets/app_navigation.dart';
 
 class FamilyShell extends StatelessWidget {
-  const FamilyShell({super.key});
+  const FamilyShell({super.key, required this.navigationShell});
+
+  final StatefulNavigationShell navigationShell;
+
+  static const _destinations = <AppNavigationDestination>[
+    AppNavigationDestination(
+      label: '最近状态',
+      icon: LucideIcons.house,
+      selectedIcon: LucideIcons.house,
+    ),
+    AppNavigationDestination(
+      label: '事件',
+      icon: LucideIcons.clipboardList,
+      selectedIcon: LucideIcons.clipboardList,
+    ),
+    AppNavigationDestination(
+      label: '照料记录',
+      icon: LucideIcons.fileText,
+      selectedIcon: LucideIcons.fileText,
+    ),
+    AppNavigationDestination(
+      label: '我的',
+      icon: LucideIcons.userRound,
+      selectedIcon: LucideIcons.userRound,
+    ),
+  ];
+
+  void _select(int index) {
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('家属首页'),
-        actions: [
-          TextButton(
-            onPressed: () => context.go('/family/settings'),
-            child: const Text('设置'),
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: const [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: Color(0xFFE8F1FB),
-              border: Border.fromBorderSide(
-                BorderSide(color: Color(0xFF7AA7D8)),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= 600) {
+          return Scaffold(
+            body: SafeArea(
+              child: Row(
+                children: [
+                  AppNavigationRail(
+                    destinations: _destinations,
+                    selectedIndex: navigationShell.currentIndex,
+                    onSelected: _select,
+                  ),
+                  const VerticalDivider(width: 1),
+                  Expanded(
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 920),
+                        child: navigationShell,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Text(
-                '授权范围内信息',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
-            ),
+          );
+        }
+        return Scaffold(
+          body: navigationShell,
+          bottomNavigationBar: AppBottomNavigation(
+            destinations: _destinations,
+            selectedIndex: navigationShell.currentIndex,
+            onSelected: _select,
           ),
-          SizedBox(height: 24),
-          Text(
-            '已授权照料摘要',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
-          ),
-          SizedBox(height: 8),
-          Text('这里只显示老人已授权的照料摘要。'),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -12,6 +12,7 @@ class LargeActionButton extends StatelessWidget {
     required this.onPressed,
     this.outlined = false,
     this.danger = false,
+    this.icon,
   });
 
   final String label;
@@ -19,24 +20,52 @@ class LargeActionButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool outlined;
   final bool danger;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
-    final child = Text(
-      label,
-      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+    final child = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (icon != null) ...[
+          Icon(icon, size: 28),
+          const SizedBox(width: AppSpacing.md),
+        ],
+        Flexible(
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+          ),
+        ),
+      ],
     );
     return Semantics(
+      container: true,
       button: true,
+      enabled: onPressed != null,
       label: semanticLabel,
+      onTap: onPressed,
       excludeSemantics: true,
       child: SizedBox(
         width: double.infinity,
-        height: 64,
         child: outlined
             ? OutlinedButton(
                 onPressed: onPressed,
                 style: OutlinedButton.styleFrom(
+                  foregroundColor: danger
+                      ? AppColors.danger
+                      : AppColors.primary,
+                  side: BorderSide(
+                    color: danger ? AppColors.danger : AppColors.primary,
+                    width: 2,
+                  ),
+                  minimumSize: const Size.fromHeight(64),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.md,
+                  ),
                   shape: const RoundedRectangleBorder(
                     borderRadius: AppRadius.xlAll,
                   ),
@@ -47,6 +76,11 @@ class LargeActionButton extends StatelessWidget {
                 onPressed: onPressed,
                 style: FilledButton.styleFrom(
                   backgroundColor: danger ? AppColors.danger : null,
+                  minimumSize: const Size.fromHeight(64),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.md,
+                  ),
                   shape: const RoundedRectangleBorder(
                     borderRadius: AppRadius.xlAll,
                   ),

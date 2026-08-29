@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/app_page.dart';
 import '../../core/widgets/delivery_status_banner.dart';
 import '../../core/widgets/large_action_button.dart';
 import '../../core/widgets/status_card.dart';
@@ -16,82 +18,68 @@ class ElderHomePage extends ConsumerWidget {
     final state = ref.watch(elderTodayControllerProvider);
     final controller = ref.read(elderTodayControllerProvider.notifier);
     final snapshot = state.snapshot;
-    final pendingReminders = snapshot?.reminders
+    final pendingReminders =
+        snapshot?.reminders
             .where((item) => item.state == 'Pending')
             .toList(growable: false) ??
         const <TodayReminder>[];
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('老人首页'),
-        actions: [
-          TextButton(
-            onPressed: () => context.go('/elder/settings'),
-            child: const Text('设置'),
-          ),
-        ],
       ),
       body: SafeArea(
         bottom: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.xl,
-            AppSpacing.xl,
-            AppSpacing.xl,
-            AppSpacing.xxxl,
-          ),
-          children: [
-            const _DemoModeBanner(),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              _dateLabel(snapshot?.serverTime ?? DateTime.now()),
-              style: AppTextStyles.secondary,
+        child: RefreshIndicator(
+          onRefresh: controller.load,
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              AppSpacing.lg,
+              AppSpacing.xl,
+              AppSpacing.huge,
             ),
-            const SizedBox(height: AppSpacing.xs),
-            const Text('李奶奶，早上好', style: AppTextStyles.display),
-            const SizedBox(height: AppSpacing.sm),
-            const Text('今日天气：晴，27°C', style: AppTextStyles.secondary),
-            const SizedBox(height: AppSpacing.xl),
-            _CheckInSection(state: state, controller: controller),
-            if (state.checkInDelivery == CheckInDeliveryStatus.sent) ...[
-              const SizedBox(height: AppSpacing.lg),
-              const DeliveryStatusBanner(message: '签到已送达', delivered: true),
-            ],
-            if (state.checkInDelivery == CheckInDeliveryStatus.unsent) ...[
-              const SizedBox(height: AppSpacing.lg),
-              DeliveryStatusBanner(
-                message: '签到尚未送达',
-                delivered: false,
-                onRetry: controller.retryCheckIn,
+            children: [
+              const _DemoModeBanner(),
+              const SizedBox(height: AppSpacing.xxl),
+              AppPageHeader(
+                eyebrow: _dateLabel(snapshot?.serverTime ?? DateTime.now()),
+                title: '李奶奶，早上好',
+                subtitle: '今日天气：晴，27°C',
+                elder: true,
               ),
+              const SizedBox(height: AppSpacing.xxl),
+              _CheckInSection(state: state, controller: controller),
+              if (state.checkInDelivery == CheckInDeliveryStatus.sent) ...[
+                const SizedBox(height: AppSpacing.lg),
+                const DeliveryStatusBanner(message: '签到已送达', delivered: true),
+              ],
+              if (state.checkInDelivery == CheckInDeliveryStatus.unsent) ...[
+                const SizedBox(height: AppSpacing.lg),
+                DeliveryStatusBanner(
+                  message: '签到尚未送达',
+                  delivered: false,
+                  onRetry: controller.retryCheckIn,
+                ),
+              ],
+              if (!state.isLoading &&
+                  state.errorMessage == null &&
+                  snapshot != null) ...[
+                const SizedBox(height: AppSpacing.huge),
+                _ReminderSection(reminders: pendingReminders),
+              ],
             ],
-            if (!state.isLoading &&
-                state.errorMessage == null &&
-                snapshot != null) ...[
-              const SizedBox(height: AppSpacing.xxxl),
-              _ReminderSection(reminders: pendingReminders),
-            ],
-            const SizedBox(height: AppSpacing.xxxl),
-            OutlinedButton(
-              onPressed: () => context.go('/elder/reminders'),
-              child: const Text('查看今日提醒'),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            OutlinedButton(
-              onPressed: () => context.go('/elder/chat'),
-              child: const Text('打开陪伴问答'),
-            ),
-          ],
+          ),
         ),
       ),
-      bottomNavigationBar: const _SosBar(),
     );
   }
 }
 
 String _dateLabel(DateTime date) => '${date.year}年${date.month}月${date.day}日';
 
-/// 平安签到状态区：加载 / 异常 / 未签到 / 已签到 四态大卡。
 class _CheckInSection extends StatelessWidget {
   const _CheckInSection({required this.state, required this.controller});
 
@@ -106,13 +94,13 @@ class _CheckInSection extends StatelessWidget {
     if (state.isLoading) {
       return const StatusCard(
         backgroundColor: AppColors.surface,
-        icon: Icons.favorite_border,
-        iconColor: AppColors.inkMuted,
+        icon: LucideIcons.heartPulse,
+        iconColor: AppColors.navy,
         title: '正在读取今日资料…',
-        titleColor: AppColors.inkMuted,
+        titleColor: AppColors.navy,
         child: Padding(
           padding: EdgeInsets.only(top: AppSpacing.sm),
-          child: Center(child: CircularProgressIndicator()),
+          child: LinearProgressIndicator(minHeight: 6),
         ),
       );
     }
@@ -120,18 +108,25 @@ class _CheckInSection extends StatelessWidget {
     if (state.errorMessage != null) {
       return StatusCard(
         backgroundColor: AppColors.dangerSoft,
-        icon: Icons.cloud_off_outlined,
+        icon: LucideIcons.cloudOff,
         iconColor: AppColors.danger,
         title: '暂时连不上社区',
         titleColor: AppColors.danger,
         subtitle: state.errorMessage!,
+        child: LargeActionButton(
+          label: '重新读取',
+          semanticLabel: '重新读取今日资料',
+          icon: LucideIcons.refreshCw,
+          outlined: true,
+          onPressed: controller.load,
+        ),
       );
     }
 
     if (checkedIn) {
-      return StatusCard(
+      return const StatusCard(
         backgroundColor: AppColors.successSoft,
-        icon: Icons.check_circle_outline,
+        icon: LucideIcons.circleCheck,
         iconColor: AppColors.success,
         title: '今天已签到',
         titleColor: AppColors.success,
@@ -139,25 +134,26 @@ class _CheckInSection extends StatelessWidget {
         child: LargeActionButton(
           label: '签到完成',
           semanticLabel: '今天已签到',
+          icon: LucideIcons.shieldCheck,
           onPressed: null,
         ),
       );
     }
 
-    final pendingCount = snapshot?.reminders
-            .where((item) => item.state == 'Pending')
-            .length ??
+    final pendingCount =
+        snapshot?.reminders.where((item) => item.state == 'Pending').length ??
         0;
     return StatusCard(
-      backgroundColor: AppColors.dangerSoft,
-      icon: Icons.notification_important_outlined,
-      iconColor: AppColors.danger,
+      backgroundColor: AppColors.primarySoft,
+      icon: LucideIcons.shieldAlert,
+      iconColor: AppColors.navy,
       title: '今天还没报平安',
-      titleColor: AppColors.danger,
+      titleColor: AppColors.navy,
       subtitle: '今天有 $pendingCount 项待办，请先确认平安。',
       child: LargeActionButton(
         label: '我今天平安',
         semanticLabel: '确认我今天平安',
+        icon: LucideIcons.shieldCheck,
         onPressed: state.checkInDelivery == CheckInDeliveryStatus.sending
             ? null
             : controller.confirmSafety,
@@ -166,14 +162,13 @@ class _CheckInSection extends StatelessWidget {
   }
 }
 
-/// 今日待办：卡片化列表，左侧 4px 色条按类型区分。
 class _ReminderSection extends StatelessWidget {
   const _ReminderSection({required this.reminders});
 
   final List<TodayReminder> reminders;
 
   Color _accentOf(String label) {
-    if (label.contains('药')) return AppColors.accentWarm;
+    if (label.contains('药')) return AppColors.accentWarmStrong;
     if (label.contains('探访')) return AppColors.primary;
     if (label.contains('随访')) return AppColors.success;
     return AppColors.navy;
@@ -184,97 +179,95 @@ class _ReminderSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('今日待办', style: AppTextStyles.title),
-        const SizedBox(height: AppSpacing.md),
+        const AppSectionHeading(
+          title: '今日待办',
+          description: '点开提醒，可朗读、完成或稍后处理。',
+          elder: true,
+        ),
+        const SizedBox(height: AppSpacing.lg),
         if (reminders.isEmpty)
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(AppSpacing.xxl),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: AppRadius.lgAll,
-              boxShadow: AppShadows.sm,
-            ),
-            child: const Text(
-              '今天没有待办，好好休息。',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.body,
-            ),
+          const AppInlineNotice(
+            message: '今天没有待办，好好休息。',
+            icon: LucideIcons.sun,
+            tone: AppNoticeTone.success,
+            elder: true,
           )
         else
-          for (final reminder in reminders) ...[
-            _ReminderCard(
-              reminder: reminder,
-              accent: _accentOf(reminder.label),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              border: Border.all(color: AppColors.line),
+              borderRadius: AppRadius.lgAll,
             ),
-            const SizedBox(height: AppSpacing.md),
-          ],
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              children: [
+                for (var index = 0; index < reminders.length; index++) ...[
+                  _ReminderRow(
+                    reminder: reminders[index],
+                    accent: _accentOf(reminders[index].label),
+                  ),
+                  if (index < reminders.length - 1)
+                    const Divider(height: 1, indent: 20, endIndent: 20),
+                ],
+              ],
+            ),
+          ),
       ],
     );
   }
 }
 
-class _ReminderCard extends StatelessWidget {
-  const _ReminderCard({required this.reminder, required this.accent});
+class _ReminderRow extends StatelessWidget {
+  const _ReminderRow({required this.reminder, required this.accent});
 
   final TodayReminder reminder;
   final Color accent;
 
   @override
   Widget build(BuildContext context) {
+    final dueAt = reminder.dueAt;
+    final time = dueAt == null
+        ? '今日'
+        : '${dueAt.hour.toString().padLeft(2, '0')}:${dueAt.minute.toString().padLeft(2, '0')}';
     return Material(
       color: AppColors.surface,
-      borderRadius: AppRadius.lgAll,
       child: InkWell(
-        borderRadius: AppRadius.lgAll,
         onTap: () => context.go('/elder/reminders'),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 64),
-          decoration: BoxDecoration(
-            borderRadius: AppRadius.lgAll,
-            border: Border(left: BorderSide(color: accent, width: 4)),
-            boxShadow: AppShadows.sm,
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.md,
-          ),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 76),
           child: Row(
             children: [
+              Container(width: 5, height: 76, color: accent),
+              const SizedBox(width: AppSpacing.lg),
+              Icon(LucideIcons.clock, color: accent, size: 30),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
-                child: Text(reminder.label, style: AppTextStyles.body),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(reminder.label, style: AppTextStyles.body),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        time,
+                        style: AppTextStyles.secondary.copyWith(
+                          color: AppColors.ink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const Icon(
-                Icons.chevron_right,
-                size: 32,
+                LucideIcons.chevronRight,
+                size: 30,
                 color: AppColors.inkMuted,
               ),
+              const SizedBox(width: AppSpacing.lg),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-/// 底部常驻 SOS 求助栏：滚动时始终可见。
-class _SosBar extends StatelessWidget {
-  const _SosBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
-          border: Border(top: BorderSide(color: AppColors.line)),
-        ),
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: LargeActionButton(
-          label: '我需要帮助',
-          semanticLabel: '打开求助类别',
-          danger: true,
-          onPressed: () => context.go('/elder/help'),
         ),
       ),
     );
@@ -286,21 +279,11 @@ class _DemoModeBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.primarySoft,
-        borderRadius: AppRadius.smAll,
-        border: Border.all(color: AppColors.primary),
-      ),
-      child: const Text(
-        '模拟服务 · 不会真实拨号',
-        style: TextStyle(
-          color: AppColors.navy,
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
+    return const AppInlineNotice(
+      message: '模拟服务 · 不会真实拨号',
+      icon: LucideIcons.flaskConical,
+      tone: AppNoticeTone.info,
+      elder: true,
     );
   }
 }

@@ -21,10 +21,7 @@ class AppBadge extends StatelessWidget {
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(AppRadius.pill),
-      ),
+      decoration: BoxDecoration(color: bg, borderRadius: AppRadius.smAll),
       child: Text(
         label,
         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: fg),

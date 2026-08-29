@@ -54,16 +54,18 @@ void main() {
       await tester.tap(find.text('发送'));
       await pumpUntilText(tester, 'AI 草稿');
       expect(gateway.confirmedDraftIds, isEmpty);
-      final confirmDraftButton = find.text('确认提交');
-      await scrollDown(tester);
-      await tester.tap(confirmDraftButton);
+      final confirmDraftButton = find.bySemanticsLabel(
+        '确认提交 AI 生成的服务请求草稿',
+      );
+      await tapVisible(tester, confirmDraftButton);
       await pumpUntilText(tester, '服务请求已确认提交');
       expect(gateway.confirmedDraftIds, ['draft-1']);
 
       expect(gateway.confirmedMemoryIds, isEmpty);
-      final confirmMemoryButton = find.text('确认记忆');
-      await scrollDown(tester);
-      await tester.tap(confirmMemoryButton);
+      final confirmMemoryButton = find.bySemanticsLabel(
+        '确认保存这条 AI 记忆',
+      );
+      await tapVisible(tester, confirmMemoryButton);
       await pumpUntilText(tester, '记忆已确认');
       expect(gateway.confirmedMemoryIds, ['memory-1']);
 
@@ -71,17 +73,17 @@ void main() {
       GoRouter.of(chatContext).go('/elder/settings');
       await pumpUntilText(tester, '喜欢参加社区书法活动');
       final deleteMemoryButton = find.text('删除记忆');
-      await scrollDown(tester);
-      await tester.tap(deleteMemoryButton);
+      await tapVisible(tester, deleteMemoryButton);
       await pumpUntilMissing(tester, '喜欢参加社区书法活动');
       expect(gateway.deletedMemoryIds, ['memory-1']);
     },
   );
 }
 
-Future<void> scrollDown(WidgetTester tester) async {
-  await tester.drag(pageScrollable(), const Offset(0, -320));
+Future<void> tapVisible(WidgetTester tester, Finder finder) async {
+  await tester.ensureVisible(finder);
   await tester.pumpAndSettle();
+  await tester.tap(finder);
 }
 
 Finder pageScrollable() => find

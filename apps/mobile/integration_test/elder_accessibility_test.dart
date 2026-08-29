@@ -38,6 +38,10 @@ void main() {
 
     expect(find.bySemanticsLabel(RegExp('确认我今天平安')), findsOneWidget);
     expect(find.bySemanticsLabel(RegExp('打开求助类别')), findsOneWidget);
+    expect(
+      tester.getSize(find.widgetWithText(FilledButton, '我今天平安')).height,
+      greaterThanOrEqualTo(64),
+    );
     expectControlsAtLeast44Dp(tester);
 
     final homeContext = tester.element(find.text('老人首页'));

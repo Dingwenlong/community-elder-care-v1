@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../auth/login_page.dart';
 import '../auth/session_controller.dart';
 import '../core/api/contracts.dart';
+import '../core/theme/app_theme.dart';
+import '../core/widgets/app_page.dart';
 import '../elder/home/elder_home_page.dart';
 import '../elder/help/help_category_page.dart';
 import '../elder/chat/elder_chat_page.dart';
 import '../elder/reminders/reminder_page.dart';
 import '../elder/settings/elder_settings_page.dart';
+import '../elder/elder_shell.dart';
 import '../family/events/family_event_detail_page.dart';
 import '../family/events/family_event_list_page.dart';
 import '../family/home/family_home_page.dart';
 import '../family/records/family_care_records_page.dart';
 import '../family/settings/family_settings_page.dart';
+import '../family/family_shell.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final session = ref.watch(sessionControllerProvider);
@@ -35,46 +40,93 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     },
     routes: [
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
-      GoRoute(
-        path: '/elder/home',
-        builder: (context, state) => const ElderHomePage(),
-      ),
-      GoRoute(
-        path: '/elder/reminders',
-        builder: (context, state) => const ReminderPage(),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            ElderShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/elder/home',
+                builder: (context, state) => const ElderHomePage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/elder/reminders',
+                builder: (context, state) => const ReminderPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/elder/chat',
+                builder: (context, state) => const ElderChatPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/elder/settings',
+                builder: (context, state) => const ElderSettingsPage(),
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         path: '/elder/help',
         builder: (context, state) => const HelpCategoryPage(),
       ),
-      GoRoute(
-        path: '/elder/chat',
-        builder: (context, state) => const ElderChatPage(),
-      ),
-      GoRoute(
-        path: '/family/home',
-        builder: (context, state) => const FamilyHomePage(),
-      ),
-      GoRoute(
-        path: '/family/events',
-        builder: (context, state) => const FamilyEventListPage(),
-      ),
-      GoRoute(
-        path: '/family/events/:eventId',
-        builder: (context, state) =>
-            FamilyEventDetailPage(eventId: state.pathParameters['eventId']!),
-      ),
-      GoRoute(
-        path: '/family/records',
-        builder: (context, state) => const FamilyCareRecordsPage(),
-      ),
-      GoRoute(
-        path: '/elder/settings',
-        builder: (context, state) => const ElderSettingsPage(),
-      ),
-      GoRoute(
-        path: '/family/settings',
-        builder: (context, state) => const FamilySettingsPage(),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            FamilyShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/family/home',
+                builder: (context, state) => const FamilyHomePage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/family/events',
+                builder: (context, state) => const FamilyEventListPage(),
+                routes: [
+                  GoRoute(
+                    path: ':eventId',
+                    builder: (context, state) => FamilyEventDetailPage(
+                      eventId: state.pathParameters['eventId']!,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/family/records',
+                builder: (context, state) => const FamilyCareRecordsPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/family/settings',
+                builder: (context, state) => const FamilySettingsPage(),
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         path: '/use-community-web',
@@ -95,44 +147,6 @@ String _homeFor(SessionState? session) => switch (session?.role) {
   null => '/login',
 };
 
-class DemoSettingsPage extends ConsumerWidget {
-  const DemoSettingsPage({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('账号设置')),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              color: Color(0xFFE8F1FB),
-              border: Border.fromBorderSide(
-                BorderSide(color: Color(0xFF7AA7D8)),
-              ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Text(
-                '当前账号',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          FilledButton(
-            onPressed: () => ref
-                .read(sessionControllerProvider.notifier)
-                .switchDemoAccount(),
-            child: const Text('切换账号'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class CommunityWebRequiredPage extends ConsumerWidget {
   const CommunityWebRequiredPage({super.key});
 
@@ -141,24 +155,48 @@ class CommunityWebRequiredPage extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  '请使用社区管理端',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 12),
-                const Text('当前角色不进入老人或家属 App。'),
-                const SizedBox(height: 24),
-                OutlinedButton(
-                  onPressed: () =>
-                      ref.read(sessionControllerProvider.notifier).logout(),
-                  child: const Text('返回登录'),
-                ),
-              ],
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpacing.xxl),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 520),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    height: 132,
+                    alignment: Alignment.centerLeft,
+                    color: AppColors.navy,
+                    padding: const EdgeInsets.all(AppSpacing.xxl),
+                    child: const Icon(
+                      LucideIcons.building2,
+                      size: 58,
+                      color: AppColors.surface,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xxl),
+                  const AppPageHeader(
+                    eyebrow: '工作人员入口',
+                    title: '请使用社区管理端',
+                    subtitle: '当前角色不进入老人或家属 App。',
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  const AppInlineNotice(
+                    message: '社区工作人员、服务人员和管理员请在电脑浏览器中继续操作。',
+                    icon: LucideIcons.monitor,
+                    tone: AppNoticeTone.info,
+                  ),
+                  const SizedBox(height: AppSpacing.xxl),
+                  OutlinedButton.icon(
+                    onPressed: () =>
+                        ref.read(sessionControllerProvider.notifier).logout(),
+                    icon: const Icon(LucideIcons.arrowLeft),
+                    label: const Text('返回登录'),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(54),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

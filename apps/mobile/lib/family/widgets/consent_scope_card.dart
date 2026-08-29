@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/api/contracts.dart';
+import '../../core/theme/app_theme.dart';
 
 class ConsentScopeCard extends StatelessWidget {
   const ConsentScopeCard({
@@ -14,32 +16,45 @@ class ConsentScopeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: const Color(0xFFE8F1FB),
-        border: Border.all(color: const Color(0xFF7AA7D8)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              '当前授权范围',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              grantedFields.map(consentFieldLabel).join('、'),
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              '有效期至 ${expiresAt.year}年${expiresAt.month}月${expiresAt.day}日',
-              style: const TextStyle(fontSize: 16),
-            ),
-          ],
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.primarySoft,
+        border: Border(
+          left: BorderSide(color: AppColors.primary, width: 4),
+          top: BorderSide(color: AppColors.line),
+          right: BorderSide(color: AppColors.line),
+          bottom: BorderSide(color: AppColors.line),
         ),
+      ),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            LucideIcons.shieldCheck,
+            color: AppColors.primary,
+            size: 28,
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('当前授权范围', style: AppTextStyles.sectionTitle),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  grantedFields.map(consentFieldLabel).join('、'),
+                  style: AppTextStyles.bodySmall.copyWith(color: AppColors.ink),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  '有效期至 ${expiresAt.year}年${expiresAt.month}月${expiresAt.day}日',
+                  style: AppTextStyles.caption.copyWith(color: AppColors.ink),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

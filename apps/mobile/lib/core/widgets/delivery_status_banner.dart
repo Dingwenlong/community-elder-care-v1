@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+import '../theme/app_theme.dart';
+import 'app_page.dart';
 
 class DeliveryStatusBanner extends StatelessWidget {
   const DeliveryStatusBanner({
@@ -17,33 +21,19 @@ class DeliveryStatusBanner extends StatelessWidget {
     return Semantics(
       liveRegion: true,
       label: message,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: delivered ? const Color(0xFFE8F5E9) : const Color(0xFFFFF4E5),
-          border: Border.all(
-            color: delivered
-                ? const Color(0xFF2E7D32)
-                : const Color(0xFF9A5A00),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  message,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+      child: AppInlineNotice(
+        message: message,
+        icon: delivered ? LucideIcons.circleCheck : LucideIcons.cloudOff,
+        tone: delivered ? AppNoticeTone.success : AppNoticeTone.warning,
+        elder: true,
+        liveRegion: true,
+        action: onRetry == null
+            ? null
+            : TextButton(
+                onPressed: onRetry,
+                style: TextButton.styleFrom(foregroundColor: AppColors.warning),
+                child: const Text('重新发送'),
               ),
-              if (onRetry != null)
-                TextButton(onPressed: onRetry, child: const Text('重新发送')),
-            ],
-          ),
-        ),
       ),
     );
   }
