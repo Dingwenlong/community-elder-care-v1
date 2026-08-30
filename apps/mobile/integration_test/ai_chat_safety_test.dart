@@ -54,17 +54,13 @@ void main() {
       await tester.tap(find.text('发送'));
       await pumpUntilText(tester, 'AI 草稿');
       expect(gateway.confirmedDraftIds, isEmpty);
-      final confirmDraftButton = find.bySemanticsLabel(
-        '确认提交 AI 生成的服务请求草稿',
-      );
+      final confirmDraftButton = find.bySemanticsLabel('确认提交 AI 生成的服务请求草稿');
       await tapVisible(tester, confirmDraftButton);
       await pumpUntilText(tester, '服务请求已确认提交');
       expect(gateway.confirmedDraftIds, ['draft-1']);
 
       expect(gateway.confirmedMemoryIds, isEmpty);
-      final confirmMemoryButton = find.bySemanticsLabel(
-        '确认保存这条 AI 记忆',
-      );
+      final confirmMemoryButton = find.bySemanticsLabel('确认保存这条 AI 记忆');
       await tapVisible(tester, confirmMemoryButton);
       await pumpUntilText(tester, '记忆已确认');
       expect(gateway.confirmedMemoryIds, ['memory-1']);
@@ -81,8 +77,23 @@ void main() {
 }
 
 Future<void> tapVisible(WidgetTester tester, Finder finder) async {
+  final scrollable = pageScrollable();
   await tester.ensureVisible(finder);
   await tester.pumpAndSettle();
+
+  final safeViewport = tester.getRect(scrollable).deflate(8);
+  final targetCenter = tester.getCenter(finder);
+  final correction = switch (targetCenter.dy) {
+    final dy when dy < safeViewport.top => safeViewport.top - dy,
+    final dy when dy > safeViewport.bottom => safeViewport.bottom - dy,
+    _ => 0.0,
+  };
+  if (correction != 0) {
+    await tester.drag(scrollable, Offset(0, correction));
+    await tester.pumpAndSettle();
+  }
+
+  expect(safeViewport.contains(tester.getCenter(finder)), isTrue);
   await tester.tap(finder);
 }
 

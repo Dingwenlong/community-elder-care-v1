@@ -9,7 +9,8 @@ void main() {
     app.main();
     await tester.pumpAndSettle();
 
-    expect(find.text('社区独居老人照料系统'), findsOneWidget);
+    expect(find.text('安邻照料'), findsOneWidget);
+    expect(find.text('社区独居老人照料协同系统'), findsOneWidget);
     expect(find.text('账号'), findsOneWidget);
     expect(find.text('密码'), findsOneWidget);
     expect(find.text('登录'), findsOneWidget);

@@ -12,7 +12,7 @@ describe('App', () => {
         {
           path: '/',
           component: {
-            template: '<main><h1>社区独居老人照料系统</h1><span>社区工作台</span></main>',
+            template: '<main><h1>安邻照料</h1><span>社区工作台</span></main>',
           },
         },
       ],
@@ -21,7 +21,7 @@ describe('App', () => {
     await router.isReady()
     render(App, { global: { plugins: [router] } })
 
-    expect(screen.getByRole('heading', { name: '社区独居老人照料系统' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: '安邻照料' })).toBeTruthy()
     expect(screen.getByText('社区工作台')).toBeTruthy()
   })
 })

@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $htmlPath = Join-Path $projectRoot 'index.html'
-$pdfPath = Join-Path $projectRoot '社区独居老人照料系统-项目开发全流程记录.pdf'
+$pdfPath = Join-Path $projectRoot '安邻照料-项目开发全流程记录.pdf'
 $chromePath = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
 $profilePath = Join-Path $env:TEMP 'community-care-pdf-chrome'
 

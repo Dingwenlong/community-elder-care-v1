@@ -93,7 +93,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text(
-                                      '社区照料',
+                                      '社区独居老人照料协同系统',
                                       style: TextStyle(
                                         color: AppColors.accentWarm,
                                         fontSize: 16,
@@ -103,7 +103,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     ),
                                     const SizedBox(height: AppSpacing.sm),
                                     Text(
-                                      '社区独居老人照料系统',
+                                      '安邻照料',
                                       style: AppTextStyles.pageTitle.copyWith(
                                         color: AppColors.surface,
                                         fontSize: 30,

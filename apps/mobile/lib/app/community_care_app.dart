@@ -18,7 +18,7 @@ class CommunityCareApp extends ConsumerWidget {
     final fontScale = ref.watch(elderFontScaleProvider);
     final session = ref.watch(sessionControllerProvider);
     return MaterialApp.router(
-      title: '社区独居老人照料系统',
+      title: '安邻照料｜社区独居老人照料协同系统',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       builder: (context, child) {

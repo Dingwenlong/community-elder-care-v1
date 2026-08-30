@@ -39,7 +39,8 @@ async function submit() {
       <img class="login-context__cover" :src="loginCommunityVisit" alt="" aria-hidden="true" />
       <div class="login-context__scrim" aria-hidden="true"></div>
       <div class="login-context__content">
-        <h1 id="product-name">社区独居老人照料系统</h1>
+        <h1 id="product-name">安邻照料</h1>
+        <p class="product-subtitle">社区独居老人照料协同系统</p>
         <p>社区工作人员在这里处理安全确认、探访和服务记录。</p>
       </div>
     </section>
@@ -116,6 +117,13 @@ async function submit() {
   margin: 0;
   color: white;
   font-size: clamp(34px, 4vw, 54px);
+}
+
+.product-subtitle {
+  margin: var(--space-3) 0 var(--space-2);
+  color: #d9e7f6;
+  font-size: clamp(17px, 1.6vw, 22px);
+  font-weight: 700;
 }
 
 .login-panel {

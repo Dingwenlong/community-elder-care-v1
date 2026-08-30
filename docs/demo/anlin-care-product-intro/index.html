@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<link rel="icon" href="data:,">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>社区独居老人照料系统 · 产品介绍</title>
+<title>安邻照料 · 产品介绍</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&family=Noto+Sans+SC:wght@200;300;400;500;700;900&display=swap" rel="stylesheet">
@@ -1235,8 +1236,8 @@
   .system-role-row article:first-child{border-left:0;padding-left:0}
   .system-role-row h4{font-size:max(16px,1vw);font-weight:600;margin-bottom:.3vh}
   .system-role-row p{font-size:max(14px,.82vw);line-height:1.4;color:var(--text-secondary)}
-  [data-slide-id="care-event-timeline"] .timeline-h .tl-row{grid-template-columns:repeat(7,1fr)}
-  [data-slide-id="care-event-timeline"] .timeline-h .th-node .label{width:10.5vw}
+  [data-slide-id="care-path"] .timeline-h .tl-row{grid-template-columns:repeat(7,1fr)}
+  [data-slide-id="care-path"] .timeline-h .th-node .label{width:10.5vw}
   .timeline-foot{border-top:1px solid var(--border-subtle);padding-top:1.8vh;margin-bottom:3vh;display:flex;justify-content:space-between;gap:3vw;font-size:max(15px,.86vw);line-height:1.5;color:var(--text-secondary)}
   .brief-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:32vh 21vh;gap:1.5vh 1.2vw;flex:1;min-height:0;margin-top:4.7vh}
   .brief-card{background:var(--grey-1);display:flex;flex-direction:column;min-height:0;border-radius:0;overflow:hidden}
@@ -1277,6 +1278,8 @@
   .tech-boundary{margin-top:2.5vh;padding-top:1.1vh;border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;gap:3vw;font-size:max(14px,.82vw);line-height:1.4;color:var(--text-secondary)}
   .slide-image-caption{font-family:var(--mono);font-size:14px;font-weight:500;letter-spacing:.08em;color:var(--text-helper)}
   @media print{
+    :root{--sans:"Segoe UI",Arial,sans-serif;--sans-zh:"Microsoft YaHei UI","Microsoft YaHei",sans-serif;--mono:Consolas,"Courier New",monospace}
+    .chrome-min,.chrome-min *{font-family:Arial,"Microsoft YaHei",sans-serif!important;font-feature-settings:normal!important}
     @page{size:13.333333in 7.5in;margin:0}
     html,body{width:13.333333in!important;height:auto!important;overflow:visible!important;background:#fff!important}
     canvas.bg,#nav,#hint,#overview,#ppt-presenter,#ppt-shortcuts{display:none!important}
@@ -1284,6 +1287,7 @@
     .slide{width:13.333333in!important;height:7.5in!important;min-height:7.5in!important;display:flex!important;position:relative!important;break-after:page!important;page-break-after:always!important;padding:0!important}
     .slide:last-child{break-after:auto!important;page-break-after:auto!important}
     .canvas-card{width:13.333333in!important;height:7.5in!important}
+    [data-anim],[data-anim] *{opacity:1!important;transform:none!important;clip-path:none!important;filter:none!important;visibility:visible!important}
     *{animation:none!important;transition:none!important}
   }
 
@@ -1329,20 +1333,20 @@
 </div>
 
 <div id="deck">
-<section class="slide accent" data-animate="hero" data-layout="SWISS-COVER-ASCII" data-slide-id="cover">
+<section class="slide accent" data-animate="hero" data-layout="SWISS-COVER-ASCII" data-slide-id="brand-cover">
   <div class="canvas-card">
     <canvas class="ascii-bg" aria-hidden="true"></canvas>
     <div class="chrome-min">
-      <div class="l">Community Care · Product Introduction</div>
-      <div class="r">Swiss · IKB · 01 / 10</div>
+      <div class="l">Anlin Care · Product Introduction</div>
+      <div class="r">Swiss · IKB · 01 / 08</div>
     </div>
     <div class="nav-safe-bottom-tight" style="flex:1;padding-top:0;display:grid;grid-template-rows:auto 1fr auto;gap:2.6vh">
-      <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.78);letter-spacing:.22em">社区照料闭环 / Community Care Loop</div>
-      <h1 data-anim="title" style="align-self:center;font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(8vw,14vh);line-height:.96;letter-spacing:-.035em;color:#fff">社区独居老人<br>照料系统</h1>
+      <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.78);letter-spacing:.22em">社区日常照料协同 / COMMUNITY CARE</div>
+      <h1 data-anim="title" style="align-self:center;font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(8.4vw,14.6vh);line-height:.96;letter-spacing:-.035em;color:#fff">安邻照料</h1>
       <div data-anim="bottom" style="display:grid;grid-template-rows:auto auto;gap:1.6vh;border-top:1px solid rgba(255,255,255,.22);padding-top:2vh">
-        <div data-anim="lead" class="lead" style="max-width:58ch;color:rgba(255,255,255,.88);font-weight:400">把平安确认、任务协同与运营复盘连成一条照料闭环。</div>
+        <div data-anim="lead" class="lead" style="max-width:58ch;color:rgba(255,255,255,.88);font-weight:400">社区独居老人照料协同系统</div>
         <div style="display:flex;justify-content:space-between;align-items:end">
-          <div class="t-meta" style="color:rgba(255,255,255,.62)">合成数据 · 模拟外部动作 · 人工完成照护</div>
+          <div class="t-meta" style="color:rgba(255,255,255,.62)">平安确认、任务跟进和运营记录，放在同一套社区工作流程里。</div>
           <div class="t-meta" style="color:rgba(255,255,255,.62)">→ Swipe / Arrow Keys</div>
         </div>
       </div>
@@ -1350,214 +1354,143 @@
   </div>
 </section>
 
-<section class="slide" data-animate="statement" data-layout="S03" data-slide-id="pain-point">
+<section class="slide" data-animate="statement" data-layout="S03" data-slide-id="daily-question">
   <div class="canvas-card">
-    <div class="chrome-min"><div class="l">01 · Why it matters</div><div class="r">02 / 10</div></div>
+    <div class="chrome-min"><div class="l">01 · Daily question</div><div class="r">02 / 08</div></div>
     <div class="community-statement nav-safe-bottom-tight">
-      <h1 data-anim="statement"><span>信号被看见，</span><br><span style="color:var(--accent)">照料才刚开始。</span></h1>
+      <h1 data-anim="statement"><span>老人没有签到，</span><br><span style="color:var(--accent)">社区接下来做什么？</span></h1>
       <div data-anim="anchor" class="community-statement-note">
-        <span>漏签、设备信号、家属反馈常分散在不同入口。</span>
-        <span>软件能连接责任、任务与复盘，不能替代线下人员。</span>
+        <span>漏签、求助和设备信号需要先合并核实，避免同一件事重复建单。</span>
+        <span>受理、探访、工单、回访都要明确负责人和完成时间。</span>
+        <span>家属只在授权范围内查看进展；信号本身不会自动触发救援。</span>
       </div>
     </div>
   </div>
 </section>
 
-<section class="slide" data-animate="image-hero" data-layout="S22" data-slide-id="care-network">
-  <div class="canvas-card" style="padding:0;display:flex;flex-direction:column;overflow:hidden">
-    <div data-anim="img" style="position:relative;flex:0 0 59%;overflow:hidden;background:var(--grey-1)">
-      <img src="images/03-care-scene.png" data-image-slot="s22-hero-21x9" alt="社区工作人员与老人交谈的合成场景" loading="eager" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%">
-      <div class="chrome-min" style="position:absolute;top:0;left:0;right:0;color:rgba(10,10,10,.62);padding:4vh 5vw 0">
-        <div class="l">02 · Solution at a glance</div><div class="r">03 / 10</div>
-      </div>
-      <div data-anim="title-block" style="position:absolute;left:5vw;top:10vh;background:var(--paper);padding:3vh 3vw;max-width:41vw">
-        <div style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(4.8vw,8.4vh);line-height:1;letter-spacing:-.035em;color:var(--text-primary)">一条事件链<br>串起五种角色</div>
-      </div>
-    </div>
-    <div data-anim="kpi" class="image-hero-body">
-      <div class="community-lead" style="max-width:47ch">老人、家属、社区、服务人员和管理员围绕同一条照料事件协作，每一步都有负责人、时间和结果。</div>
-      <div class="image-hero-stats" style="gap:4vw">
-        <div style="display:flex;flex-direction:column;gap:.5vh"><div style="height:1px;background:var(--ink)"></div><div class="t-meta">Synthetic profiles</div><div class="kpi-hero">20</div><p class="t-body-sm">固定种子生成，随时可重置</p></div>
-        <div style="display:flex;flex-direction:column;gap:.5vh"><div style="height:1px;background:var(--ink)"></div><div class="t-meta">Scoped roles</div><div class="kpi-hero">5</div><p class="t-body-sm">按角色、片区和当前任务授权</p></div>
-        <div style="display:flex;flex-direction:column;gap:.5vh"><div style="height:1px;background:var(--accent)"></div><div class="t-meta">Unified record</div><div class="kpi-hero accent">1</div><p class="t-body-sm">事件贯穿确认、处理与复盘</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="slide" data-animate="loop-form" data-layout="S14" data-slide-id="human-led-loop">
+<section class="slide" data-animate="timeline-walk" data-layout="S11" data-slide-id="care-path">
   <div class="canvas-card">
-    <div class="chrome-min tight"><div class="l">03 · Human-led loop</div><div class="r">04 / 10</div></div>
+    <div class="chrome-min tight"><div class="l">02 · Care path</div><div class="r">03 / 08</div></div>
     <div data-anim="line" style="display:flex;flex-direction:column;gap:1vh">
-      <div class="t-meta">软件负责连接，人员负责判断</div>
-      <h2 class="community-title">从异常信号到照料复盘</h2>
-    </div>
-    <div data-anim="up" class="loop-diagram">
-      <div class="loop-steps">
-        <div class="loop-step"><div class="num">01</div><div><h3>发现</h3><p>漏签、SOS、服务需求或 AI 候选提示进入事件。</p></div></div>
-        <div class="loop-step"><div class="num">02</div><div><h3>受理</h3><p>社区人员核实情况，承担当前事件责任。</p></div></div>
-        <div class="loop-step"><div class="num">03</div><div><h3>执行</h3><p>安排探访、服务工单和回访，并按任务归属操作。</p></div></div>
-        <div class="loop-step"><div class="num">04</div><div><h3>复盘</h3><p>满足强制任务与回访条件后人工结案，审计留痕。</p></div></div>
-      </div>
-      <div class="loop-visual">
-        <svg viewBox="0 0 520 420" aria-hidden="true">
-          <defs><marker id="loop-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#002FA7"/></marker></defs>
-          <circle cx="260" cy="210" r="154" fill="none" stroke="#d4d4d2" stroke-width="2"/>
-          <path d="M260 56 A154 154 0 0 1 414 210" fill="none" stroke="#002FA7" stroke-width="3" marker-end="url(#loop-arrow)"/>
-          <path d="M414 210 A154 154 0 0 1 260 364" fill="none" stroke="#002FA7" stroke-width="3" marker-end="url(#loop-arrow)"/>
-          <path d="M260 364 A154 154 0 0 1 106 210" fill="none" stroke="#002FA7" stroke-width="3" marker-end="url(#loop-arrow)"/>
-          <path d="M106 210 A154 154 0 0 1 260 56" fill="none" stroke="#002FA7" stroke-width="3" marker-end="url(#loop-arrow)"/>
-          <circle cx="260" cy="56" r="11" fill="#fafaf8" stroke="#002FA7" stroke-width="3"/>
-          <circle cx="414" cy="210" r="11" fill="#fafaf8" stroke="#002FA7" stroke-width="3"/>
-          <circle cx="260" cy="364" r="11" fill="#fafaf8" stroke="#002FA7" stroke-width="3"/>
-          <circle cx="106" cy="210" r="11" fill="#fafaf8" stroke="#002FA7" stroke-width="3"/>
-        </svg>
-        <div data-anim="label" class="loop-center"><strong>人工</strong><span>HUMAN DECISION</span></div>
-        <div data-anim="label" class="loop-label top">发现</div><div data-anim="label" class="loop-label right">受理</div>
-        <div data-anim="label" class="loop-label bottom">执行</div><div data-anim="label" class="loop-label left">复盘</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="slide" data-animate="system-diagram" data-layout="S17" data-slide-id="system-architecture">
-  <div class="canvas-card">
-    <div class="chrome-min tight"><div class="l">04 · Product architecture</div><div class="r">05 / 10</div></div>
-    <div data-anim="line" style="display:grid;grid-template-columns:1.05fr .95fr;gap:5vw;align-items:end">
-      <div><div class="t-meta" style="margin-bottom:1vh">五类角色 · 三端协同</div><h2 class="community-title compact">核心流程不依赖单一硬件或云端模型</h2></div>
-      <p class="community-lead">模块化单体承载权限、事件、任务、设备与审计；SQLite 便于比赛现场携带和恢复。</p>
-    </div>
-    <div data-anim="up" class="system-diagram">
-      <div class="system-stack">
-        <article><h3>Flutter Android</h3><p>老人完成平安确认和求助，家属只查看已授权摘要。</p></article>
-        <article><h3>Vue Web</h3><p>社区人员派单处理，服务人员只查看本人当前任务。</p></article>
-        <article><h3>ASP.NET Core + SQLite</h3><p>统一执行业务规则、并发校验、幂等处理和审计。</p></article>
-      </div>
-      <div class="system-rings">
-        <svg viewBox="0 0 560 410" aria-hidden="true">
-          <circle cx="280" cy="205" r="170" fill="none" stroke="#d4d4d2" stroke-width="2"/>
-          <circle cx="280" cy="205" r="116" fill="none" stroke="#737373" stroke-width="2"/>
-          <circle cx="280" cy="205" r="62" fill="#f0f0ee" stroke="#002FA7" stroke-width="3"/>
-          <path d="M110 205 H42 M450 205 H518 M280 35 V4" fill="none" stroke="#a3a3a3" stroke-width="1.5"/>
-        </svg>
-        <div data-anim="label" class="system-ring-label outer">APP · WEB · DEVICE / SIMULATOR</div>
-        <div data-anim="label" class="system-ring-label middle">权限 · 任务 · 审计</div>
-        <div data-anim="label" class="system-ring-label core">照料事件</div>
-      </div>
-    </div>
-    <div class="system-role-row nav-safe-bottom-tight">
-      <article data-anim="role"><h4>个人端</h4><p>老人、家属：本人数据与已授权摘要</p></article>
-      <article data-anim="role"><h4>工作端</h4><p>社区、服务人员：片区与当前任务范围</p></article>
-      <article data-anim="role"><h4>管理端</h4><p>管理员：设备、报告和设置，不代办事件</p></article>
-    </div>
-  </div>
-</section>
-
-<section class="slide" data-animate="timeline-walk" data-layout="S11" data-slide-id="care-event-timeline">
-  <div class="canvas-card">
-    <div class="chrome-min tight"><div class="l">05 · Main care story</div><div class="r">06 / 10</div></div>
-    <div data-anim="line" style="display:flex;flex-direction:column;gap:1vh">
-      <div class="t-meta">一条事件贯穿完整处置过程</div>
-      <h2 class="community-title compact">异常如何变成可追踪的照料任务</h2>
+      <div class="t-meta">同一条照料事件 · 人工决定下一步</div>
+      <h2 class="community-title compact">从平安确认到结案，一步一步留下记录</h2>
     </div>
     <div class="timeline-h">
       <div class="tl-row">
-        <div class="th-node up"><span class="dot"></span><div class="label"><span class="yr">TRIGGER</span><span class="name">平安漏签</span><span class="desc">建立待确认事件</span></div></div>
-        <div class="th-node down"><span class="dot"></span><div class="label"><span class="yr">EVIDENCE</span><span class="name">设备证据</span><span class="desc">合并而不重复建单</span></div></div>
-        <div class="th-node up accent"><span class="dot"></span><div class="label"><span class="yr">OWNER</span><span class="name">人工受理</span><span class="desc">确认当前负责人</span></div></div>
-        <div class="th-node down"><span class="dot"></span><div class="label"><span class="yr">VISIT</span><span class="name">上门探访</span><span class="desc">记录结果与摘要</span></div></div>
-        <div class="th-node up"><span class="dot"></span><div class="label"><span class="yr">SERVICE</span><span class="name">服务工单</span><span class="desc">按归属最小授权</span></div></div>
-        <div class="th-node down"><span class="dot"></span><div class="label"><span class="yr">FOLLOW-UP</span><span class="name">回访确认</span><span class="desc">验证服务结果</span></div></div>
-        <div class="th-node up accent"><span class="dot"></span><div class="label"><span class="yr">AUDIT</span><span class="name">结案复盘</span><span class="desc">条件满足后人工关闭</span></div></div>
+        <div class="th-node up"><span class="dot"></span><div class="label"><span class="yr">CHECK</span><span class="name">平安确认</span><span class="desc">签到或形成待确认事项</span></div></div>
+        <div class="th-node down"><span class="dot"></span><div class="label"><span class="yr">MERGE</span><span class="name">合并证据</span><span class="desc">漏签、求助、设备信号</span></div></div>
+        <div class="th-node up accent"><span class="dot"></span><div class="label"><span class="yr">ACCEPT</span><span class="name">人工受理</span><span class="desc">社区人员确认负责人</span></div></div>
+        <div class="th-node down"><span class="dot"></span><div class="label"><span class="yr">VISIT</span><span class="name">上门探访</span><span class="desc">记录结果和必要摘要</span></div></div>
+        <div class="th-node up"><span class="dot"></span><div class="label"><span class="yr">SERVICE</span><span class="name">安排服务</span><span class="desc">工单按当前归属执行</span></div></div>
+        <div class="th-node down"><span class="dot"></span><div class="label"><span class="yr">FOLLOW-UP</span><span class="name">回访确认</span><span class="desc">核对任务是否完成</span></div></div>
+        <div class="th-node up accent"><span class="dot"></span><div class="label"><span class="yr">CLOSE</span><span class="name">人工结案</span><span class="desc">条件满足后关闭事件</span></div></div>
       </div>
     </div>
-    <div data-anim="foot" class="timeline-foot nav-safe-bottom-tight"><span>设备和 AI 只能追加证据或草稿，不能自行升级、诊断或结案。</span><span>电话、120、外部通知与设备动作均明确标记为模拟。</span></div>
+    <div data-anim="foot" class="timeline-foot nav-safe-bottom-tight"><span>电话、120、外部通知和设备动作在演示中均为模拟。</span><span>设备和 AI 可以补充证据或草稿，不能自行诊断、升级或结案。</span></div>
   </div>
 </section>
 
-<section class="slide" data-animate="field-notes" data-layout="S16" data-slide-id="personnel-dispatch">
+<section class="slide" data-animate="field-notes" data-layout="S16" data-slide-id="three-entrances">
   <div class="canvas-card">
-    <div class="chrome-min tight"><div class="l">06 · Personnel dispatch</div><div class="r">07 / 10</div></div>
+    <div class="chrome-min tight"><div class="l">03 · Three entrances</div><div class="r">04 / 08</div></div>
     <div data-anim="line" style="display:flex;justify-content:space-between;align-items:end;gap:4vw">
-      <div><div class="t-meta" style="margin-bottom:1vh">真实界面 · 合成运营场景</div><h2 class="community-title compact" style="font-size:min(4.2vw,7.5vh)">任务能派下去，权限也跟着任务走</h2></div>
+      <div><div class="t-meta" style="margin-bottom:1vh">真实页面 · 合成演示数据</div><h2 class="community-title compact" style="font-size:min(4.2vw,7.5vh)">老人、家属和工作人员各做自己的事</h2></div>
+      <p class="slide-image-caption">5 类角色 · 3 个使用入口</p>
+    </div>
+    <div data-anim="up" class="brief-grid">
+      <article class="brief-card media"><img src="images/elder-home.webp" data-image-slot="s16-brief-16x10" alt="老人端首页真实截图，画面裁取平安确认区域" style="object-fit:cover;object-position:center 43%"></article>
+      <article class="brief-card media"><img src="images/family-home.webp" data-image-slot="s16-brief-16x10" alt="家属端首页真实截图，画面裁取授权摘要区域" style="object-fit:cover;object-position:center 40%"></article>
+      <article class="brief-card media"><img src="images/personnel.webp" data-image-slot="s16-brief-16x10" alt="社区工作端人员与任务页面真实截图" style="object-fit:cover;object-position:center top"></article>
+      <article class="brief-card copy"><span class="brief-number">01 · ELDER</span><h3>先确认今天平安</h3><p>老人端提供大按钮签到、提醒、陪伴和二次确认求助。</p></article>
+      <article class="brief-card copy"><span class="brief-number">02 · FAMILY</span><h3>只看已授权摘要</h3><p>家属查看最近状态与照料进展，撤回后立即移除已加载内容。</p></article>
+      <article class="brief-card copy is-accent"><span class="brief-number">03 · STAFF</span><h3>接单、派单和跟进</h3><p>社区、服务人员和管理员按片区、任务归属与角色权限工作。</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-animate="field-notes" data-layout="S16" data-slide-id="task-handoff">
+  <div class="canvas-card">
+    <div class="chrome-min tight"><div class="l">04 · Task handoff</div><div class="r">05 / 08</div></div>
+    <div data-anim="line" style="display:flex;justify-content:space-between;align-items:end;gap:4vw">
+      <div><div class="t-meta" style="margin-bottom:1vh">人员与任务 · 真实页面</div><h2 class="community-title compact" style="font-size:min(4.2vw,7.5vh)">任务交给谁，操作权限就跟到谁</h2></div>
       <p class="slide-image-caption">4 名工作人员 · 33 张统一任务视图</p>
     </div>
     <div data-anim="up" class="brief-grid">
-      <article class="brief-card media"><img src="images/07-personnel-tasks.png" data-image-slot="s16-brief-16x10" alt="人员与任务页面真实截图"></article>
-      <article class="brief-card media"><img src="images/07-task-assignment.png" data-image-slot="s16-brief-16x10" alt="事件内创建服务工单的真实截图"></article>
-      <article class="brief-card media"><img src="images/07-service-worker-tasks.png" data-image-slot="s16-brief-16x10" alt="服务人员我的任务页面真实截图"></article>
-      <article class="brief-card copy"><span class="brief-number">01 · LOAD</span><h3>先看负载，再安排工作</h3><p>统一查看探访、工单与回访，并按人员、状态和逾期筛选。</p></article>
-      <article class="brief-card copy"><span class="brief-number">02 · REASSIGN</span><h3>只转派未开始任务</h3><p>必须填写原因；开始、完成或取消后的任务禁止转派。</p></article>
-      <article class="brief-card copy is-accent"><span class="brief-number">03 · SCOPE</span><h3>新负责人立即生效</h3><p>原人员失去操作权，服务人员仍只看到完成任务所需的最少字段。</p></article>
+      <article class="brief-card media"><img src="images/personnel.webp" data-image-slot="s16-brief-16x10" alt="人员与任务页面真实截图"></article>
+      <article class="brief-card media"><img src="images/assignment.webp" data-image-slot="s16-brief-16x10" alt="事件内创建服务工单的真实截图"></article>
+      <article class="brief-card media"><img src="images/service-tasks.png" data-image-slot="s16-brief-16x10" alt="服务人员我的任务页面真实截图"></article>
+      <article class="brief-card copy"><span class="brief-number">01 · AREA</span><h3>先按片区限定业务</h3><p>社区人员只处理本片区事件；管理员查看运营情况，不代办事件。</p></article>
+      <article class="brief-card copy"><span class="brief-number">02 · REASSIGN</span><h3>未开始才允许转派</h3><p>新负责人、原因和预期版本缺一不可；开始后禁止转派。</p></article>
+      <article class="brief-card copy is-accent"><span class="brief-number">03 · ACCESS</span><h3>转派后立即换权限</h3><p>原人员失去操作权，新人员无需重新登录即可看到当前任务。</p></article>
     </div>
   </div>
 </section>
 
-<section class="slide" data-animate="duo-mirror" data-layout="S08" data-slide-id="device-reporting">
+<section class="slide" data-animate="duo-mirror" data-layout="S08" data-slide-id="device-and-report">
   <div class="canvas-card">
-    <div class="chrome-min tight"><div class="l">07 · Device & operations</div><div class="r">08 / 10</div></div>
+    <div class="chrome-min tight"><div class="l">05 · Device & report</div><div class="r">06 / 08</div></div>
     <div data-anim="line" style="display:flex;justify-content:space-between;align-items:end;gap:4vw">
-      <div><div class="t-meta" style="margin-bottom:1vh">设备留痕 · 运营复盘</div><h2 class="community-title compact">不假装在线，也不把统计说成效果</h2></div>
+      <div><div class="t-meta" style="margin-bottom:1vh">设备台账 · 运营报告</div><h2 class="community-title compact">设备只留证据，报告只说当前数据</h2></div>
       <p class="slide-image-caption">真实页面截图 · 北京时间口径</p>
     </div>
     <div class="duo-compare shots nav-safe-bottom-tight">
       <div class="col">
         <div class="col-tag"><span class="num">A</span> Device ledger</div>
-        <h3 class="col-ttl">设备台账与信号</h3>
-        <img class="duo-shot" src="images/08-device-ledger.png" data-image-slot="s08-duo-16x10" alt="设备台账与信号页面真实截图">
-        <ul class="col-list"><li>硬件与模拟上报分别标识</li><li>停用后拒绝新上报，历史和关联事件保留</li></ul>
+        <h3 class="col-ttl">启停有原因，历史不丢失</h3>
+        <img class="duo-shot" src="images/device-ledger.png" data-image-slot="s08-duo-16x10" alt="启停有原因，历史不丢失页面真实截图">
+        <ul class="col-list"><li>真实上报与模拟上报分开标识</li><li>只显示启停和上报记录，不推断实时在线</li></ul>
       </div>
       <span class="vrule"></span>
       <div class="col accent">
         <div class="col-tag"><span class="num">B</span> Operations report</div>
-        <h3 class="col-ttl">运营报告与导出</h3>
-        <img class="duo-shot" src="images/08-operations-report.png" data-image-slot="s08-duo-16x10" alt="运营报告页面真实截图">
-        <ul class="col-list"><li>合成场景：13 个新增事件、9 个结案</li><li>CSV、打印与页面使用相同筛选和统计口径</li></ul>
+        <h3 class="col-ttl">页面、CSV 和打印使用同一口径</h3>
+        <img class="duo-shot" src="images/operations-report.png" data-image-slot="s08-duo-16x10" alt="运营报告页面真实截图">
+        <ul class="col-list"><li>合成场景：13 个新增事件、9 个结案</li><li>最长查询 90 天，不导出联系方式和健康信息</li></ul>
       </div>
     </div>
   </div>
 </section>
 
-<section class="slide" data-animate="tech-spec" data-layout="S21" data-slide-id="verification-boundary">
+<section class="slide" data-animate="tech-spec" data-layout="S21" data-slide-id="verified-scope">
   <div class="canvas-card">
-    <div class="chrome-min tight"><div class="l">08 · Verification & boundary</div><div class="r">09 / 10</div></div>
-    <div data-anim="line" class="t-meta" style="margin-bottom:2vh">只展示制作时重新回读的证据</div>
+    <div class="chrome-min tight"><div class="l">06 · Verification</div><div class="r">07 / 08</div></div>
+    <div data-anim="line" class="t-meta" style="margin-bottom:2vh">最近一次完整本地门禁结果</div>
     <div data-anim="up" class="tech-main">
-      <div><div class="tech-main-title"><span>验证数字</span><span>对应当前工作区</span></div><p class="community-lead" style="margin-top:1.6vh;max-width:24ch">通过、未执行和边界分开陈述，不把测试发现当作验收通过。</p></div>
-      <div class="tech-kpi"><div class="rule-top"></div><div class="kpi-num">136</div><div class="unit">.NET TESTS</div><p>单元与集成测试，本轮重新执行。</p></div>
-      <div class="tech-kpi"><div class="rule-top"></div><div class="kpi-num">38</div><div class="unit">WEB TESTS</div><p>组件测试、类型检查与构建分开验证。</p></div>
-      <div class="tech-kpi accent"><div class="rule-top"></div><div class="kpi-num">7</div><div class="unit">CHROMIUM FLOWS</div><p>主故事、运营与授权流程全部通过。</p></div>
+      <div><div class="tech-main-title"><span>通过的项目</span><span>按工具分开记录</span></div><p class="community-lead" style="margin-top:1.6vh;max-width:24ch">数字对应当前仓库的自动化检查，不代替实机和现场验收。</p></div>
+      <div class="tech-kpi"><div class="rule-top"></div><div class="kpi-num">136</div><div class="unit">.NET TESTS</div><p>API、权限、并发与迁移相关测试。</p></div>
+      <div class="tech-kpi"><div class="rule-top"></div><div class="kpi-num">38</div><div class="unit">WEB TESTS</div><p>组件测试，并完成类型检查与构建。</p></div>
+      <div class="tech-kpi accent"><div class="rule-top"></div><div class="kpi-num">14</div><div class="unit">ANDROID FLOWS</div><p>老人端和家属端集成流程。</p></div>
     </div>
     <div data-anim="hero" class="tech-evidence">
-      <div><div class="bottom-hero">9</div><div class="t-meta" style="margin-top:1vh">Key controls</div></div>
-      <div class="tech-evidence-copy"><h3>权限、并发和恢复都有明确结果</h3><p>片区范围、当前任务归属、应用维护版本、409 冲突、幂等、审计、迁移、降级与重置共 9 项关键控制。</p><div class="tech-tags"><span>MINIMUM SCOPE</span><span>409 CONFLICT</span><span>AUDIT TRAIL</span></div></div>
-      <div><div data-anim="bars" class="tech-bars"><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span></div><div class="t-meta" style="text-align:right;margin-top:1vh">CONTROL MATRIX</div></div>
+      <div><div class="bottom-hero">1/1</div><div class="t-meta" style="margin-top:1vh">API SMOKE</div></div>
+      <div class="tech-evidence-copy"><h3>构建、静态检查和固件编译都有独立结果</h3><p>Flutter analyze、Debug APK、PlatformIO 与 API 冒烟检查均完成；每项仍保留自己的验证边界。</p><div class="tech-tags"><span>FLUTTER ANALYZE</span><span>DEBUG APK</span><span>PLATFORMIO</span></div></div>
+      <div><div data-anim="bars" class="tech-bars"><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span><span class="vbar"></span></div><div class="t-meta" style="text-align:right;margin-top:1vh">VERIFIED LOCALLY</div></div>
     </div>
-    <div class="tech-boundary"><span>本轮重新执行：.NET、Web、Chromium 与 PPT 浏览器验收。</span><span>移动端实机与 ESP32 实物不在本轮重新验收范围内。</span></div>
+    <div class="tech-boundary"><span>未验收：Android 实机、ESP32 实物、真实外部通知与救援动作。</span><span>测试通过只说明软件检查结果，不证明政策达标率或真实救援效果。</span></div>
   </div>
 </section>
 
-<section class="slide split" data-animate="split-statement" data-layout="SWISS-CLOSING-ASCII" data-slide-id="closing">
+<section class="slide split" data-animate="split-statement" data-layout="SWISS-CLOSING-ASCII" data-slide-id="brand-closing">
   <div class="canvas-card">
     <div class="split-half">
       <div class="half b-accent" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between;position:relative;overflow:hidden">
         <canvas class="ascii-bg" aria-hidden="true"></canvas>
-        <div class="chrome-min" style="margin-bottom:0;position:relative;z-index:1"><div class="l">10 / 10</div><div class="r">Closing</div></div>
+        <div class="chrome-min" style="margin-bottom:0;position:relative;z-index:1"><div class="l">08 / 08</div><div class="r">Closing</div></div>
         <div data-anim="manifesto" style="display:flex;flex-direction:column;gap:3.6vh;position:relative;z-index:1">
-          <div class="t-meta" style="color:rgba(255,255,255,.78);letter-spacing:.22em;margin-bottom:1.2vh">CARE WITH ACCOUNTABILITY</div>
-          <h2 style="font-family:var(--sans),var(--sans-zh);font-size:min(7vw,12vh);line-height:.98;letter-spacing:-.03em;font-weight:200;color:#fff">让每一次<br><span style="font-style:italic;font-weight:300">关怀</span><br>都有回声。</h2>
-          <div style="font-family:var(--sans),var(--sans-zh);font-size:max(16px,1vw);line-height:1.6;color:rgba(255,255,255,.84);font-weight:400;max-width:34ch">系统留下证据和责任，照护仍由真实的人完成。</div>
+          <div class="t-meta" style="color:rgba(255,255,255,.78);letter-spacing:.22em;margin-bottom:1.2vh">ANLIN CARE</div>
+          <h2 style="font-family:var(--sans),var(--sans-zh);font-size:min(7vw,12vh);line-height:.98;letter-spacing:-.03em;font-weight:200;color:#fff">把每天的<br><span style="font-style:italic;font-weight:300">照料工作</span><br>交接清楚。</h2>
+          <div style="font-family:var(--sans),var(--sans-zh);font-size:max(16px,1vw);line-height:1.6;color:rgba(255,255,255,.84);font-weight:400;max-width:34ch">安邻照料记录异常、责任和结果，现场照护仍由社区人员完成。</div>
         </div>
-        <div data-anim="signature" style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(255,255,255,.22);padding-top:2vh;position:relative;z-index:1"><div class="t-meta" style="color:rgba(255,255,255,.62)">社区独居老人照料系统</div><div class="t-meta" style="color:rgba(255,255,255,.62)">END</div></div>
+        <div data-anim="signature" style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(255,255,255,.22);padding-top:2vh;position:relative;z-index:1"><div class="t-meta" style="color:rgba(255,255,255,.62)">社区独居老人照料协同系统</div><div class="t-meta" style="color:rgba(255,255,255,.62)">END</div></div>
       </div>
       <div class="half" style="padding:5.6vh 3.6vw 9vh;justify-content:space-between">
-        <div class="chrome-min"><div class="l">Takeaways</div><div class="r">03 Rules</div></div>
+        <div class="chrome-min"><div class="l">Takeaways</div><div class="r">03 Points</div></div>
         <div data-anim="rules" style="display:flex;flex-direction:column">
-          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.5vh 0;border-top:1px solid var(--border-subtle)"><div style="font-family:var(--sans);font-weight:200;font-size:min(4.2vw,7.4vh);line-height:.9">01</div><div><h3 style="font-weight:500;font-size:max(19px,1.6vw);margin-bottom:1.6vh">异常有闭环</h3><p class="t-body-sm">确认、处理、回访和结案进入同一条事件记录。</p></div></div>
-          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.5vh 0;border-top:1px solid var(--border-subtle)"><div style="font-family:var(--sans);font-weight:200;font-size:min(4.2vw,7.4vh);line-height:.9">02</div><div><h3 style="font-weight:500;font-size:max(19px,1.6vw);margin-bottom:1.6vh">权限有边界</h3><p class="t-body-sm">角色、片区和当前任务共同限定可见与可操作范围。</p></div></div>
-          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.5vh 0;border-top:1px solid var(--border-subtle);border-bottom:2px solid var(--accent)"><div style="font-family:var(--sans);font-weight:200;font-size:min(4.2vw,7.4vh);line-height:.9;color:var(--accent)">03</div><div><h3 style="font-weight:500;font-size:max(19px,1.6vw);margin-bottom:1.6vh;color:var(--accent)">现场可降级</h3><p class="t-body-sm">硬件和云端能力失效时，模拟器与固定规则保住主流程。</p></div></div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.5vh 0;border-top:1px solid var(--border-subtle)"><div style="font-family:var(--sans);font-weight:200;font-size:min(4.2vw,7.4vh);line-height:.9">01</div><div><h3 style="font-weight:500;font-size:max(19px,1.6vw);margin-bottom:1.6vh">异常有负责人</h3><p class="t-body-sm">每个事件和任务都能查到当前归属与处理时间。</p></div></div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.5vh 0;border-top:1px solid var(--border-subtle)"><div style="font-family:var(--sans);font-weight:200;font-size:min(4.2vw,7.4vh);line-height:.9">02</div><div><h3 style="font-weight:500;font-size:max(19px,1.6vw);margin-bottom:1.6vh">信息按需要查看</h3><p class="t-body-sm">角色、片区、授权和当前任务共同限制可见内容。</p></div></div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.5vh 0;border-top:1px solid var(--border-subtle);border-bottom:2px solid var(--accent)"><div style="font-family:var(--sans);font-weight:200;font-size:min(4.2vw,7.4vh);line-height:.9;color:var(--accent)">03</div><div><h3 style="font-weight:500;font-size:max(19px,1.6vw);margin-bottom:1.6vh;color:var(--accent)">现场可以继续</h3><p class="t-body-sm">硬件或 AI 暂不可用时，人工流程和固定规则仍能工作。</p></div></div>
         </div>
-        <div data-anim="foot" class="t-meta" style="color:var(--text-helper);text-align:right">→ 完 · 谢谢</div>
+        <div data-anim="foot" class="t-meta" style="color:var(--text-helper);text-align:right">→ 安邻照料 · 谢谢</div>
       </div>
     </div>
   </div>
@@ -1569,16 +1502,14 @@
 <!-- 演讲备注：替换示例页时同步替换，id 必须与 section[data-slide-id] 一致。 -->
 <script>
 const SPEAKER_NOTES = [
-  {id:'cover',title:'社区独居老人照料系统',section:'开场',minutes:0.3,purpose:'在最短时间内交代产品定位和边界',talk:['这套系统面向社区独居老人照料，不做医疗诊断','它把平安确认、任务协同和运营复盘放进一条事件链','全套资料均为合成数据，外部动作均为模拟'],transition:'先从为什么需要一条闭环说起'},
-  {id:'pain-point',title:'信号被看见，照料才刚开始',section:'问题',minutes:0.55,purpose:'说明产品解决的是协同断点而不是单一告警入口',talk:['漏签、设备和家属反馈都可能发现异常','真正困难的是谁接手、做什么、何时完成','软件负责连接责任和证据，不能凭空增加线下人员'],transition:'因此产品不从某个设备出发，而从统一照料事件出发'},
-  {id:'care-network',title:'一条事件链串起五种角色',section:'方案',minutes:0.55,purpose:'让评委快速建立完整产品认知',talk:['老人、家属、社区、服务人员和管理员围绕同一事件协作','20 份固定合成档案保证演示可重复','角色看到的内容由业务需要和授权范围决定'],transition:'五种角色如何协作，取决于中间这条人工闭环'},
-  {id:'human-led-loop',title:'从异常信号到照料复盘',section:'方案',minutes:0.55,purpose:'解释系统闭环与人工决策边界',talk:['发现阶段只建立事件或追加证据','社区人员受理后才形成明确责任','探访、工单和回访按任务归属执行','条件满足后仍由人员决定是否结案'],transition:'这套边界通过三端和统一服务端落地'},
-  {id:'system-architecture',title:'五类角色，三端协同',section:'实现',minutes:0.65,purpose:'说明技术选择如何服务现场稳定与最小权限',talk:['老人和家属使用同一 Android App 的独立界面','社区与服务人员在 Web 中按不同权限工作','ASP.NET Core 统一执行业务规则和审计','ESP32 与模拟器使用同一信号契约，云端 AI 也有固定规则降级'],transition:'架构最终要证明能承载一条完整事件故事'},
-  {id:'care-event-timeline',title:'异常如何变成可追踪的照料任务',section:'主流程',minutes:0.8,purpose:'用一条时间线讲清核心业务价值',talk:['漏签建立待确认事件，设备异常在窗口内合并为证据','社区人员人工受理并成为当前负责人','探访、服务工单和回访分别留下任务结果','强制任务和回访未完成时不能结案','模拟电话和 120 始终保留模拟标记'],transition:'主流程之外，社区还需要把大量任务真正派给具体人员'},
-  {id:'personnel-dispatch',title:'任务能派下去，权限也跟着任务走',section:'运营增强',minutes:0.7,purpose:'用真实界面证明派单不是概念图',talk:['人员页同时展示待办量和逾期量','三类任务可以统一筛选和跟进','只有未开始任务允许转派，而且必须填写原因','转派后原人员立即失去操作权，新人员无需重新登录','服务人员只获得完成当前任务需要的最少字段'],transition:'人员任务之外，设备证据和运营统计也要进入同一套管理方式'},
-  {id:'device-reporting',title:'设备留痕与运营复盘',section:'运营增强',minutes:0.7,purpose:'说明设备和报表都遵循可解释边界',talk:['设备页只陈述启停和上报记录，不推断实时在线','硬件与模拟来源分开标识，停用不会删除历史','报告统一使用北京时间和同一筛选口径','页面数据来自合成运营场景，不代表政策达标率或真实救援效果'],transition:'最后用重新执行的验证结果说明这些能力如何被检查'},
-  {id:'verification-boundary',title:'只展示当前可回读的证据',section:'验证',minutes:0.7,purpose:'给出工程证据并明确未验收项',talk:['本页数字来自制作演示稿时重新执行的本地验证','权限、并发、幂等、审计和恢复分别有明确断言','Chromium 结果与用例发现分开表述','移动端实机和 ESP32 实物没有在本轮重复验收，因此不计入通过数字'],transition:'把技术证据收束回三个产品判断'},
-  {id:'closing',title:'让每一次关怀都有回声',section:'收束',minutes:0.3,purpose:'以三个可记忆判断结束答辩',talk:['异常必须进入闭环','权限必须跟随责任边界','现场依赖失效时主流程仍可降级完成'],transition:'结束讲解，进入提问'}
+  {id:'brand-cover',title:'安邻照料',section:'开场',minutes:0.25,purpose:'交代产品名称、服务对象和展示边界',talk:['安邻照料面向社区独居老人日常照料协同','产品把平安确认、任务跟进和运营记录放在同一套工作流程里','本稿使用合成数据，涉及电话、120、通知和设备动作的内容均为模拟'],transition:'先看社区日常最常遇到的一个问题'},
+  {id:'daily-question',title:'老人没有签到，社区接下来做什么',section:'问题',minutes:0.5,purpose:'用具体工作问题说明协同断点',talk:['没有签到只是一个需要核实的信号','漏签、求助和设备异常可能指向同一件事，需要先合并证据','真正需要管理的是谁受理、何时探访、后续是否完成','家属查看进展必须在老人授权范围内'],transition:'产品把这些动作放进同一条照料事件'},
+  {id:'care-path',title:'从平安确认到人工结案',section:'流程',minutes:0.65,purpose:'讲清系统如何支持完整照料流程',talk:['签到正常时记录平安，异常时建立待确认事项','设备信号和家属反馈在时间窗口内合并，避免重复建单','社区人员受理后安排探访、工单和回访','强制任务未完成或回访未确认时不能结案','最终关闭事件仍由工作人员决定'],transition:'同一条流程在三个入口中呈现为不同操作'},
+  {id:'three-entrances',title:'三个入口，各做自己的事',section:'产品',minutes:0.55,purpose:'用真实页面说明角色分工',talk:['老人端把平安确认和求助放在最醒目的位置','家属端只展示已授权的最近状态和照料摘要','社区和服务人员在工作端接单、派单和跟进','管理员管理设备与报告，但不代替一线人员处理事件'],transition:'工作端最关键的一步，是把任务准确交给当前负责人'},
+  {id:'task-handoff',title:'任务归属和操作权限同步变化',section:'产品',minutes:0.65,purpose:'说明人员派单规则和权限即时性',talk:['人员页先展示片区、待办量和逾期量','探访、工单和回访统一筛选，但仍保留各自完成条件','只有未开始任务允许转派，必须填写原因并校验版本','转派成功后原负责人立即失去操作权，新负责人直接看到任务','服务人员只读取完成当前任务需要的最少字段'],transition:'任务之外，设备证据和运营数据也采用同样的留痕原则'},
+  {id:'device-and-report',title:'设备台账与运营报告',section:'运营',minutes:0.6,purpose:'说明设备和统计的表达边界',talk:['设备页记录启停原因、最近上报和信号历史','真实上报与模拟上报分开标识，停用后历史仍保留','系统不显示实时在线率、离线率或可用率','运营报告按北京时间统计，页面、CSV 和打印共用筛选口径','合成场景数字用于演示内部运营，不代表政策达标或救援效果'],transition:'最后把已经通过的检查和没有验收的项目分开说明'},
+  {id:'verified-scope',title:'当前验证结果与未验收项',section:'验证',minutes:0.65,purpose:'给出可回读的工程证据并避免扩大结论',talk:['最近一次完整本地门禁包含 136 项 .NET 测试和 38 项 Web 测试','Android 集成流程共 14 项，Flutter 静态检查和 Debug APK 构建完成','PlatformIO 编译与 API 冒烟检查分别通过','这些结果仍不等于 Android 实机、ESP32 实物或真实通知已经验收','软件测试也不能证明真实救援效果'],transition:'用三个现场可记住的产品判断收束'},
+  {id:'brand-closing',title:'把每天的照料工作交接清楚',section:'收束',minutes:0.25,purpose:'用直接语言结束产品介绍',talk:['每个异常都有当前负责人和时间记录','每个角色只看业务所需内容','硬件或 AI 暂不可用时，人工流程仍能继续'],transition:'结束介绍，进入提问'}
 ];
 window.__SPEAKER_NOTES__ = SPEAKER_NOTES;
 </script>

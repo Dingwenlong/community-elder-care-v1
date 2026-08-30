@@ -20,6 +20,8 @@ describe('LoginPage', () => {
 
     render(LoginPage, { global: { plugins: [pinia, router] } })
 
+    expect(screen.getByRole('heading', { name: '安邻照料' })).toBeTruthy()
+    expect(screen.getByText('社区独居老人照料协同系统')).toBeTruthy()
     expect(screen.getByRole('heading', { name: '登录工作区' })).toBeTruthy()
     expect(screen.getByLabelText('账号')).toBeTruthy()
     expect(screen.getByLabelText('密码')).toBeTruthy()

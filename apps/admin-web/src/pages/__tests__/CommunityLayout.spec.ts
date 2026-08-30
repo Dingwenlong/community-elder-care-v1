@@ -96,6 +96,8 @@ describe('CommunityLayout', () => {
 
     expect(screen.queryByText('演示数据')).toBeNull()
     const sidebar = screen.getByRole('complementary', { name: '社区工作区导航' })
+    expect(within(sidebar).getByText('安邻照料')).toBeTruthy()
+    expect(screen.getAllByText('安邻照料')).toHaveLength(2)
     expect(sidebar.textContent).not.toContain('社区照料工作台')
     expect(sidebar.textContent).not.toContain('外部通知与救援操作均为模拟')
     expect(screen.getByRole('heading', { name: '老人档案' })).toBeTruthy()

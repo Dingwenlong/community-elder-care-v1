@@ -43,8 +43,8 @@ async function signOut() {
   <div class="community-shell">
     <aside class="community-sidebar" aria-label="社区工作区导航">
       <div class="brand-block">
-        <span class="brand-mark" aria-hidden="true">社</span>
-        <span>独居老人照料</span>
+        <span class="brand-mark" aria-hidden="true">安</span>
+        <span>安邻照料</span>
       </div>
       <nav class="primary-nav">
         <RouterLink v-if="!isServiceWorker" to="/dashboard">工作台</RouterLink>
@@ -63,7 +63,7 @@ async function signOut() {
     <div class="community-workspace">
       <header class="workspace-header">
         <div>
-          <p class="system-name">社区独居老人照料系统</p>
+          <p class="system-name">安邻照料</p>
           <p class="workspace-name">{{ workspaceLabel }}</p>
         </div>
         <div class="account-area">

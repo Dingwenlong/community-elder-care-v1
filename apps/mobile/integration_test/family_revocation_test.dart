@@ -46,7 +46,7 @@ void main() {
         .read(sessionControllerProvider.notifier)
         .switchDemoAccount();
     await tester.pumpAndSettle();
-    expect(find.text('社区独居老人照料系统'), findsOneWidget);
+    expect(find.text('安邻照料'), findsOneWidget);
     expect(find.text('今天 08:05 已完成平安确认'), findsNothing);
   });
 }
